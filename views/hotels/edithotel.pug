@@ -1,0 +1,32 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    title Edit #{h.hotelname}
+  body
+    h1 Edit #{h.hotelname}
+
+    form(action=`/hotels/edit/${h.hotelid}`, method="POST")
+    
+      label(for="hotelname") Hotel Name:
+      input(type="text", id="hotelname", name="hotelname", value=`${h.hotelname ? h.hotelname : ''}`, required)
+      br
+      br
+
+      label(for="hotellocation") Hotel Location:
+      input(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation ? h.hotellocation : ''}`)
+      br
+      br
+
+      label(for="hotelcontact") Hotel Contact:
+      input(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact ? h.hotelcontact : ''}`)
+      br
+      br
+
+      label(for="hotelemail") Hotel Email:
+      input(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail ? h.hotelemail : ''}`)
+      br
+      br
+
+      input(type="submit", value="Submit")

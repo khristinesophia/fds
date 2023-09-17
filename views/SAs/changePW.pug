@@ -1,0 +1,27 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="bootstrap.min.css")
+    title Change Password
+  body
+    h1 Change Password
+
+    form(action=`/superadmins/changepassword/${id}`, method="POST")
+      label(for="old-password") Old Password:
+      input(type="password", id="old-password", name="oldPassword")
+      br
+      br
+
+      label(for="new-password") New Password:
+      input(type="password", id="new-password", name="newPassword")
+      br
+      br
+
+      label(for="confirm-password") Confirm Password:
+      input(type="password", id="confirm-password", name="confirmPassword")
+      br
+      br
+
+      button(type="submit") Submit

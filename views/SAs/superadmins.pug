@@ -1,0 +1,26 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="bootstrap.min.css")
+    title Super Admins
+  body
+    h2 
+      a(href="/superadmins/addSA") Add Super Admin
+    
+    hr
+    h1 Super Admins
+    each sa in allSuperAdminsArray
+      hr
+      h2 #{sa.fullname}
+      p Username: 
+        span #{sa.username}
+
+      
+      a(href=`superadmins/editSA/${sa.superadminid}`) Edit
+      form(action=`superadmins/delete/${sa.superadminid}`, method="POST")
+        input(type="hidden", name="_method", value="DELETE")
+        button(type="submit") Delete
+
+      a(href=`superadmins/changePW/${sa.superadminid}`) Change Password

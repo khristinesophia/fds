@@ -1,0 +1,39 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="bootstrap.min.css")
+    title Hotels
+  body
+    h2 
+      a(href="/hotels/addhotel") Add hotel
+
+    hr
+    h1 Hotels
+
+    each h in allHotelsArray
+
+      hr
+      h2 #{h.hotelname}
+
+      if h.hotellocation
+        p Location: 
+          span #{h.hotellocation}
+      if h.hotelcontact
+        p Contact Number: 
+          span #{h.hotelcontact}
+      if h.hotelemail
+        p Email: 
+          span #{h.hotelemail}
+      
+      a(href=`/hotels/edithotel/${h.hotelid}`) Edit
+      form(action=`/hotels/delete/${h.hotelid}`, method="POST")
+        input(type="hidden", name="_method", value="DELETE")
+        button(type="submit") Delete
+
+    hr
+    form(action="/logout/superadmin", method="POST")
+      button(type="submit") Logout
+  
+      
