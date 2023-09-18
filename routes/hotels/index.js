@@ -2,6 +2,8 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../../config/db-config')
 
+const randomString = require('random-string');
+
 const isAuthenticated = require('../../middleware/isAuthenticated')
 
 
@@ -14,15 +16,28 @@ router.post('/', isAuthenticated, async(req, res)=>{
     try {
 
         const { hotelname } = req.body
-        const newHotel = await pool.query(`INSERT INTO hotel(hotelname) VALUES($1) RETURNING *`,
-            [hotelname]
+        let hotelid = randomString();
+
+        // retrieve record matching generated hotelid
+        const result = await pool.query(`SELECT * FROM hotels WHERE hotelid = $1`, 
+            [hotelid]
         )
-        // res.json(newHotel)
+        const resultLength = result.rows.length
+
+        // if result length is greater than 0, generate new random string
+        if(resultLength > 0){
+            hotelid = randomString();
+        } 
+
+
+        const newHotel = await pool.query(`INSERT INTO hotels(hotelid, hotelname) VALUES($1, $2) RETURNING *`,
+            [hotelid, hotelname]
+        ) // res.json(newHotel)
 
         // **add successfully added here
 
         res.redirect('/hotels')
-
+       
     } catch (error) {
         console.error(error.message)
     }
@@ -32,7 +47,7 @@ router.post('/', isAuthenticated, async(req, res)=>{
 // read 
 router.get('/', isAuthenticated, async(req, res)=>{
     try {
-        const allHotels = await pool.query('SELECT * FROM hotel')
+        const allHotels = await pool.query('SELECT * FROM hotels')
 
         // res.json(allHotels.rows) array of all
 
@@ -45,63 +60,12 @@ router.get('/', isAuthenticated, async(req, res)=>{
     }
 })
 
-// read one
-router.get('/:id', isAuthenticated, async(req, res)=>{
-    try {
-        const { id } = req.params
-        const hotel = await pool.query('SELECT * FROM hotel WHERE hotelid = $1', [id])
-
-        // res.json(hotel.rows[0]) object of one
-
-        res.render('hotels/hotel', {
-            h: hotel.rows[0]
-        })
-        
-    } catch (error) {
-        console.error(error.message)
-    }
-})
-
-
-// render edit form
-router.get("/edithotel/:id", isAuthenticated, async(req, res)=>{
-    try {
-        const { id } = req.params
-        const hotel = await pool.query('SELECT * FROM hotel WHERE hotelid = $1', [id])
-
-        res.render('hotels/edithotel', {
-            h: hotel.rows[0]
-        })
-        
-    } catch (error) {
-        console.error(error.message)
-    }
-})
-// edit one
-router.post("/edit/:id", isAuthenticated, async(req, res)=>{
-    try {
-        const { id } = req.params
-        const { hotelname, hotellocation, hotelcontact, hotelemail } = req.body
-        const editHotel = await pool.query(`UPDATE hotel 
-            SET hotelname = $1, hotellocation = $2, hotelcontact = $3, hotelemail = $4
-            WHERE hotelid = $5`,
-            [hotelname, hotellocation, hotelcontact, hotelemail, id]
-        )
-
-        res.redirect('/hotels')
-    } catch (error) {
-        console.error(error.message)
-    }
-})
-
-
-
 
 // delete one
 router.post('/delete/:id', isAuthenticated, async(req,res)=>{
     try {
         const { id } = req.params
-        const deleteHotel = await pool.query('DELETE FROM hotel WHERE hotelid = $1', [id])
+        const deleteHotel = await pool.query('DELETE FROM hotels WHERE hotelid = $1', [id])
 
         res.redirect('/hotels')
     } catch (error) {

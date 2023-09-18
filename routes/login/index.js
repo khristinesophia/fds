@@ -21,7 +21,7 @@ router.post('/superadmin', async (req, res)=>{
 
         // if user exists and password is correct
         if(user && await bcrypt.compare(password, user.hashpassword)){
-            req.session.userId = user.superadminid
+            req.session.userID = user.superadminid
             req.session.username = user.username
 
             // redirect to hotels page

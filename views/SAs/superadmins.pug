@@ -6,7 +6,10 @@ html(lang="en")
     link(rel="stylesheet", href="bootstrap.min.css")
     title Super Admins
   body
-    h2 
+    include ../partials/navSA.pug
+
+    hr
+    button
       a(href="/superadmins/addSA") Add Super Admin
     
     hr
@@ -17,10 +20,13 @@ html(lang="en")
       p Username: 
         span #{sa.username}
 
-      
-      a(href=`superadmins/editSA/${sa.superadminid}`) Edit
+      button
+        a(href=`superadmins/editSA/${sa.superadminid}`) Edit
       form(action=`superadmins/delete/${sa.superadminid}`, method="POST")
         input(type="hidden", name="_method", value="DELETE")
         button(type="submit") Delete
 
-      a(href=`superadmins/changePW/${sa.superadminid}`) Change Password
+      button
+        a(href=`superadmins/changePW/${sa.superadminid}`) Change Password
+    
+    include ../partials/logoutSA.pug

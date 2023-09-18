@@ -7,7 +7,7 @@ const isAuthenticated = require('../../middleware/isAuthenticated')
 
 
 // render add form
-router.get('/addSA', (req, res)=>{
+router.get('/addSA', isAuthenticated, (req, res)=>{
     res.render('SAs/addSA')
 })
 // add 
@@ -92,7 +92,7 @@ router.post('/delete/:id', isAuthenticated, async(req,res)=>{
 
 
 
-// render form
+// render change pw form
 router.get('/changePW/:id', isAuthenticated, (req, res)=>{
     const { id } = req.params
     res.render('SAs/changePW', {

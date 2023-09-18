@@ -6,7 +6,10 @@ html(lang="en")
     link(rel="stylesheet", href="bootstrap.min.css")
     title Hotels
   body
-    h2 
+    include ../partials/navSA.pug
+
+    hr
+    button 
       a(href="/hotels/addhotel") Add hotel
 
     hr
@@ -27,13 +30,12 @@ html(lang="en")
         p Email: 
           span #{h.hotelemail}
       
-      a(href=`/hotels/edithotel/${h.hotelid}`) Edit
       form(action=`/hotels/delete/${h.hotelid}`, method="POST")
         input(type="hidden", name="_method", value="DELETE")
         button(type="submit") Delete
+    
+    include ../partials/logoutSA.pug
 
-    hr
-    form(action="/logout/superadmin", method="POST")
-      button(type="submit") Logout
+    
   
       

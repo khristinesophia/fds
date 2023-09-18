@@ -1,0 +1,24 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel="stylesheet", href="bootstrap.min.css")
+    title Hotel Admins
+  body
+    include ../partials/navSA.pug
+
+    hr
+    button 
+      a(href="/hoteladmins/addHA") Add Hotel Admin
+    
+    hr
+    h1 Hotel Admins
+    each ha in allHotelAdminsArray
+      hr
+      p Username: 
+        span #{ha.username}
+      p Hotel: 
+        span #{ha.hotelname}
+    
+    include ../partials/logoutSA.pug

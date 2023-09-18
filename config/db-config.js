@@ -5,7 +5,7 @@ const pool = new Pool({
     password: 'arks14',
     host: 'localhost',
     port: 5432, 
-    database: 'fds-db-practice'
+    database: 'fds'
 })
 
 module.exports = pool;
