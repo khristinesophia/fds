@@ -1,0 +1,12 @@
+mixin addhotel 
+    #modal.modal
+        .modal-header
+            h1 Add Hotel
+        .modal-body
+            form(action="/hotels", method="POST")
+            
+            label(for="hotelname") Hotel Name:
+            input(type="text", id="hotelname", name="hotelname")
+
+            input(type="submit", value="Submit")
+        .modal-footer

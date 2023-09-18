@@ -2,17 +2,17 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../../config/db-config')
 
-const randomString = require('random-string');
+const randomString = require('random-string')
 
 const isAuthenticated = require('../../middleware/isAuthenticated')
 
 
 // render add form
-router.get('/addhotel', isAuthenticated, (req, res)=>{
+router.get('/addhotel', (req, res)=>{
     res.render('hotels/addhotel')
 })
 // add
-router.post('/', isAuthenticated, async(req, res)=>{
+router.post('/', async(req, res)=>{
     try {
 
         const { hotelname } = req.body
@@ -45,7 +45,7 @@ router.post('/', isAuthenticated, async(req, res)=>{
 
 
 // read 
-router.get('/', isAuthenticated, async(req, res)=>{
+router.get('/', async(req, res)=>{
     try {
         const allHotels = await pool.query('SELECT * FROM hotels')
 
@@ -62,7 +62,7 @@ router.get('/', isAuthenticated, async(req, res)=>{
 
 
 // delete one
-router.post('/delete/:id', isAuthenticated, async(req,res)=>{
+router.post('/delete/:id', async(req,res)=>{
     try {
         const { id } = req.params
         const deleteHotel = await pool.query('DELETE FROM hotels WHERE hotelid = $1', [id])

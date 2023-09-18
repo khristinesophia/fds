@@ -4,11 +4,20 @@ const app = express()
 const path = require('path')
 const methodOverride = require('method-override')
 const session = require('express-session')
+// const mime = require('mime')
 
 // middlewares
+// app.use((req, res, next) => {
+//     const mimeType = mime.getType(req.url);
+//     if (mimeType === 'text/html') {
+//       res.setHeader('Content-Type', 'text/javascript')
+//     }
+//     next()
+// })
+app.use(express.static('./public'))
 app.use(express.json())
 app.use(express.urlencoded({extended : true}))
-app.use(methodOverride('_method'));
+app.use(methodOverride('_method'))
 app.use(session({
     secret: 'abcd123456789',
     resave: false,
