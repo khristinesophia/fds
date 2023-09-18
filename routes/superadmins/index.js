@@ -7,11 +7,11 @@ const isAuthenticated = require('../../middleware/isAuthenticated')
 
 
 // render add form
-router.get('/addSA', isAuthenticated, (req, res)=>{
+router.get('/addSA', (req, res)=>{
     res.render('SAs/addSA')
 })
 // add 
-router.post('/', isAuthenticated, async(req, res)=>{
+router.post('/', async(req, res)=>{
     try {
         const { fullname, username, password } = req.body
 
@@ -29,7 +29,7 @@ router.post('/', isAuthenticated, async(req, res)=>{
 
 
 // read all
-router.get('/', isAuthenticated, async(req, res)=>{
+router.get('/', async(req, res)=>{
     try {
         const allSuperAdmins = await pool.query('SELECT * FROM superadmin_login')
 
@@ -45,7 +45,7 @@ router.get('/', isAuthenticated, async(req, res)=>{
 
 
 // render edit form
-router.get("/editSA/:id", isAuthenticated, async(req, res)=>{
+router.get("/editSA/:id", async(req, res)=>{
     try {
         const { id } = req.params
         const superAdmin = await pool.query('SELECT * FROM superadmin_login WHERE superadminid = $1', [id])
@@ -60,7 +60,7 @@ router.get("/editSA/:id", isAuthenticated, async(req, res)=>{
 
 
 // edit one
-router.post("/edit/:id", isAuthenticated, async(req, res)=>{
+router.post("/edit/:id", async(req, res)=>{
     try {
         const { id } = req.params
         const { name, username } = req.body
@@ -78,7 +78,7 @@ router.post("/edit/:id", isAuthenticated, async(req, res)=>{
 
 
 // delete one
-router.post('/delete/:id', isAuthenticated, async(req,res)=>{
+router.post('/delete/:id', async(req,res)=>{
     try {
         const { id } = req.params
         const deleteSuperAdmin = await pool.query('DELETE FROM superadmin_login WHERE superadminid = $1', [id])
@@ -93,14 +93,14 @@ router.post('/delete/:id', isAuthenticated, async(req,res)=>{
 
 
 // render change pw form
-router.get('/changePW/:id', isAuthenticated, (req, res)=>{
+router.get('/changePW/:id', (req, res)=>{
     const { id } = req.params
     res.render('SAs/changePW', {
         id: id
     })
 })
 // change pw
-router.post('/changepassword/:id', isAuthenticated, async(req, res)=>{
+router.post('/changepassword/:id', async(req, res)=>{
     const { id } = req.params
     const { oldPassword, newPassword, confirmPassword } = req.body
 
