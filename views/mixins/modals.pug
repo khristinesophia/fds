@@ -98,7 +98,7 @@ mixin changeSAPW(sa)
             .modal-header
                 h1 Edit Super Admin
             .modal-body
-                form(action=`/superadmins/changepassword/${id}`, method="POST")
+                form(action=`/superadmins/changepassword/${sa.superadminid}`, method="POST")
                     label(for="old-password") Old Password:
                     input(type="password", id="old-password", name="oldPassword")
                     br

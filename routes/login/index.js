@@ -53,6 +53,7 @@ router.post('/hoteladmin', async (req, res)=>{
         if(user && await bcrypt.compare(password, user.hashpassword)){
             req.session.userID = user.adminid
             req.session.username = user.username
+            req.session.hotelID = user.hotelid
 
             // redirect 
             if(user.firstlogin === false){

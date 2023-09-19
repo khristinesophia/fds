@@ -53,8 +53,6 @@ router.get("/editSA/:id", async(req, res)=>{
         console.error(error.message)
     }
 })
-
-
 // edit one
 router.post("/edit/:id", async(req, res)=>{
     try {
@@ -84,8 +82,6 @@ router.post('/delete/:id', async(req,res)=>{
         console.error(error.message)
     }
 })
-
-
 
 
 // render change pw form
@@ -123,8 +119,6 @@ router.post('/changepassword/:id', async(req, res)=>{
 
     res.redirect('/superadmins')
 })
-
-
 
 
 module.exports = router
