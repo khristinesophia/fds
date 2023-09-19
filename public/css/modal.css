@@ -1,3 +1,13 @@
-/* .modal {
-    display: none;
-} */
+.modal{
+    display: none !important;
+}
+.modal-active{
+    background-color: rgba(0,0,0,0.5);
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+}
+.modal-content{
+    background-color: #fff;
+    max-width: 500px;
+}

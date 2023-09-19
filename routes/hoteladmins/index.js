@@ -5,18 +5,6 @@ const bcrypt = require('bcrypt');
 
 const isAuthenticated = require('../../middleware/isAuthenticated')
 
-
-// render add form
-router.get('/addHA', async(req, res)=>{
-
-    const allHotels = await pool.query('SELECT * FROM hotels')
-
-    // res.json(allHotels.rows) array of all
-
-    res.render('HAs/addHA', {
-        allHotelsArray: allHotels.rows
-    })
-})
 // add 
 router.post('/', async(req, res)=>{
     try {
@@ -39,10 +27,11 @@ router.post('/', async(req, res)=>{
 router.get('/', async(req, res)=>{
     try {
         const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login T1 INNER JOIN hotels T2 ON T1.hotelid = T2.hotelid')
+        const allHotels = await pool.query('SELECT * FROM hotels')
 
-        // res.json(allHotelAdmins.rows) array of all 
         res.render('HAs/hoteladmins', {
-            allHotelAdminsArray: allHotelAdmins.rows
+            allHotelAdminsArray: allHotelAdmins.rows,
+            allHotelsArray: allHotels.rows
         })
 
     } catch (error) {
