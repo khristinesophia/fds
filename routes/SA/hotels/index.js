@@ -1,10 +1,10 @@
 const express = require('express')
 const router = express.Router()
-const pool = require('../../config/db-config')
+const pool = require('../../../config/db-config')
 
 const randomString = require('random-string')
 
-const isAuthenticated = require('../../middleware/isAuthenticated')
+const isAuthenticated = require('../../../middleware/isAuthenticated')
 
 
 // add
@@ -47,7 +47,7 @@ router.get('/', async(req, res)=>{
 
         // res.json(allHotels.rows) array of all
 
-        res.render('hotels/hotels', {
+        res.render('SA/hotels/hotels', {
             allHotelsArray: allHotels.rows
         })
 

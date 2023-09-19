@@ -22,16 +22,26 @@ app.set('views', path.join(__dirname, 'views'))
 // routes
 const login = require('./routes/login')
 const logout = require('./routes/logout')
-const hotels = require('./routes/hotels')
-const hoteladmins = require('./routes/hoteladmins')
-const superadmins = require('./routes/superadmins')
+    // superadmin user routes
+const hotels = require('./routes/SA/hotels')
+const hoteladmins = require('./routes/SA/hoteladmins')
+const superadmins = require('./routes/SA/superadmins')
+    // dashboard route
+const dashboard = require('./routes/dashboard')
+    // hotel admin user routes
+const setup = require('./routes/HA/setup')
 
-// register routes as middleware
+    // register routes as middleware
 app.use('/login', login)
 app.use('/logout', logout)
+    // superadmin user routes
 app.use('/hotels', hotels)
 app.use('/hoteladmins', hoteladmins)
 app.use('/superadmins', superadmins)
+    // dashboard route
+app.use('/dashboard', dashboard)
+    // hotel admin user routes
+app.use('/setup', setup)
 
 
 app.get('/', (req, res) => {

@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const pool = require('../../config/db-config')
+const pool = require('../../../config/db-config')
 const bcrypt = require('bcrypt');
 
-const isAuthenticated = require('../../middleware/isAuthenticated')
+const isAuthenticated = require('../../../middleware/isAuthenticated')
 
 
 // add 
@@ -30,7 +30,7 @@ router.get('/', async(req, res)=>{
         const allSuperAdmins = await pool.query('SELECT * FROM superadmin_login')
 
         // res.json(allSuperAdmins.rows) array of all 
-        res.render('SAs/superadmins', {
+        res.render('SA/SAs/superadmins', {
             allSuperAdminsArray: allSuperAdmins.rows
         })
 
@@ -46,7 +46,7 @@ router.get("/editSA/:id", async(req, res)=>{
         const { id } = req.params
         const superAdmin = await pool.query('SELECT * FROM superadmin_login WHERE superadminid = $1', [id])
 
-        res.render('SAs/editSA', {
+        res.render('SA/SAs/editSA', {
             sa: superAdmin.rows[0]
         })
     } catch (error) {
@@ -91,7 +91,7 @@ router.post('/delete/:id', async(req,res)=>{
 // render change pw form
 router.get('/changePW/:id', (req, res)=>{
     const { id } = req.params
-    res.render('SAs/changePW', {
+    res.render('SA/SAs/changePW', {
         id: id
     })
 })
