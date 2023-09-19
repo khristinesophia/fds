@@ -1,9 +1,9 @@
 function openModal() {
-    var modal = document.getElementById("modal");
-    modal.style.display = "block";
+    var modal = document.getElementById('modal');
+    modal.classList.add('modal-active')
 }
 
 function closeModal() {
-    var modal = document.getElementById("modal");
-    modal.style.display = "none";
+    var modal = document.getElementById('modal');
+    modal.classList.remove('modal-active')
 }

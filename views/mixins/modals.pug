@@ -1,12 +1,119 @@
 mixin addhotel 
     #modal.modal
-        .modal-header
-            h1 Add Hotel
-        .modal-body
-            form(action="/hotels", method="POST")
-            
-            label(for="hotelname") Hotel Name:
-            input(type="text", id="hotelname", name="hotelname")
+        .modal-content
+            .modal-header
+                h1 Add Hotel
+            .modal-body
+                form(action="/hotels", method="POST")
+                
+                    label(for="hotelname") Hotel Name:
+                    input(type="text", id="hotelname", name="hotelname", required)
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer
+                        button.closeModalBtn(type="button", onclick="closeModal()") Cancel
+                        input(type="submit", value="Submit")
 
-            input(type="submit", value="Submit")
-        .modal-footer
+
+mixin addHA 
+    #modal.modal
+        .modal-content
+            .modal-header
+                h1 Add Super Admin
+            .modal-body
+                form(action="/hoteladmins", method="POST")
+
+                    label(for="username") Username:
+                    input(type="text", id="username", name="username", required)
+                    br
+                    br
+
+                    label(for="password") Password:
+                    input(type="password", id="password", name="password", required)
+                    br
+                    br
+
+                    select(id='hotelid', name='hotelid')
+                        each h in allHotelsArray
+                            option(value=h.hotelid)= h.hotelname
+
+                    br
+                    br
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer
+                        button.closeModalBtn(type="button", onclick="closeModal()") Cancel
+                        input(type="submit", value="Submit")
+
+
+mixin addSA 
+    #addSAModal.modal
+        .modal-content
+            .modal-header
+                h1 Add Super Admin
+            .modal-body
+                form(action="/superadmins", method="POST")
+
+                    label(for="fullname") Name:
+                    input(type="text", id="fullname", name="fullname", required)
+                    br
+                    br
+
+                    label(for="addusername") Username:
+                    input(type="text", id="addusername", name="addusername", required)
+                    br
+                    br
+
+                    label(for="password") Password:
+                    input(type="password", id="password", name="password", required)
+                    br
+                    br
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer
+                        button.closeAddModalBtn(type="button") Cancel
+                        input(type="submit", value="Submit")
+
+mixin editSA(sa)
+    #editSAModal.modal
+        .modal-content
+            .modal-header
+                h1 Edit Super Admin
+            .modal-body
+                form(action=`/superadmins/edit/${sa.superadminid}`, method="POST")
+                    label(for="name") Name:
+                    input(type="text", id="name", name="name", value=`${sa.fullname}`, required)
+                    br
+                    br
+
+                    label(for="username") Username:
+                    input(type="text", id="username", name="username", value=`${sa.username}`, required)
+                    br
+                    br
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer
+                        button.closeEditModalBtn(type="button") Cancel
+                        input(type="submit", value="Submit")
+
+mixin changeSAPW(sa)
+    #changeSAPWModal.modal
+        .modal-content
+            .modal-header
+                h1 Edit Super Admin
+            .modal-body
+                form(action=`/superadmins/changepassword/${id}`, method="POST")
+                    label(for="old-password") Old Password:
+                    input(type="password", id="old-password", name="oldPassword")
+                    br
+                    br
+
+                    label(for="new-password") New Password:
+                    input(type="password", id="new-password", name="newPassword")
+                    br
+                    br
+
+                    label(for="confirm-password") Confirm Password:
+                    input(type="password", id="confirm-password", name="confirmPassword")
+                    br
+                    br
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer
+                        button.closeChangePWModalBtn(type="button") Cancel
+                        input(type="submit", value="Submit")

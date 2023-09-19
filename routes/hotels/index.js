@@ -7,10 +7,6 @@ const randomString = require('random-string')
 const isAuthenticated = require('../../middleware/isAuthenticated')
 
 
-// render add form
-router.get('/addhotel', (req, res)=>{
-    res.render('hotels/addhotel')
-})
 // add
 router.post('/', async(req, res)=>{
     try {
