@@ -30,6 +30,7 @@ const superadmins = require('./routes/SA/superadmins')
 const dashboard = require('./routes/dashboard')
     // hotel admin user routes
 const setup = require('./routes/HA/setup')
+const profile = require('./routes/HA/profile')
 
     // register routes as middleware
 app.use('/login', login)
@@ -42,10 +43,11 @@ app.use('/superadmins', superadmins)
 app.use('/dashboard', dashboard)
     // hotel admin user routes
 app.use('/setup', setup)
+app.use('/profile', profile)
 
 
 app.get('/', (req, res) => {
-    res.send('Hello world')
+    res.render('landing')
 })
 
 

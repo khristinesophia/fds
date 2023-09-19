@@ -2,7 +2,9 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../../config/db-config')
 
-router.get('/hoteladmin', (req,res)=>{
+const isAuthenticated = require('../../middleware/isAuthenticated')
+
+router.get('/hoteladmin', isAuthenticated, (req,res)=>{
     res.render('dashboard/HA')
 })
 
