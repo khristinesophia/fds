@@ -9,11 +9,11 @@ html(lang="en")
     
     title Super Admins
   body
-    include ../partials/navSA.pug
+    include ../../partials/navSA.pug
 
     hr
     button#addSAModalBtn(type='button') Add Super Admin
-    include ../mixins/modals.pug
+    include ../../mixins/modals.pug
     +addSA
     
     hr
@@ -25,7 +25,7 @@ html(lang="en")
         span #{sa.username}
 
       button#editSAModalBtn Edit
-      include ../mixins/modals.pug
+      include ../../mixins/modals.pug
       +editSA(sa)
 
       form(action=`superadmins/delete/${sa.superadminid}`, method="POST")
@@ -33,9 +33,9 @@ html(lang="en")
         button(type="submit") Delete
 
       button#changeSAPWModalBtn Change Password
-      include ../mixins/modals.pug
+      include ../../mixins/modals.pug
       +changeSAPW(sa)
 
-    include ../partials/logoutSA.pug
+    include ../../partials/logoutSA.pug
 
     script(src='/js/modalSA.js') 

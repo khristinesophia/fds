@@ -1,9 +1,9 @@
 const express = require('express')
 const router = express.Router()
-const pool = require('../../config/db-config')
+const pool = require('../../../config/db-config')
 const bcrypt = require('bcrypt');
 
-const isAuthenticated = require('../../middleware/isAuthenticated')
+const isAuthenticated = require('../../../middleware/isAuthenticated')
 
 // add 
 router.post('/', async(req, res)=>{
@@ -29,7 +29,7 @@ router.get('/', async(req, res)=>{
         const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login T1 INNER JOIN hotels T2 ON T1.hotelid = T2.hotelid')
         const allHotels = await pool.query('SELECT * FROM hotels')
 
-        res.render('HAs/hoteladmins', {
+        res.render('SA/HAs/hoteladmins', {
             allHotelAdminsArray: allHotelAdmins.rows,
             allHotelsArray: allHotels.rows
         })

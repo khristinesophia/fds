@@ -8,5 +8,11 @@ router.post('/superadmin', (req, res)=>{
     })
 })
 
+router.post('/hoteladmin', (req, res)=>{
+    req.session.destroy(()=>{
+        res.redirect('/login/HAform');
+    })
+})
+
 
 module.exports = router
