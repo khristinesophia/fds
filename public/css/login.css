@@ -19,13 +19,13 @@
     box-shadow: 5px 5px 10px 1px rgba(0, 0, 0,0.2 );
 }
 .super-admin{
-    background-image: url(/assets/images/superadmin.jpg);
+    background-image: url(/images/superadmin.jpg);
 }
 .hotel-admin{
-    background-image: url(/assets/images/manager.jpg);
+    background-image: url(/images/manager.jpg);
 }
 .hotel-receptionist{
-    background-image: url(/assets/images/receptionist.jpg);
+    background-image: url(/images/receptionist.jpg);
 }
 .side-image{
 

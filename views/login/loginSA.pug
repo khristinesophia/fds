@@ -11,9 +11,9 @@ head
   .wrapper
   .container.main
     .row
-      .col-md-6.hotel-admin.side-image
+      .col-md-6.super-admin.side-image
         // Image
-        img.logo(src='/assets/images/logo-white.png' alt='')
+        img.logo(src='/images/logo-white.png' alt='')
         .text
           p Unlock the gateway to hospitality excellence.
       .col-md-6.right
@@ -29,7 +29,7 @@ head
             span Hotel Admin
           .title
             | Sign in
-          form#login-hotel-admin(action="/login/superadmin", method="POST")
+          form#login-super-admin(action="/login/superadmin", method="POST")
             .input-field
               input#username.input(type='text' name='username' required='' autocomplete='off')
               label(for='username') Username
