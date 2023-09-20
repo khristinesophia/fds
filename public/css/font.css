@@ -3,3 +3,6 @@
 *{
     font-family: 'Poppins', sans-serif;
 }
+tbody span{
+    font-weight: 500;
+}

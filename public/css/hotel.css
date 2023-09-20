@@ -46,6 +46,7 @@
     line-height: 30px; 
     text-decoration: none; 
     border-radius: 3px;
+    border-color: transparent;
 }
 
 .delete-icon:hover {
@@ -97,3 +98,8 @@
     background-color: rgb(255, 179, 108);
     color: rgb(202, 92, 2);
 }
+
+
+    
+
+  

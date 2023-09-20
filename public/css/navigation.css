@@ -97,13 +97,13 @@
     padding: 20px;
   }
 
-  .active {
+  .nav-item.active {
     background-color: #fff!important;
     color: #555 !important;
     font-weight: 600 !important;
     border-radius: 5px;
   }
-  .active a, button{
+  .active .nav-link{
     color: #555;
   }
 
