@@ -39,13 +39,12 @@ html(lang="en")
             tbody
               each ha in allHotelAdminsArray
                 tr
-                  th
+                  td
                     span #{ha.hotelname}
-                  th
+                  td
                     span #{ha.username}
-                  th    
+                  td    
 
-    include ../../partials/logoutSA.pug
 
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
     script(src='/js/table.js')
