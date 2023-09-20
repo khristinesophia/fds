@@ -1,0 +1,147 @@
+
+
+.wrapper{
+    background: #ececee;
+    padding: 0 20px 0 20px;
+}
+.main{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+.row{
+    width: 900px;
+    height: 550px;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 5px 5px 10px 1px rgba(0, 0, 0,0.2 );
+}
+.super-admin{
+    background-image: url(/assets/images/superadmin.jpg);
+}
+.hotel-admin{
+    background-image: url(/assets/images/manager.jpg);
+}
+.hotel-receptionist{
+    background-image: url(/assets/images/receptionist.jpg);
+}
+.side-image{
+
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    position: relative;
+    border-radius: 10px 0 0 10px;
+    
+}
+.side-image:before{
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    border-radius: 10px 0 0 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+}
+.logo{
+    width: 60px;
+    position: absolute;
+    top: 30px;
+    left: 30px;
+}
+.text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+.text p{
+    color: #fff;
+    font-size: 20px;
+    text-align: center;
+}
+.right{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+.input-box{
+    width: 330px;
+    box-sizing: border-box;
+}
+.input-box header{
+    font-weight: 500;
+    font-size: 24px;
+    text-align: center;
+    margin-bottom: 45px;
+}
+.input-box header span{
+    font-weight: 700;
+    font-size: 24px;
+}
+.input-box .title{
+    font-weight: 500;
+    text-align: center;
+    margin-bottom: 45px;
+}
+.input-field{
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 0 10px 0 10px;
+}
+.input{
+    height: 45px;
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid rgba(0, 0, 0,0.2 );
+    outline: none;
+    margin-bottom: 20px;
+    color: #40414a;
+}
+.input-box .input-field label{
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    pointer-events: none;
+    transition: .5s;
+}
+.input-field .input:focus ~ label{
+    top: -10px;
+    font-size: 13px;
+}
+.input-field .input:valid ~ label{
+    top: -10px;
+    font-size: 13px;
+    color: #5d5076;
+}
+.input-field .input:focus, .input-field .input:valid{
+    border-bottom: 1px solid #2124df;
+}    
+.submit{
+    border: none;
+    outline: none;
+    height: 45px;
+    background: rgba(59, 124, 194, 0.9);
+    border-radius: 5px;
+    color: white;
+    transition: .4s;
+}
+.submit:hover{
+    background: rgba(27, 83, 143, 0.9);
+    color: #fff;
+}
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    text-decoration: none;
+}
+.back{
+    color: black;
+}
