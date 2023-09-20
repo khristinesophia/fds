@@ -45,7 +45,7 @@ mixin addHA
 
 
 mixin addSA 
-    #addSAModal.modal
+    #modal.modal
         .modal-content
             .modal-header
                 h1 Add Super Admin
@@ -57,8 +57,8 @@ mixin addSA
                     br
                     br
 
-                    label(for="addusername") Username:
-                    input(type="text", id="addusername", name="addusername", required)
+                    label(for="username") Username:
+                    input(type="text", id="username", name="username", required)
                     br
                     br
 
@@ -68,52 +68,5 @@ mixin addSA
                     br
                     //- ganto talaga indentation ng .modal-footer
                     .modal-footer
-                        button.closeAddModalBtn(type="button") Cancel
-                        input(type="submit", value="Submit")
-
-mixin editSA(sa)
-    #editSAModal.modal
-        .modal-content
-            .modal-header
-                h1 Edit Super Admin
-            .modal-body
-                form(action=`/superadmins/edit/${sa.superadminid}`, method="POST")
-                    label(for="name") Name:
-                    input(type="text", id="name", name="name", value=`${sa.fullname}`, required)
-                    br
-                    br
-
-                    label(for="username") Username:
-                    input(type="text", id="username", name="username", value=`${sa.username}`, required)
-                    br
-                    br
-                    //- ganto talaga indentation ng .modal-footer
-                    .modal-footer
-                        button.closeEditModalBtn(type="button") Cancel
-                        input(type="submit", value="Submit")
-
-mixin changeSAPW(sa)
-    #changeSAPWModal.modal
-        .modal-content
-            .modal-header
-                h1 Edit Super Admin
-            .modal-body
-                form(action=`/superadmins/changepassword/${sa.superadminid}`, method="POST")
-                    label(for="old-password") Old Password:
-                    input(type="password", id="old-password", name="oldPassword")
-                    br
-                    br
-
-                    label(for="new-password") New Password:
-                    input(type="password", id="new-password", name="newPassword")
-                    br
-                    br
-
-                    label(for="confirm-password") Confirm Password:
-                    input(type="password", id="confirm-password", name="confirmPassword")
-                    br
-                    br
-                    //- ganto talaga indentation ng .modal-footer
-                    .modal-footer
-                        button.closeChangePWModalBtn(type="button") Cancel
+                        button.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
                         input(type="submit", value="Submit")

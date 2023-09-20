@@ -11,30 +11,36 @@ html(lang="en")
   body
     include ../../partials/navSA.pug
 
-    button#addSAModalBtn(type='button') Add Super Admin
+    button(onclick="openModal()") Add Super Admin
     include ../../mixins/modals.pug
     +addSA
     
     hr
     h1 Super Admins
-    each sa in allSuperAdminsArray
-      hr
-      h2 #{sa.fullname}
-      p Username: 
-        span #{sa.username}
 
-      button#editSAModalBtn Edit
-      include ../../mixins/modals.pug
-      +editSA(sa)
+    table
+      thead
+        tr
+          th Full Name
+          th Username
+          th Actions
 
-      form(action=`superadmins/delete/${sa.superadminid}`, method="POST")
-        input(type="hidden", name="_method", value="DELETE")
-        button(type="submit") Delete
+      tbody
+        each sa in allSuperAdminsArray
+          tr
+            td #{sa.fullname}
+            td #{sa.username}
+            td
+              button
+                a(href=`superadmins/editSA/${sa.superadminid}`) Edit
 
-      button#changeSAPWModalBtn Change Password
-      include ../../mixins/modals.pug
-      +changeSAPW(sa)
+              form(action=`superadmins/delete/${sa.superadminid}`, method="POST")
+                input(type="hidden", name="_method", value="DELETE")
+                button(type="submit") Delete
+
+              button
+                a(href=`superadmins/changePW/${sa.superadminid}`) Change Password
 
     include ../../partials/logoutSA.pug
 
-    script(src='/js/modalSA.js') 
+    script(src='/js/modal.js') 
