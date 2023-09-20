@@ -9,12 +9,12 @@ const isAuthenticated = require('../../../middleware/isAuthenticated')
 // add 
 router.post('/', async(req, res)=>{
     try {
-        const { fullname, addusername, password } = req.body
+        const { fullname, username, password } = req.body
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
         const newSuperAdmin = await pool.query(`INSERT INTO superadmin_login(fullname, username, hashpassword) VALUES($1, $2, $3) RETURNING *`,
-            [fullname, addusername, hashedPassword]
+            [fullname, username, hashedPassword]
         )
 
         res.redirect('/superadmins')
