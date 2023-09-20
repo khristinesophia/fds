@@ -32,14 +32,14 @@ html(lang="en")
             td #{sa.username}
             td
               button
-                a(href=`superadmins/editSA/${sa.superadminid}`) Edit
+                a(href=`superadmins/editSA/${sa.userid}`) Edit
 
-              form(action=`superadmins/delete/${sa.superadminid}`, method="POST")
+              form(action=`superadmins/delete/${sa.userid}`, method="POST")
                 input(type="hidden", name="_method", value="DELETE")
                 button(type="submit") Delete
 
               button
-                a(href=`superadmins/changePW/${sa.superadminid}`) Change Password
+                a(href=`superadmins/changePW/${sa.userid}`) Change Password
 
     include ../../partials/logoutSA.pug
 

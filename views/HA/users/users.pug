@@ -10,6 +10,40 @@ html(lang="en")
   body
     include ../../partials/navHA.pug
 
+    h2 Admin 
+
+    //- ---------- receptionist section ----------
+    hr
+
+    button(onclick="openModal()") Add Receptionist
+    include ../../mixins/modals.pug
+    +addR
+
+    h2 Receptionists
+
+    table
+      thead
+        tr
+          th Full Name
+          th Username
+          th Actions
+
+      tbody
+        each r in allReceptionistsArray
+          tr
+            td #{r.fullname}
+            td #{r.username}
+            td
+              button
+                a(href=`/users/editR/${r.userid}`) Edit
+
+              form(action=`/users/delete/${r.userid}`, method="POST")
+                input(type="hidden", name="_method", value="DELETE")
+                button(type="submit") Delete
+
+              button
+                a(href=`/users/changePW/${r.userid}`) Change Password
+
     include ../../partials/logoutHA.pug
 
     script(src='/js/modal.js') 

@@ -13,7 +13,6 @@ mixin addhotel
                         button.closeModalBtn(type="button", onclick="closeModal()") Cancel
                         input(type="submit", value="Submit")
 
-
 mixin addHA 
     #modal.modal
         .modal-content
@@ -43,7 +42,6 @@ mixin addHA
                         button.closeModalBtn(type="button", onclick="closeModal()") Cancel
                         input(type="submit", value="Submit")
 
-
 mixin addSA 
     #modal.modal
         .modal-content
@@ -67,6 +65,32 @@ mixin addSA
                     br
                     br
                     //- ganto talaga indentation ng .modal-footer
+                    .modal-footer
+                        button.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
+                        input(type="submit", value="Submit")
+
+
+mixin addR 
+    #modal.modal
+        .modal-content
+            .modal-header
+                h1 Add Receptionist
+            .modal-body
+                form(action="", method="POST")
+                    label(for="fullname") Name:
+                    input(type="text", id="fullname", name="fullname", required)
+                    br
+                    br
+
+                    label(for="username") Username:
+                    input(type="text", id="username", name="username", required)
+                    br
+                    br
+
+                    label(for="password") Password:
+                    input(type="password", id="password", name="password", required)
+                    br
+                    br
                     .modal-footer
                         button.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
                         input(type="submit", value="Submit")

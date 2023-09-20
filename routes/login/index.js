@@ -5,15 +5,26 @@ const pool = require('../../config/db-config')
 const bcrypt = require('bcrypt');
 
 
-// render form
-router.get('/SAform', (req, res)=>{
-    res.render('login/SAlogin')
+// render login form
+router.get('/:userCode', (req, res)=>{
+    const { userCode } = req.params
+
+    if(userCode == 'SA'){
+        res.render('login/loginSA')
+    }
+    if(userCode == 'HA'){
+        res.render('login/loginHA')
+    }
+    if(userCode == 'R'){
+        res.render('login/loginR')
+    }
+    
 })
 
-// login
+// SA
 router.post('/superadmin', async (req, res)=>{
-    const { username, password } = req.body
 
+    const { username, password } = req.body
     try {
         // get user from DB
         const result = await pool.query('SELECT * FROM superadmin_login WHERE username = $1', [username])
@@ -21,11 +32,41 @@ router.post('/superadmin', async (req, res)=>{
 
         // if user exists and password is correct
         if(user && await bcrypt.compare(password, user.hashpassword)){
-            req.session.userID = user.superadminid
+            req.session.userID = user.userid
             req.session.username = user.username
 
             // redirect to hotels page
             res.redirect('/hotels')
+        } else {
+            // error handling for invalid credentials
+            res.status(401).send('Invalid credentials.')
+        }
+    } catch (error) {
+        res.send(error.message)
+    }
+})
+
+// HA
+router.post('/hoteladmin', async (req, res)=>{
+
+    const { username, password } = req.body
+    try {
+        // get user from DB
+        const result = await pool.query('SELECT * FROM hoteladmin_login WHERE username = $1', [username])
+        const user = result.rows[0]
+
+        // if user exists and password is correct
+        if(user && await bcrypt.compare(password, user.hashpassword)){
+            req.session.userID = user.userid
+            req.session.username = user.username
+            req.session.hotelID = user.hotelid
+
+            // redirect 
+            if(user.firstlogin === false){
+                res.redirect('/setup')
+            } else{
+                res.redirect('/dashboard/hoteladmin')
+            }
         } else {
             // error handling for invalid credentials
             res.status(401).send('Invalid credentials.')
@@ -36,37 +77,27 @@ router.post('/superadmin', async (req, res)=>{
     }
 })
 
-router.get('/HAform', (req, res)=>{
-    res.render('login/HAlogin')
-})
+// R
+router.post('/receptionist', async (req, res)=>{
 
-// login
-router.post('/hoteladmin', async (req, res)=>{
     const { username, password } = req.body
-
     try {
         // get user from DB
-        const result = await pool.query('SELECT * FROM hoteladmin_login WHERE username = $1', [username])
+        const result = await pool.query('SELECT * FROM user_login WHERE username = $1', [username])
         const user = result.rows[0]
 
         // if user exists and password is correct
         if(user && await bcrypt.compare(password, user.hashpassword)){
-            req.session.userID = user.adminid
+            req.session.userID = user.userid
             req.session.username = user.username
             req.session.hotelID = user.hotelid
 
             // redirect 
-            if(user.firstlogin === false){
-                res.redirect('/setup')
-            } else{
-                res.redirect('/dashboard/hoteladmin')
-            }
-            
+            res.redirect('/dashboard/receptionist')
         } else {
             // error handling for invalid credentials
             res.status(401).send('Invalid credentials.')
         }
-
     } catch (error) {
         res.send(error.message)
     }
