@@ -1,17 +1,21 @@
 mixin addhotel 
-    #modal.modal
-        .modal-content
-            .modal-header
-                h1 Add Hotel
-            .modal-body
-                form(action="/hotels", method="POST")
-                
-                    label(for="hotelname") Hotel Name:
-                    input(type="text", id="hotelname", name="hotelname", required)
-                    //- ganto talaga indentation ng .modal-footer
-                    .modal-footer
-                        button.closeModalBtn(type="button", onclick="closeModal()") Cancel
-                        input(type="submit", value="Submit")
+    #modal.modal  
+            .modal-content
+                .modal-header
+                    h5.modal-title(id='') Add Hotel
+                    button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
+                .modal-body.mb-3 
+                    form(action="/hotels", method="POST")
+                    
+                        label.col-form-label(for="hotelname") Hotel Name:
+                        input.form-control(type="text", id="hotelname", name="hotelname", required)
+                        //- ganto talaga indentation ng .modal-footer
+                        .modal-footer
+                            button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
+                            button.btn(data-bs-target='#modal2' data-bs-toggle='modal') Submit                     
+
+    
+                            
 
 mixin addHA 
     #modal.modal

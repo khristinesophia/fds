@@ -3,42 +3,67 @@ html(lang="en")
   head
     meta(charset="UTF-8")
     meta(name="viewport" content="width=device-width, initial-scale=1.0")
-    link(rel='stylesheet', href='/css/modal.css')
-    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
-    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
     title Hotels
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    link(href='https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css' rel='stylesheet')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    link(rel='stylesheet', href='/css/font.css')
+    link(rel='stylesheet', href='/css/navigation.css')
+    link(rel='stylesheet', href='/css/hotel.css')
+    link(rel='stylesheet', href='/css/modal.css')
+
   body
     include ../../partials/navSA.pug
     
-    button(onclick="openModal()") Add hotel
-    include ../../mixins/modals.pug
-    +addhotel
 
-    hr
-    h1 Hotels
 
-    each h in allHotelsArray
-      //- card
-      hr
-      h2 #{h.hotelname}
+    .content
+      // Header Title for page
+      .row
+        .col-8.d-flex.align-items-center
+          h2.text Hotels
+        .col-4.d-flex.align-items-center.justify-content-end
+          a.btn( onclick="openModal()" role='button') Add Hotel
+          include ../../mixins/modals.pug
+          +addhotel
 
-      if h.hotellocation
-        p Location: 
-          span #{h.hotellocation}
-      if h.hotelcontact
-        p Contact Number: 
-          span #{h.hotelcontact}
-      if h.hotelemail
-        p Email: 
-          span #{h.hotelemail}
-      
-      form(action=`/hotels/delete/${h.hotelid}`, method="POST")
-        input(type="hidden", name="_method", value="DELETE")
-        button(type="submit") Delete
-      //- card end
 
-    include ../../partials/logoutSA.pug
 
+        each h in allHotelsArray
+          
+            //- card
+            .col-12.col-md-12.col-lg-3.mt-4
+              .card.bg-white.line-height.shadow
+                .card-body.text-dark
+                  .img-area.mb-4
+                    img.img-fluid.hotel-img(src='/assets/images/manager.jpg' alt='Hotel Image')
+                  h4.hotel-name.mb-4
+                    span #{h.hotelname}
+                  if h.hotellocation
+                    h6.hotel-location.mb-3
+                        | Location: 
+                        span #{h.hotellocation}
+                  if h.hotelcontact      
+                    h6.hotel-number.mb-3
+                        | Contact Number: 
+                        span #{h.hotelocantact}
+                  if h.hotelemail      
+                    h6.hotel-email.mb-3
+                        | Email: 
+                        span #{h.hotelemail}
+                .card-footer.pb-3.pt-3
+                  .d-flex.justify-content-end
+                    form(action=`/hotels/delete/${h.hotelid}`, method="POST")
+                      input(type="hidden", name="_method", value="DELETE")
+                      button.delete-icon(type='submit' href='')
+                        i.fa-solid.fa-trash-can.fa-xl
+                      //-a.delete-icon(data-bs-toggle='modal' href='' role='button' name='_method')
+                        i.fa-solid.fa-trash-can.fa-xl
+                      
+                  //- card end
+
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     script(src='/js/modal.js') 
     
     
