@@ -31,6 +31,7 @@ const dashboard = require('./routes/dashboard')
     // hotel admin user routes
 const setup = require('./routes/HA/setup')
 const profile = require('./routes/HA/profile')
+const users = require('./routes/HA/users')
 
     // register routes as middleware
 app.use('/login', login)
@@ -44,6 +45,7 @@ app.use('/dashboard', dashboard)
     // hotel admin user routes
 app.use('/setup', setup)
 app.use('/profile', profile)
+app.use('/users', users)
 
 
 app.get('/', (req, res) => {

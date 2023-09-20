@@ -4,13 +4,19 @@ const router = express.Router()
 
 router.post('/superadmin', (req, res)=>{
     req.session.destroy(()=>{
-        res.redirect('/login/SAform');
+        res.redirect('/login/SA');
     })
 })
 
 router.post('/hoteladmin', (req, res)=>{
     req.session.destroy(()=>{
-        res.redirect('/login/HAform');
+        res.redirect('/login/HA');
+    })
+})
+
+router.post('/receptionist', (req, res)=>{
+    req.session.destroy(()=>{
+        res.redirect('/login/R');
     })
 })
 

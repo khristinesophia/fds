@@ -44,7 +44,7 @@ router.get('/', async(req, res)=>{
 router.get("/editSA/:id", async(req, res)=>{
     try {
         const { id } = req.params
-        const superAdmin = await pool.query('SELECT * FROM superadmin_login WHERE superadminid = $1', [id])
+        const superAdmin = await pool.query('SELECT * FROM superadmin_login WHERE userid = $1', [id])
 
         res.render('SA/SAs/editSA', {
             sa: superAdmin.rows[0]
@@ -60,7 +60,7 @@ router.post("/edit/:id", async(req, res)=>{
         const { name, username } = req.body
         const editSuperAdmin = await pool.query(`UPDATE superadmin_login
             SET fullname = $1, username = $2
-            WHERE superadminid = $3`,
+            WHERE userid = $3`,
             [name, username, id]
         )
 
@@ -75,7 +75,7 @@ router.post("/edit/:id", async(req, res)=>{
 router.post('/delete/:id', async(req,res)=>{
     try {
         const { id } = req.params
-        const deleteSuperAdmin = await pool.query('DELETE FROM superadmin_login WHERE superadminid = $1', [id])
+        const deleteSuperAdmin = await pool.query('DELETE FROM superadmin_login WHERE userid = $1', [id])
 
         res.redirect('/superadmins')
     } catch (error) {
@@ -97,7 +97,7 @@ router.post('/changepassword/:id', async(req, res)=>{
     const { oldPassword, newPassword, confirmPassword } = req.body
 
     // get old hashpassword
-    const result = await pool.query('SELECT * FROM superadmin_login WHERE superadminid = $1', [id])
+    const result = await pool.query('SELECT * FROM superadmin_login WHERE userid = $1', [id])
     const hashedOldPassword = result.rows[0].hashpassword
 
     // compare old password with old hashpassword
@@ -115,7 +115,7 @@ router.post('/changepassword/:id', async(req, res)=>{
     // hash new password
     const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
 
-    await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE superadminid = $2', [hashedNewPassword, id])
+    await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE userid = $2', [hashedNewPassword, id])
 
     res.redirect('/superadmins')
 })

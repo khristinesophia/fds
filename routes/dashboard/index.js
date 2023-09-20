@@ -8,4 +8,9 @@ router.get('/hoteladmin', isAuthenticated, (req,res)=>{
     res.render('dashboard/HA')
 })
 
+
+router.get('/receptionist', isAuthenticated, (req,res)=>{
+    res.render('dashboard/receptionist')
+})
+
 module.exports = router
