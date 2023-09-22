@@ -2,9 +2,8 @@ const express = require('express')
 const router = express.Router()
 const pool = require('../../../config/db-config')
 
-const randomString = require('random-string')
-
 const isAuthenticated = require('../../../middleware/isAuthenticated')
+const randomString = require('random-string')
 
 
 // add
@@ -28,24 +27,23 @@ router.post('/', async(req, res)=>{
 
         const newHotel = await pool.query(`INSERT INTO hotels(hotelid, hotelname) VALUES($1, $2) RETURNING *`,
             [hotelid, hotelname]
-        ) // res.json(newHotel)
+        )
 
         // **add successfully added here
 
+        // redirect
         res.redirect('/hotels')
-       
+
     } catch (error) {
         console.error(error.message)
     }
 })
 
 
-// read 
+// read all
 router.get('/', async(req, res)=>{
     try {
         const allHotels = await pool.query('SELECT * FROM hotels')
-
-        // res.json(allHotels.rows) array of all
 
         res.render('SA/hotels/hotels', {
             allHotelsArray: allHotels.rows

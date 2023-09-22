@@ -12,6 +12,23 @@ html(lang="en")
 
     h2 Admin 
 
+    table
+      thead
+        tr
+          th Username
+          th Actions
+
+      tbody
+        each ha in allHotelAdminsArray
+          tr
+            td #{ha.username}
+            td
+              button
+                a(href=`users/edit/HA/${ha.userid}`) Edit
+
+              button
+                a(href=`users/changePW/HA/${ha.userid}`) Change Password
+
     //- ---------- receptionist section ----------
     hr
 
@@ -35,14 +52,14 @@ html(lang="en")
             td #{r.username}
             td
               button
-                a(href=`/users/editR/${r.userid}`) Edit
+                a(href=`/users/edit/R/${r.userid}`) Edit
 
               form(action=`/users/delete/${r.userid}`, method="POST")
                 input(type="hidden", name="_method", value="DELETE")
                 button(type="submit") Delete
 
               button
-                a(href=`/users/changePW/${r.userid}`) Change Password
+                a(href=`/users/changePW/R/${r.userid}`) Change Password
 
     include ../../partials/logoutHA.pug
 
