@@ -1,46 +1,52 @@
 mixin addhotel 
-    #modal.modal
-        .modal-content
-            .modal-header
-                h1 Add Hotel
-            .modal-body
-                form(action="/hotels", method="POST")
-                
-                    label(for="hotelname") Hotel Name:
-                    input(type="text", id="hotelname", name="hotelname", required)
-                    //- ganto talaga indentation ng .modal-footer
-                    .modal-footer
-                        button.closeModalBtn(type="button", onclick="closeModal()") Cancel
-                        input(type="submit", value="Submit")
+    #modal.modal  
+            .modal-content
+                .modal-header
+                    h5.modal-title(id='') Add Hotel
+                    button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
+                .modal-body.mb-3 
+                    form(id="addhotelform", action="/hotels", method="POST")
+                    
+                        label.col-form-label(for="hotelname") Hotel Name:
+                        input.form-control(type="text", id="hotelname", name="hotelname", required)
+                        //- ganto talaga indentation ng .modal-footer
+                        .modal-footer.mt-3
+                            button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
+                            input.btn(type="submit", value="Submit")                   
+
+    
+                            
 
 mixin addHA 
     #modal.modal
         .modal-content
             .modal-header
-                h1 Add Super Admin
-            .modal-body
-                form(action="/hoteladmins", method="POST")
+                h5.modal-title(id='') Add Hotel Admin
+                button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
+            .modal-body.mb-3
+                form(id="addhoteladminform", action="/hoteladmins", method="POST")
 
-                    label(for="username") Username:
-                    input(type="text", id="username", name="username", required)
-                    br
-                    br
+                    label.col-form-label(for="username") Username:
+                    input.form-control(type="text", id="username", name="username", required)
 
-                    label(for="password") Password:
-                    input(type="password", id="password", name="password", required)
-                    br
-                    br
+                    label.col-form-label.mt-3(for="password") Password:
+                    input.form-control(type="password", class="form-control", id="password", name="password", required)
+                    
+                    div.form-check.mt-3
+                        input.form-check-input(type="checkbox", id="showPasswordCheckbox")
+                        label.form-check-label(for="showPasswordCheckbox") Show Password
 
-                    select(id='hotelid', name='hotelid')
+
+                    
+                    label.col-form-label.mt-3(for="") Hotel:
+                    select.form-select(id='hotelid', name='hotelid')
                         each h in allHotelsArray
                             option(value=h.hotelid)= h.hotelname
 
-                    br
-                    br
                     //- ganto talaga indentation ng .modal-footer
-                    .modal-footer
-                        button.closeModalBtn(type="button", onclick="closeModal()") Cancel
-                        input(type="submit", value="Submit")
+                    .modal-footer.mt-3
+                        button.btn.btn-secondary.closeModalBtn(type="button", onclick="closeModal()") Cancel
+                        input.btn(type="submit", value="Submit")
 
 mixin addSA 
     #modal.modal
@@ -48,7 +54,7 @@ mixin addSA
             .modal-header
                 h1 Add Super Admin
             .modal-body
-                form(action="/superadmins", method="POST")
+                form(id="addsuperadminform", action="/superadmins", method="POST")
 
                     label(for="fullname") Name:
                     input(type="text", id="fullname", name="fullname", required)
@@ -76,7 +82,7 @@ mixin addR
             .modal-header
                 h1 Add Receptionist
             .modal-body
-                form(action="", method="POST")
+                form(id="addreceptionistform", action="", method="POST")
                     label(for="fullname") Name:
                     input(type="text", id="fullname", name="fullname", required)
                     br
