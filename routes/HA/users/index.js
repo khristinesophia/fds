@@ -16,8 +16,9 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 // read all (HA and R)
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
-        const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login')
-        const allReceptionists = await pool.query('SELECT * FROM user_login')
+        const hotelid = req.session.hotelID
+        const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login WHERE hotelid = $1', [hotelid])
+        const allReceptionists = await pool.query('SELECT * FROM user_login WHERE hotelid = $1', [hotelid])
 
         res.render('HA/users/users', {
             allHotelAdminsArray: allHotelAdmins.rows,
@@ -116,15 +117,15 @@ router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
     const hashedOldPassword = result.rows[0].hashpassword
 
     // compare old password with old hashpassword
-    const isPasswordValid = bcrypt.compare(oldPassword, hashedOldPassword);
+    const isPasswordValid = await bcrypt.compare(oldPassword, hashedOldPassword);
 
     if (!isPasswordValid) {
-        res.send('Wrong old password')
+        console.log('Wrong old password')
       }
 
     // compare new and confirm password
     if (newPassword !== confirmPassword) {
-        res.send('New password and confirm password do not match')
+        console.log('New password and confirm password do not match')
     }
 
     // hash new password
@@ -187,15 +188,15 @@ router.post('/changePW/hoteladmin/:id', isAuthenticated, async(req, res)=>{
     const hashedOldPassword = result.rows[0].hashpassword
 
     // compare old password with old hashpassword
-    const isPasswordValid = bcrypt.compare(oldPassword, hashedOldPassword);
+    const isPasswordValid = await bcrypt.compare(oldPassword, hashedOldPassword);
 
     if (!isPasswordValid) {
-        res.send('Wrong old password')
+        console.log('Wrong old password')
       }
 
     // compare new and confirm password
     if (newPassword !== confirmPassword) {
-        res.send('New password and confirm password do not match')
+        console.log('New password and confirm password do not match')
     }
 
     // hash new password
