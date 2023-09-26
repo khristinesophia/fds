@@ -47,10 +47,10 @@ html(lang="en")
                     .d-flex.justify-content-between
                       a.sa-icon.sa-edit(href=`superadmins/editSA/${sa.userid}`)
                         i.fa-solid.fa-pen-to-square.fa-lg
-                      form(action=`superadmins/delete/${sa.userid}`, method="POST")
-                        input(type="hidden", name="_method", value="DELETE")
-                        button.sa-icon.sa-delete(type='submit' href='')
-                          i.fa-solid.fa-trash-can.fa-xl
+                      a.delete-icon(data-userid=sa.userid data-username=sa.username onclick="openDeleteSuperModal(this)" role='button')
+                        i.fa-solid.fa-trash-can.fa-xl
+                      include ../../mixins/modals.pug
+                      +deleteSA(sa.userid)
                       a.sa-icon.sa-pass(href=`superadmins/changePW/${sa.userid}`)
                         i.fa-solid.fa-key.fa-lg
 
