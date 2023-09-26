@@ -106,17 +106,15 @@ router.post('/changepassword/:id', async(req, res)=>{
     const hashedOldPassword = result.rows[0].hashpassword
 
     // compare old password with old hashpassword
-    const isPasswordValid = bcrypt.compare(oldPassword, hashedOldPassword);
+    const isPasswordValid = await bcrypt.compare(oldPassword, hashedOldPassword);
 
-    console.log(isPasswordValid)
-
-    if (isPasswordValid) {
-        res.send('Wrong old password')
+    if (!isPasswordValid) {
+        console.log('Wrong old password')
     }
 
     // compare new and confirm password
     if (newPassword !== confirmPassword) {
-        res.send('New password and confirm password do not match')
+        console.log('New password and confirm password do not match')
     }
 
     // hash new password
