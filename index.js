@@ -35,6 +35,7 @@ const dashboard = require('./routes/dashboard')
 const setup = require('./routes/HA/setup')
 const profile = require('./routes/HA/profile')
 const users = require('./routes/HA/users')
+const rooms = require('./routes/HA/rooms')
 
     // register routes as middleware
 app.use('/login', login)
@@ -49,6 +50,7 @@ app.use('/dashboard', dashboard)
 app.use('/setup', setup)
 app.use('/profile', profile)
 app.use('/users', users)
+app.use('/rooms', rooms)
 
 
 app.get('/', (req, res) => {
