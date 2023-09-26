@@ -1,8 +1,12 @@
+const path = require('path')
+
 const express = require('express')
 const router = express.Router()
-const pool = require('../../config/db-config')
+const pool = require(path.join(__basedir, 'config', 'db-config'))
 
 const bcrypt = require('bcrypt');
+
+
 
 
 // render login form
@@ -102,6 +106,8 @@ router.post('/receptionist', async (req, res)=>{
         res.send(error.message)
     }
 })
+
+
 
 
 module.exports = router

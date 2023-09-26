@@ -24,7 +24,7 @@ html(lang="en")
         .col-8.d-flex.align-items-center
           h2.text Super Admins
         .col-4.d-flex.align-items-center.justify-content-end
-          a.btn( onclick="openModal()" role='button') Add Hotel Admin
+          a.btn( onclick="openModal()" role='button') Add Super Admin
           include ../../mixins/modals.pug
           +addSA
 
@@ -35,12 +35,14 @@ html(lang="en")
               tr
                 th Full Name
                 th Username
+                th Date Created
                 th Actions
             tbody
               each sa in allSuperAdminsArray
                 tr
                   td #{sa.fullname}
                   td #{sa.username}
+                  td #{sa.datecreated}
                   td
                     button
                       a(href=`superadmins/editSA/${sa.userid}`) Edit

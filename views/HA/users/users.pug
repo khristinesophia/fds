@@ -6,7 +6,10 @@ html(lang="en")
     link(rel='stylesheet', href='/css/modal.css')
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
-    title Profile
+    title Users
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
   body
     include ../../partials/navHA.pug
 
@@ -16,12 +19,14 @@ html(lang="en")
       thead
         tr
           th Username
+          th Date Created
           th Actions
 
       tbody
         each ha in allHotelAdminsArray
           tr
             td #{ha.username}
+            td #{ha.datecreated}
             td
               button
                 a(href=`users/edit/HA/${ha.userid}`) Edit
@@ -43,6 +48,7 @@ html(lang="en")
         tr
           th Full Name
           th Username
+          th Date Created
           th Actions
 
       tbody
@@ -50,6 +56,7 @@ html(lang="en")
           tr
             td #{r.fullname}
             td #{r.username}
+            td #{r.datecreated}
             td
               button
                 a(href=`/users/edit/R/${r.userid}`) Edit
