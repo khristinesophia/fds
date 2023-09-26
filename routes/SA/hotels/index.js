@@ -1,14 +1,17 @@
+const path = require('path')
+
 const express = require('express')
 const router = express.Router()
-const pool = require('../../../config/db-config')
+const pool = require(path.join(__basedir, 'config', 'db-config'))
 
+const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const randomString = require('random-string')
 
-const isAuthenticated = require('../../../middleware/isAuthenticated')
+
 
 
 // add
-router.post('/', async(req, res)=>{
+router.post('/', isAuthenticated, async(req, res)=>{
     try {
 
         const { hotelname } = req.body
@@ -25,27 +28,24 @@ router.post('/', async(req, res)=>{
             hotelid = randomString();
         } 
 
-
         const newHotel = await pool.query(`INSERT INTO hotels(hotelid, hotelname) VALUES($1, $2) RETURNING *`,
             [hotelid, hotelname]
-        ) // res.json(newHotel)
+        )
 
         // **add successfully added here
 
+        // redirect
         res.redirect('/hotels')
-       
+
     } catch (error) {
         console.error(error.message)
     }
 })
 
-
-// read 
-router.get('/', async(req, res)=>{
+// read all
+router.get('/', isAuthenticated, async(req, res)=>{
     try {
         const allHotels = await pool.query('SELECT * FROM hotels')
-
-        // res.json(allHotels.rows) array of all
 
         res.render('SA/hotels/hotels', {
             allHotelsArray: allHotels.rows
@@ -56,9 +56,8 @@ router.get('/', async(req, res)=>{
     }
 })
 
-
 // delete one
-router.post('/delete/:id', async(req,res)=>{
+router.post('/delete/:id', isAuthenticated, async(req,res)=>{
     try {
         const { id } = req.params
         const deleteHotel = await pool.query('DELETE FROM hotels WHERE hotelid = $1', [id])

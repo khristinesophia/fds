@@ -2,6 +2,8 @@ const express = require('express')
 const app = express()
 
 const path = require('path')
+global.__basedir = __dirname
+
 const methodOverride = require('method-override')
 const session = require('express-session')
 
@@ -14,6 +16,7 @@ app.use(session({
     resave: false,
     saveUninitialized: true
 }))
+
 
 // set pug as view engine
 app.set('view engine', 'pug')

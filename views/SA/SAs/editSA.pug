@@ -11,7 +11,7 @@ html(lang="en")
   body
     h1 Edit Super Admin
 
-    form(action=`/superadmins/edit/${sa.superadminid}`, method="POST")
+    form(action=`/superadmins/edit/${sa.userid}`, method="POST")
       label(for="name") Name:
       input(type="text", name="name", value=`${sa.fullname}`, required)
       br
@@ -22,4 +22,6 @@ html(lang="en")
       br
       br
 
+      button(type="button")
+        a(href="/superadmins") Back
       input(type="submit", value="Submit")

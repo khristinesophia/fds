@@ -1,19 +1,28 @@
+const path = require('path')
+
 const express = require('express')
 const router = express.Router()
-const pool = require('../../../config/db-config')
+const pool = require(path.join(__basedir, 'config', 'db-config'))
+
 const bcrypt = require('bcrypt');
 
-const isAuthenticated = require('../../../middleware/isAuthenticated')
+const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
+const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
+
+
+
 
 // add 
-router.post('/', async(req, res)=>{
+router.post('/', isAuthenticated, async(req, res)=>{
     try {
         const { username, password, hotelid } = req.body
 
         const hashedPassword = bcrypt.hashSync(password, 10);
 
-        const newHotelAdmin = await pool.query(`INSERT INTO hoteladmin_login(username, hashpassword, hotelid) VALUES($1, $2, $3) RETURNING *`,
-            [username, hashedPassword, hotelid]
+        const datecreated = getCurrentDate()
+
+        const newHotelAdmin = await pool.query(`INSERT INTO hoteladmin_login(username, hashpassword, hotelid, datecreated) VALUES($1, $2, $3, $4) RETURNING *`,
+            [username, hashedPassword, hotelid, datecreated]
         )
 
         res.redirect('/hoteladmins')
@@ -22,9 +31,8 @@ router.post('/', async(req, res)=>{
     }
 })
 
-
 // read all
-router.get('/', async(req, res)=>{
+router.get('/', isAuthenticated, async(req, res)=>{
     try {
         const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login T1 INNER JOIN hotels T2 ON T1.hotelid = T2.hotelid')
         const allHotels = await pool.query('SELECT * FROM hotels')
