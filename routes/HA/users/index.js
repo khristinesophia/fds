@@ -16,8 +16,9 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 // read all (HA and R)
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
-        const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login')
-        const allReceptionists = await pool.query('SELECT * FROM user_login')
+        const hotelid = req.session.hotelID
+        const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login WHERE hotelid = $1', [hotelid])
+        const allReceptionists = await pool.query('SELECT * FROM user_login WHERE hotelid = $1', [hotelid])
 
         res.render('HA/users/users', {
             allHotelAdminsArray: allHotelAdmins.rows,
