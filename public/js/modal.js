@@ -57,11 +57,11 @@ function openDeleteSuperModal(clickedElement) {
 
   // Get the hotel ID and hotel name from data attributes
   var userId = clickedElement.getAttribute('data-userid');
-  var userName = clickedElement.getAttribute('data-username');
+  var fullName = clickedElement.getAttribute('data-fullname');
 
   // Set the hotel name in the modal
-  var userNameElement = document.getElementById('user-name-in-modal');
-  userNameElement.value = userName; // Set the value, not textContent
+  var fullNameElement = document.getElementById('full-name-in-modal');
+  fullNameElement.value = fullName; // Set the value, not textContent
 
   // Set the form action in the modal
   var deleteForm = document.getElementById('delete-user-form');

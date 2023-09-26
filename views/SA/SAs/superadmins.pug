@@ -47,7 +47,7 @@ html(lang="en")
                     .d-flex.justify-content-between
                       a.sa-icon.sa-edit(href=`superadmins/editSA/${sa.userid}`)
                         i.fa-solid.fa-pen-to-square.fa-lg
-                      a.delete-icon(data-userid=sa.userid data-username=sa.username onclick="openDeleteSuperModal(this)" role='button')
+                      a.delete-icon(data-userid=sa.userid data-fullname=sa.fullname onclick="openDeleteSuperModal(this)" role='button')
                         i.fa-solid.fa-trash-can.fa-xl
                       include ../../mixins/modals.pug
                       +deleteSA(sa.userid)
