@@ -1,20 +1,28 @@
+const path = require('path')
+
 const express = require('express')
 const router = express.Router()
-const pool = require('../../../config/db-config')
+const pool = require(path.join(__basedir, 'config', 'db-config'))
+
 const bcrypt = require('bcrypt');
 
-const isAuthenticated = require('../../../middleware/isAuthenticated')
+const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
+const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
+const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+
+
 
 
 // read all (HA and R)
-router.get('/', async(req, res)=>{
+router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login')
         const allReceptionists = await pool.query('SELECT * FROM user_login')
 
         res.render('HA/users/users', {
             allHotelAdminsArray: allHotelAdmins.rows,
-            allReceptionistsArray: allReceptionists.rows
+            allReceptionistsArray: allReceptionists.rows,
+            hotelColor: req.hotelColor
         })
 
     } catch (error) {
@@ -25,15 +33,16 @@ router.get('/', async(req, res)=>{
 
 // R user management
 // add 
-router.post('/', async(req, res)=>{
+router.post('/', isAuthenticated, async(req, res)=>{
     try {
         const { fullname, username, password } = req.body
         const hotelid = req.session.hotelID
 
         const hashedPassword = bcrypt.hashSync(password, 10);
+        const datecreated = getCurrentDate()
 
-        const newReceptionist = await pool.query(`INSERT INTO user_login(fullname, username, hashpassword, hotelid) VALUES($1, $2, $3, $4) RETURNING *`,
-            [fullname, username, hashedPassword, hotelid]
+        const newReceptionist = await pool.query(`INSERT INTO user_login(fullname, username, hashpassword, hotelid, datecreated) VALUES($1, $2, $3, $4, $5) RETURNING *`,
+            [fullname, username, hashedPassword, hotelid, datecreated]
         )
 
         res.redirect('/users')
@@ -44,20 +53,21 @@ router.post('/', async(req, res)=>{
 
 
 // render edit form
-router.get("/edit/R/:id", async(req, res)=>{
+router.get("/edit/R/:id", isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const { id } = req.params
         const user = await pool.query('SELECT * FROM user_login WHERE userid = $1', [id])
 
         res.render('HA/users/editR', {
-            r: user.rows[0]
+            r: user.rows[0],
+            hotelColor: req.hotelColor
         })
     } catch (error) {
         console.error(error.message)
     }
 })
 // edit one
-router.post("/edit/receptionist/:id", async(req, res)=>{
+router.post("/edit/receptionist/:id", isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
         const { name, username } = req.body
@@ -76,7 +86,7 @@ router.post("/edit/receptionist/:id", async(req, res)=>{
 
 
 // delete one
-router.post('/delete/:id', async(req,res)=>{
+router.post('/delete/:id', isAuthenticated,async(req,res)=>{
     try {
         const { id } = req.params
         const deleteReceptionist = await pool.query('DELETE FROM user_login WHERE userid = $1', [id])
@@ -89,14 +99,15 @@ router.post('/delete/:id', async(req,res)=>{
 
 
 // render change pw form
-router.get('/changePW/R/:id', (req, res)=>{
+router.get('/changePW/R/:id', isAuthenticated, getHotelColor, (req, res)=>{
     const { id } = req.params
     res.render('HA/users/changePWr', {
-        id: id
+        id: id,
+        hotelColor: req.hotelColor
     })
 })
 // change pw
-router.post('/changePW/receptionist/:id', async(req, res)=>{
+router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
     const { oldPassword, newPassword, confirmPassword } = req.body
 
@@ -127,20 +138,21 @@ router.post('/changePW/receptionist/:id', async(req, res)=>{
 
 // HA user management
 // render edit form
-router.get("/edit/HA/:id", async(req, res)=>{
+router.get("/edit/HA/:id", isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const { id } = req.params
         const user = await pool.query('SELECT * FROM hoteladmin_login WHERE userid = $1', [id])
 
         res.render('HA/users/editHA', {
-            ha: user.rows[0]
+            ha: user.rows[0],
+            hotelColor: req.hotelColor
         })
     } catch (error) {
         console.error(error.message)
     }
 })
 // edit one
-router.post("/edit/hoteladmin/:id", async(req, res)=>{
+router.post("/edit/hoteladmin/:id", isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
         const { username } = req.body
@@ -158,14 +170,15 @@ router.post("/edit/hoteladmin/:id", async(req, res)=>{
 
 
 // render change pw form
-router.get('/changePW/HA/:id', (req, res)=>{
+router.get('/changePW/HA/:id', isAuthenticated, getHotelColor, (req, res)=>{
     const { id } = req.params
     res.render('HA/users/changePWha', {
-        id: id
+        id: id,
+        hotelColor: req.hotelColor
     })
 })
 // change pw
-router.post('/changePW/hoteladmin/:id', async(req, res)=>{
+router.post('/changePW/hoteladmin/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
     const { oldPassword, newPassword, confirmPassword } = req.body
 

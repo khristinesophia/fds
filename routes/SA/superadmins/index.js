@@ -1,20 +1,26 @@
+const path = require('path')
+
 const express = require('express')
 const router = express.Router()
-const pool = require('../../../config/db-config')
+const pool = require(path.join(__basedir, 'config', 'db-config'))
+
 const bcrypt = require('bcrypt');
 
-const isAuthenticated = require('../../../middleware/isAuthenticated')
+const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
+const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
+
+
 
 
 // add 
-router.post('/', async(req, res)=>{
+router.post('/', isAuthenticated, async(req, res)=>{
     try {
         const { fullname, username, password } = req.body
-
         const hashedPassword = bcrypt.hashSync(password, 10);
+        const datecreated = getCurrentDate()
 
-        const newSuperAdmin = await pool.query(`INSERT INTO superadmin_login(fullname, username, hashpassword) VALUES($1, $2, $3) RETURNING *`,
-            [fullname, username, hashedPassword]
+        const newSuperAdmin = await pool.query(`INSERT INTO superadmin_login(fullname, username, hashpassword, datecreated) VALUES($1, $2, $3, $4) RETURNING *`,
+            [fullname, username, hashedPassword, datecreated]
         )
 
         res.redirect('/superadmins')
@@ -23,13 +29,11 @@ router.post('/', async(req, res)=>{
     }
 })
 
-
 // read all
-router.get('/', async(req, res)=>{
+router.get('/', isAuthenticated, async(req, res)=>{
     try {
         const allSuperAdmins = await pool.query('SELECT * FROM superadmin_login')
 
-        // res.json(allSuperAdmins.rows) array of all 
         res.render('SA/SAs/superadmins', {
             allSuperAdminsArray: allSuperAdmins.rows
         })
@@ -41,7 +45,7 @@ router.get('/', async(req, res)=>{
 
 
 // render edit form
-router.get("/editSA/:id", async(req, res)=>{
+router.get("/editSA/:id", isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
         const superAdmin = await pool.query('SELECT * FROM superadmin_login WHERE userid = $1', [id])
@@ -54,12 +58,13 @@ router.get("/editSA/:id", async(req, res)=>{
     }
 })
 // edit one
-router.post("/edit/:id", async(req, res)=>{
+router.post("/edit/:id", isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
         const { name, username } = req.body
         const editSuperAdmin = await pool.query(`UPDATE superadmin_login
-            SET fullname = $1, username = $2
+            SET fullname = $1, 
+                username = $2
             WHERE userid = $3`,
             [name, username, id]
         )
@@ -72,7 +77,7 @@ router.post("/edit/:id", async(req, res)=>{
 
 
 // delete one
-router.post('/delete/:id', async(req,res)=>{
+router.post('/delete/:id', isAuthenticated, async(req,res)=>{
     try {
         const { id } = req.params
         const deleteSuperAdmin = await pool.query('DELETE FROM superadmin_login WHERE userid = $1', [id])
@@ -119,6 +124,8 @@ router.post('/changepassword/:id', async(req, res)=>{
 
     res.redirect('/superadmins')
 })
+
+
 
 
 module.exports = router
