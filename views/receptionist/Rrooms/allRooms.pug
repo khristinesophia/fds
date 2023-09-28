@@ -11,29 +11,28 @@ html(lang="en")
     //- sa head lagi nakalagay ang color.pug
     include ../../partials/color.pug
   body
-    include ../../partials/navHA.pug
+    include ../../partials/navR.pug
 
     h2 Navs
     nav
+    ul
         li
-            a(href="/rooms") All Rooms
+            a(href="/Rrooms") All Rooms
         li
-            a(href="/rooms/vacantRooms") Vacant Rooms
+            a(href="/Rrooms/vacantRooms") Vacant Rooms
         li
-            a(href="/rooms/reservedRooms") Reserved Rooms
+            a(href="/Rrooms/reservedRooms") Reserved Rooms
         li
-            a(href="/rooms/occupiedRooms") Occupied Rooms
+            a(href="/Rrooms/occupiedRooms") Occupied Rooms
         li
-            a(href="/rooms/onchangeRooms") On-Change Rooms
+            a(href="/Rrooms/onchangeRooms") On-Change Rooms
         li
-            a(href="/rooms/outoforderRooms") Out-of-Order Rooms
-        li
-            a(href="/rooms/addRooms") Add Rooms
+            a(href="/Rrooms/outoforderRooms") Out-of-Order Rooms
 
     //- ---------- table section ----------
     hr
 
-    h2 Reserved Rooms 
+    h2 All Rooms 
 
     table
       thead
@@ -41,23 +40,14 @@ html(lang="en")
           th Room Number
           th Room Type
           th Room Floor
-          th Guest Name
-          th Reservation Date
-          th Check-In Date
-          th Check-Out Date
-          th Status
+          th Room Status
 
       tbody
-        each r in reservedRoomsArray
+        each r in allRoomsArray
           tr
             td #{r.roomnum}
             td #{r.roomtype}
             td #{r.roomfloor}
-            td #{r.fullname}
-            td #{r.reservationdate}
-            td #{r.checkindate}
-            td #{r.checkoutdate}
             td #{r.status}
 
-    
-    include ../../partials/logoutHA.pug
+    include ../../partials/logoutR.pug

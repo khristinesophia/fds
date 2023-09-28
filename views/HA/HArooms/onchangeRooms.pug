@@ -17,24 +17,24 @@ html(lang="en")
     nav
     ul
         li
-            a(href="/rooms") All Rooms
+            a(href="/HArooms") All Rooms
         li
-            a(href="/rooms/vacantRooms") Vacant Rooms
+            a(href="/HArooms/vacantRooms") Vacant Rooms
         li
-            a(href="/rooms/reservedRooms") Reserved Rooms
+            a(href="/HArooms/reservedRooms") Reserved Rooms
         li
-            a(href="/rooms/occupiedRooms") Occupied Rooms
+            a(href="/HArooms/occupiedRooms") Occupied Rooms
         li
-            a(href="/rooms/onchangeRooms") On-Change Rooms
+            a(href="/HArooms/onchangeRooms") On-Change Rooms
         li
-            a(href="/rooms/outoforderRooms") Out-of-Order Rooms
+            a(href="/HArooms/outoforderRooms") Out-of-Order Rooms
         li
-            a(href="/rooms/addRooms") Add Rooms
+            a(href="/HArooms/addRooms") Add Rooms
 
     //- ---------- table section ----------
     hr
 
-    h2 Vacant Rooms 
+    h2 On-Chane Rooms 
 
     table
       thead
@@ -42,19 +42,15 @@ html(lang="en")
           th Room Number
           th Room Type
           th Room Floor
-          th Price
-          th Capacity
           th Status
 
       tbody
-        each r in vacantRoomsArray
+        each r in onchangeRoomsArray
           tr
             td #{r.roomnum}
             td #{r.roomtype}
             td #{r.roomfloor}
-            td #{r.roomprice}
-            td #{r.capacity}
             td #{r.status}
-
+            
     
     include ../../partials/logoutHA.pug

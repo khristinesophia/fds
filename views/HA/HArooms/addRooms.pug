@@ -17,19 +17,19 @@ html(lang="en")
     nav
     ul
         li
-            a(href="/rooms") All Rooms
+            a(href="/HArooms") All Rooms
         li
-            a(href="/rooms/vacantRooms") Vacant Rooms
+            a(href="/HArooms/vacantRooms") Vacant Rooms
         li
-            a(href="/rooms/reservedRooms") Reserved Rooms
+            a(href="/HArooms/reservedRooms") Reserved Rooms
         li
-            a(href="/rooms/occupiedRooms") Occupied Rooms
+            a(href="/HArooms/occupiedRooms") Occupied Rooms
         li
-            a(href="/rooms/onchangeRooms") On-Change Rooms
+            a(href="/HArooms/onchangeRooms") On-Change Rooms
         li
-            a(href="/rooms/outoforderRooms") Out-of-Order Rooms
+            a(href="/HArooms/outoforderRooms") Out-of-Order Rooms
         li
-            a(href="/rooms/addRooms") Add Rooms
+            a(href="/HArooms/addRooms") Add Rooms
 
     //- ---------- Add Rooms Form ----------
     hr
@@ -37,7 +37,7 @@ html(lang="en")
     h2 Add Rooms
 
     //- Add Rooms Form
-    form(method="POST" action="/rooms/addRooms")
+    form(method="POST" action="/HArooms/addRooms")
         .form-group
             label(for="roomnum") Room Number:
             input.form-control(type="text", name="roomnum", pattern="[0-9]+", title="Please enter a valid room number", required)
