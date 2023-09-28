@@ -101,3 +101,49 @@ mixin addR
                         button.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
                         input(type="submit", value="Submit")
 
+mixin deletehotel(hotelId)
+    #deletehotel.modal
+        .modal-content
+            .modal-header
+                h5.del.modal-title(id='') Delete
+                button.btn-close(type='button' onclick='closeDeleteHotelModal()' aria-label='Close')
+            .modal-body
+                p.mb-3
+                    | Are you sure you want to delete this hotel record? If you delete this hotel, its record will be permanently deleted from the system.
+                h6.title(id='') Hotel Name:
+                .text-center
+                    //- Use an input element of type "text" to display the hotel name
+                    input.form-control#hotel-name-in-modal(type="text" readonly value=hotelname)
+                
+                .form-check.mt-3
+                    input.form-check-input#confirm-checkbox(type="checkbox")
+                    label.form-check-label(for="confirm-checkbox") I Agree
+            .modal-footer.mt-3
+                form#delete-hotel-form(action='', method="POST")
+                    button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteHotelModal()") Cancel
+                    input.btn(type="submit" value="Delete" onclick="confirmDelete()")
+                    p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
+
+
+mixin deleteSA(userId)
+    #deletesuper.modal
+        .modal-content
+            .modal-header
+                h5.del.modal-title(id='') Delete
+                button.btn-close(type='button' onclick='closeDeleteSuperModal()' aria-label='Close')
+            .modal-body
+                p.mb-3
+                    | Are you sure you want to delete this Super Admin record? If you delete this Super Admin, its record will be permanently deleted from the system.
+                h6.title(id='') Super Admin Fullname:
+                .text-center
+                    //- Use an input element of type "text" to display the hotel name
+                    input.form-control#full-name-in-modal(type="text" readonly value=fullname)
+                
+                .form-check.mt-3
+                    input.form-check-input#confirm-checkbox(type="checkbox")
+                    label.form-check-label(for="confirm-checkbox") I Agree
+            .modal-footer.mt-3
+                form#delete-user-form(action='', method="POST")
+                    button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteSuperModal()") Cancel
+                    input.btn(type="submit" value="Delete" onclick="confirmDelete()")
+                    p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
