@@ -13,7 +13,7 @@ html(lang="en")
 
     link(rel='stylesheet', href='/css/font.css')
     link(rel='stylesheet', href='/css/navigation.css')
-    link(rel='stylesheet', href='/css/hotel.css')
+    link(rel='stylesheet', href='/css/superadmin.css')
     link(rel='stylesheet', href='/css/modal.css')
   body
     include ../../partials/navSA.pug
@@ -45,14 +45,24 @@ html(lang="en")
                   td #{sa.datecreated}
                   td
                     .d-flex.justify-content-between
-                      a.sa-icon.sa-edit(href=`superadmins/editSA/${sa.userid}`)
+                      //a.sa-icon.sa-edit(href=`superadmins/editSA/${sa.userid}`)
                         i.fa-solid.fa-pen-to-square.fa-lg
+                      a.sa-icon.sa-edit(data-userid=sa.userid data-fullname=sa.fullname data-username=sa.username onclick="openEditSAModal(this)" role='button')
+                        i.fa-solid.fa-pen-to-square.fa-lg  
+                      include ../../mixins/modals.pug
+                      +editSA(sa.userid)
+
                       a.delete-icon(data-userid=sa.userid data-fullname=sa.fullname onclick="openDeleteSuperModal(this)" role='button')
                         i.fa-solid.fa-trash-can.fa-xl
                       include ../../mixins/modals.pug
                       +deleteSA(sa.userid)
-                      a.sa-icon.sa-pass(href=`superadmins/changePW/${sa.userid}`)
+
+                      //a.sa-icon.sa-pass(href=`superadmins/changePW/${sa.userid}`)
                         i.fa-solid.fa-key.fa-lg
+                      a.sa-icon.sa-pass(data-userid=sa.userid data-password=sa.hashpassword onclick="openChangeSAModal(this)" role='button')
+                        i.fa-solid.fa-key.fa-lg
+                      include ../../mixins/modals.pug
+                      +changeSA(sa.userid)  
 
 
 
