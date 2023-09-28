@@ -1,0 +1,58 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel='stylesheet', href='/css/modal.css')
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    title Rooms
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
+  body
+    include ../../partials/navR.pug
+
+    h2 Navs
+    nav
+    ul
+        li
+            a(href="/Rrooms") All Rooms
+        li
+            a(href="/Rrooms/vacantRooms") Vacant Rooms
+        li
+            a(href="/Rrooms/reservedRooms") Reserved Rooms
+        li
+            a(href="/Rrooms/occupiedRooms") Occupied Rooms
+        li
+            a(href="/Rrooms/onchangeRooms") On-Change Rooms
+        li
+            a(href="/Rrooms/outoforderRooms") Out-of-Order Rooms
+
+    //- ---------- table section ----------
+    hr
+
+    h2 Vacant Rooms 
+
+    table
+      thead
+        tr
+          th Room Number
+          th Room Type
+          th Room Floor
+          th Price
+          th Capacity
+          th Status
+
+      tbody
+        each r in vacantRoomsArray
+          tr
+            td #{r.roomnum}
+            td #{r.roomtype}
+            td #{r.roomfloor}
+            td #{r.roomprice}
+            td #{r.capacity}
+            td #{r.status}
+
+    
+    include ../../partials/logoutR.pug

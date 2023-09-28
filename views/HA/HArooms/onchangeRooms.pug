@@ -1,0 +1,56 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel='stylesheet', href='/css/modal.css')
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    title Rooms
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
+  body
+    include ../../partials/navHA.pug
+
+    h2 Navs
+    nav
+    ul
+        li
+            a(href="/HArooms") All Rooms
+        li
+            a(href="/HArooms/vacantRooms") Vacant Rooms
+        li
+            a(href="/HArooms/reservedRooms") Reserved Rooms
+        li
+            a(href="/HArooms/occupiedRooms") Occupied Rooms
+        li
+            a(href="/HArooms/onchangeRooms") On-Change Rooms
+        li
+            a(href="/HArooms/outoforderRooms") Out-of-Order Rooms
+        li
+            a(href="/HArooms/addRooms") Add Rooms
+
+    //- ---------- table section ----------
+    hr
+
+    h2 On-Chane Rooms 
+
+    table
+      thead
+        tr
+          th Room Number
+          th Room Type
+          th Room Floor
+          th Status
+
+      tbody
+        each r in onchangeRoomsArray
+          tr
+            td #{r.roomnum}
+            td #{r.roomtype}
+            td #{r.roomfloor}
+            td #{r.status}
+            
+    
+    include ../../partials/logoutHA.pug
