@@ -1,0 +1,106 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel='stylesheet', href='/css/modal.css')
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    title Rooms
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
+  body
+    include ../../partials/navHA.pug
+
+    h2 Navs
+    nav
+    ul
+        li
+            a(href="/rooms") All Rooms
+        li
+            a(href="/rooms/vacantRooms") Vacant Rooms
+        li
+            a(href="/rooms/reservedRooms") Reserved Rooms
+        li
+            a(href="/rooms/occupiedRooms") Occupied Rooms
+        li
+            a(href="/rooms/onchangeRooms") On-Change Rooms
+        li
+            a(href="/rooms/outoforderRooms") Out-of-Order Rooms
+        li
+            a(href="/rooms/addRooms") Add Rooms
+
+    //- ---------- Add Rooms Form ----------
+    hr
+
+    h2 Add Rooms
+
+    //- Add Rooms Form
+    form(method="POST" action="/rooms/addRooms")
+        .form-group
+            label(for="roomnum") Room Number:
+            input.form-control(type="text", name="roomnum", pattern="[0-9]+", title="Please enter a valid room number", required)
+
+        .form-group
+            label(for="") Room Type:
+            select.form-select(id='roomtype', name='roomtype', required)
+                each r in roomTypesArray
+                    option(value=r.roomtype data-price=r.price data-capacity=r.capacity)= r.roomtype
+        
+        //- javaScript code to automatically populate and disable price and capacity based on roomtype
+        script.
+            document.addEventListener('DOMContentLoaded', function() {
+                const roomTypeSelect = document.querySelector('select[name="roomtype"]');
+                const roomPriceInput = document.querySelector('input[name="roomprice"]');
+                const capacityInput = document.querySelector('input[name="capacity"]');
+                
+                // Function to update the price and capacity inputs
+                function updatePriceAndCapacity() {
+                    // Get the selected option
+                    const selectedOption = roomTypeSelect.options[roomTypeSelect.selectedIndex];
+                    
+                    // Update the price and capacity inputs
+                    roomPriceInput.value = selectedOption.getAttribute('data-price');
+                    capacityInput.value = selectedOption.getAttribute('data-capacity');
+                }
+                
+                // Update the price and capacity inputs when the page loads
+                updatePriceAndCapacity();
+                
+                // Update the price and capacity inputs when the room type changes
+                roomTypeSelect.addEventListener('change', updatePriceAndCapacity);
+            });
+
+        .form-group
+            label(for="roomprice") Room Price:
+            input.form-control(type="number", name="roomprice", step="0.01", min="0", required, readonly)
+
+        - //javaScript code to automatically populate and disable roomfloor
+        script.
+            document.addEventListener('DOMContentLoaded', function() {
+            const roomNumInput = document.querySelector('input[name="roomnum"]');
+            const roomFloorInput = document.querySelector('input[name="roomfloor"]');
+            
+            roomNumInput.addEventListener('input', function() {
+                // Get the first character of the room number
+                const firstDigit = this.value.charAt(0);
+                
+                // Populate and disable the roomfloor input
+                roomFloorInput.value = firstDigit;
+            });
+            });
+            
+        .form-group
+            label(for="roomfloor") Room Floor:
+            input.form-control(type="number", name="roomfloor", min="1", required, readonly)
+
+        .form-group
+            label(for="capacity") Capacity:
+            input.form-control(type="number", name="capacity", min="0", required, readonly)
+
+        input(type="submit" class="btn btn-primary" value="Submit")
+        a.btn.btn-secondary(href="/rooms") Back
+
+    
+    include ../../partials/logoutHA.pug

@@ -15,7 +15,6 @@ html(lang="en")
 
     h2 Navs
     nav
-    ul
         li
             a(href="/rooms") All Rooms
         li
@@ -34,7 +33,7 @@ html(lang="en")
     //- ---------- table section ----------
     hr
 
-    h2 All Rooms 
+    h2 Reserved Rooms 
 
     table
       thead
@@ -42,20 +41,23 @@ html(lang="en")
           th Room Number
           th Room Type
           th Room Floor
-          th Room Status
-          th Action
+          th Guest Name
+          th Reservation Date
+          th Check-In Date
+          th Check-Out Date
+          th Status
 
       tbody
-        each r in allRoomsArray
+        each r in reservedRoomsArray
           tr
             td #{r.roomnum}
             td #{r.roomtype}
             td #{r.roomfloor}
+            td #{r.fullname}
+            td #{r.reservationdate}
+            td #{r.checkindate}
+            td #{r.checkoutdate}
             td #{r.status}
-            td
-              form(action=`rooms/delete/${r.roomnum}`, method="POST")
-                input(type="hidden", name="_method", value="DELETE")
-                button(type="submit") Delete
 
     
     include ../../partials/logoutHA.pug
