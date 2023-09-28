@@ -50,25 +50,22 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         // Updated SQL query to fetch occupied rooms with guest details
         const reservedRoomsQuery = `
             SELECT
+                r.reservationid,
                 r.roomnum,
                 r.roomtype,
-                r.roomfloor,
                 rd.fullname,
-                TO_CHAR(re.reservationdate, 'YYYY-MM-DD') AS reservationdate,
-                TO_CHAR(re.checkindate, 'YYYY-MM-DD') AS checkindate,
-                TO_CHAR(re.checkoutdate, 'YYYY-MM-DD') AS checkoutdate,
-                r.status
+                TO_CHAR(r.reservationdate, 'YYYY-MM-DD') AS reservationdate,
+                TO_CHAR(r.checkindate, 'YYYY-MM-DD HH:MI:SS') AS checkindate,
+                TO_CHAR(r.checkoutdate, 'YYYY-MM-DD HH:MI:SS') AS checkoutdate
             FROM
-                rooms r
+                reservations r
             INNER JOIN
-                reservations re ON r.roomnum = re.roomnum
-            INNER JOIN
-                reservation_guestdetails rd ON re.reservationid = rd.reservationid
+                reservation_guestdetails rd ON r.reservationid = rd.reservationid
             WHERE
-                r.hotelid = $1 AND r.status = $2 ORDER BY roomnum ASC;
+                r.hotelid = $1 ORDER BY roomnum ASC;
         `;
 
-        const reservedRooms = await pool.query(reservedRoomsQuery, [hotelid, 'Reserved'])
+        const reservedRooms = await pool.query(reservedRoomsQuery, [hotelid])
 
         res.render('HA/HArooms/reservedRooms', {
             reservedRoomsArray: reservedRooms.rows,

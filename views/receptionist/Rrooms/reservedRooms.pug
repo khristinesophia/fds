@@ -37,26 +37,24 @@ html(lang="en")
     table
       thead
         tr
+          th Reservation ID
           th Room Number
           th Room Type
-          th Room Floor
           th Guest Name
           th Reservation Date
           th Check-In Date
           th Check-Out Date
-          th Status
 
       tbody
         each r in reservedRoomsArray
           tr
+            td #{r.reservationid}
             td #{r.roomnum}
             td #{r.roomtype}
-            td #{r.roomfloor}
             td #{r.fullname}
             td #{r.reservationdate}
             td #{r.checkindate}
             td #{r.checkoutdate}
-            td #{r.status}
 
     
     include ../../partials/logoutR.pug
