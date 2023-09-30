@@ -16,9 +16,7 @@ html(lang="en")
     link(rel='stylesheet', href='/css/navigation.css')
     link(rel='stylesheet', href='/css/table.css')
 
-
     title Rooms
-
     //- sa head lagi nakalagay ang color.pug
     include ../../partials/color.pug
   body
@@ -74,6 +72,7 @@ html(lang="en")
                     form(action=`HArooms/delete/${r.roomnum}`, method="POST")
                       input(type="hidden", name="_method", value="DELETE")
                       button(type="submit") Delete
+    
     //Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
     script(src='/js/table.js')

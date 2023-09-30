@@ -50,25 +50,26 @@ html(lang="en")
 
         h2 Vacant Rooms 
 
-        table
-          thead
-            tr
-              th Room Number
-              th Room Type
-              th Room Floor
-              th Price
-              th Capacity
-              th Status
-
-          tbody
-            each r in vacantRoomsArray
+        .container.shadow.mt-3.pt-3.pb-3.bg-white
+          table#myTable.table.table-striped.table-hover(style='width:100%')
+            thead
               tr
-                td #{r.roomnum}
-                td #{r.roomtype}
-                td #{r.roomfloor}
-                td #{r.roomprice}
-                td #{r.capacity}
-                td #{r.status}
+                th Room Number
+                th Room Type
+                th Room Floor
+                th Price
+                th Capacity
+                th Status
+
+            tbody
+              each r in vacantRoomsArray
+                tr
+                  td #{r.roomnum}
+                  td #{r.roomtype}
+                  td #{r.roomfloor}
+                  td #{r.roomprice}
+                  td #{r.capacity}
+                  td #{r.status}
 
 
     //Table
