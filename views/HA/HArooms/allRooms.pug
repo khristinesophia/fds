@@ -29,29 +29,51 @@ html(lang="en")
           h2.text Rooms
           
         h2 Nav
-        nav
-        ul
-            li
-                a(href="/HArooms") All Rooms
-            li
-                a(href="/HArooms/vacantRooms") Vacant Rooms
-            li
-                a(href="/HArooms/reservedRooms") Reserved Rooms
-            li
-                a(href="/HArooms/occupiedRooms") Occupied Rooms
-            li
-                a(href="/HArooms/onchangeRooms") On-Change Rooms
-            li
-                a(href="/HArooms/outoforderRooms") Out-of-Order Rooms
-            li
-                a(href="/HArooms/addRooms") Add Rooms
+        .container.mt-3
+          .d-flex.justify-content-between.align-items-stretch.pt-2.text-white
+            ul#menu.nav.nav-pills.justify-content-between.flex-shrink-0.mb-sm-auto.mb-0.align-items-center.align-items-sm-stretch
+              // all rooms
+              li.nav-item.line
+                a.nav-link.align-middle.nav_text.room_active(href='/HArooms')
+                  i.fa-solid.fa-bed.me-sm-1.ms-2
+                  span All Rooms
+              // vacant rooms
+              li.nav-item.line
+                a.nav-link.align-middle.nav_text(href='/HArooms/vacantRooms')
+                  i.fa-solid.fa-tags.me-sm-1.ms-2
+                  span Vacant Rooms
+              // vacant rooms
+              li.nav-item.line
+                a.nav-link.align-middle.nav_text(href='/HArooms/reservedRooms')
+                  i.fa-solid.fa-tags.me-sm-1.ms-2
+                  span Reserved Rooms    
+              // occupied rooms
+              li.nav-item.line
+                a.nav-link.align-middle.nav_text(href='/HArooms/occupiedRooms')
+                  i.fa-solid.fa-house-lock.me-sm-1.ms-2
+                  span Occupied Rooms
+              // on-change rooms
+              li.nav-item.line
+                a.nav-link.align-middle.nav_text(href='/HArooms/onchangeRooms')
+                  i.fa-solid.fa-broom.me-sm-1.ms-2
+                  span On-Change Rooms
+              // out-of-order rooms
+              li.nav-item.line
+                a.nav-link.align-middle.nav_text(href='/HArooms/outoforderRooms')
+                  i.fa-solid.fa-circle-minus.me-sm-1.ms-2
+                  span Out-of-Order Rooms
+              // add a rooms
+              li.nav-item.ps-2
+                a.nav-link.align-middle.nav_text(href='/HArooms/addRooms')
+                  i.fa-solid.fa-house-medical.me-sm-1.ms-2
+                  span Add a Room
+
 
         //- ---------- table section ----------
         hr
 
-        h2 All Rooms 
-
         .container.shadow.mt-3.pt-3.pb-3.bg-white
+          h2 All Rooms 
           table#myTable.table.table-striped.table-hover(style='width:100%')
             thead
               tr
