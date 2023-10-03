@@ -36,6 +36,7 @@ const setup = require('./routes/HA/setup')
 const profile = require('./routes/HA/profile')
 const users = require('./routes/HA/users')
 const HArooms = require('./routes/HA/HArooms')
+const roomtype = require('./routes/HA/roomtype')
     // receptionist user routes
 const Rrooms = require('./routes/receptionist/Rrooms')
 
@@ -53,6 +54,7 @@ app.use('/setup', setup)
 app.use('/profile', profile)
 app.use('/users', users)
 app.use('/HArooms', HArooms)
+app.use('/roomtype', roomtype)
     // receptionist user routes
 app.use('/Rrooms', Rrooms)
 

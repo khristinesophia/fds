@@ -1,0 +1,47 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(rel='stylesheet', href='/css/modal.css')
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    
+    title Edit Room Type
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
+  body
+    h1 Edit Room Type
+
+    form(action=`/roomtype/edit/${r.typeid}`, method="POST", enctype="multipart/form-data")
+      label(for="roomtype") Room Type:
+      input(type="text", name="roomtype", value=`${r.roomtype}`, required)
+      br
+      br
+
+      label(for="description") Description:
+      input(type="text", name="description", value=`${r.description}`, required)
+      br
+      br
+
+      label(for="price") Price:
+      input(type="number", name="price", min="0", value=`${r.price}`, required)
+      br
+      br
+
+      label(for="capacity") Capacity:
+      input(type="number", name="capacity", min="0", value=`${r.capacity}`, required)
+      br
+      br
+
+      label(for="roomimage") Room Image:
+      input(type="file", name="roomimage")
+      if r.roomimage
+        img(src=`data:${r.imagetype};base64,${r.roomimage.toString('base64')}`, alt="Room Image")
+      else
+        p No image available
+      br
+      br
+
+      input(type="submit", value="Submit")

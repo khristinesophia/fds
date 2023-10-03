@@ -191,7 +191,9 @@ router.post('/addRooms', isAuthenticated, async(req, res)=>{
 router.post('/delete/:id', isAuthenticated, async(req,res)=>{
     try {
         const { id } = req.params
-        const deleteSuperAdmin = await pool.query('DELETE FROM rooms WHERE roomnum = $1', [id])
+        const hotelid = req.session.hotelID
+
+        const deleteSuperAdmin = await pool.query('DELETE FROM rooms WHERE roomnum = $1 AND hotelid = $2', [id, hotelid])
         console.log(`Room Number ${id} Successfully Deleted!`);
         res.redirect('/HArooms')
     } catch (error) {
