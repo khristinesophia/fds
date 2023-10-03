@@ -194,3 +194,27 @@ mixin deleteSA(userId)
                     button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteSuperModal()") Cancel
                     input.btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
+
+
+mixin deleteRoom(roomnum)
+    #deleteroom.modal
+        .modal-content
+            .modal-header
+                h5.del.modal-title(id='') Delete
+                button.btn-close(type='button' onclick='closeDeleteRoom()' aria-label='Close')
+            .modal-body
+                p.mb-3
+                    | Are you sure you want to delete this Room record? If you delete this Room, its record will be permanently deleted from the system.
+                h6.title(id='') Room Number:
+                .text-center
+                    //- Use an input element of type "text" to display the hotel name
+                    input.form-control#room-num-in-modal(type="text" readonly value=roomnum)
+                
+                .form-check.mt-3
+                    input.form-check-input#confirm-checkbox(type="checkbox")
+                    label.form-check-label(for="confirm-checkbox") I Agree
+            .modal-footer.mt-3
+                form#delete-user-form(action='', method="POST")
+                    button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteRoom()") Cancel
+                    input.btn(type="submit" value="Delete" onclick="confirmDelete()")
+                    p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.

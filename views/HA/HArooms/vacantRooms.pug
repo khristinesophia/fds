@@ -25,17 +25,11 @@ html(lang="en")
       // Header Title for page
       .row
         .col-8.d-flex.align-items-center
-          h2.text Rooms
 
-        h2 Navs
         include ../../partials/navHARoom.pug
 
-        //- ---------- table section ----------
-        hr
-
-        h2 Vacant Rooms 
-
         .container.shadow.mt-3.pt-3.pb-3.bg-white
+          h2 Vacant Rooms 
           table#myTable.table.table-striped.table-hover(style='width:100%')
             thead
               tr

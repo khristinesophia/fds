@@ -119,11 +119,32 @@ style.
     border-radius: 5px;
     }
 
-    .nav_room.active {
-    background-color: yellow;
-    }
-
     .active .nav-link {
     color: #{hotelColor.accent};
+    }
+
+
+    .nav-roomlink {
+    text-decoration: none;
+    border-color: transparent;
+    background: none;
+    width: 210px;
+    text-align: left;
+    color: #{hotelColor.accent};
+    }
+    .nav-roomlink:hover{
+    background-color: #{hotelColor.accent};
+    color: #fff;
+    border-radius: 5px;
+    padding: .5rem;
+    }
+
+    .nav_room.active {
+    background-color: #{hotelColor.accent};
+    font-weight: 600;
+    border-radius: 5px;
+    }
+    .active .nav-roomlink {
+    color: #fff;
     }
 

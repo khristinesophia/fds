@@ -111,6 +111,27 @@ function closeDeleteSuperModal() {
 }
 
 
+function openDeleteRoom(clickedElement) {
+  var modal = document.getElementById('deleteroom');
+  modal.classList.add('modal-active');
+
+  // Get the hotel ID and hotel name from data attributes
+  var roomnum = clickedElement.getAttribute('data-roomnum');
+  var roomtype = clickedElement.getAttribute('data-roomtype');
+
+  // Set the hotel name in the modal
+  var roomNumElement = document.getElementById('room-num-in-modal');
+  roomNumElement.value = roomnum; // Set the value, not textContent
+
+  // Set the form action in the modal
+  var deleteForm = document.getElementById('delete-user-form');
+  deleteForm.action = `/HArooms/delete/${roomnum}`;
+}
+function closeDeleteRoom() {
+  var modal = document.getElementById('deleteroom');
+  modal.classList.remove('modal-active');
+}
+
 function confirmDelete() {
   var checkbox = document.getElementById('confirm-checkbox');
   var errorMessage = document.getElementById('checkbox-error-message');

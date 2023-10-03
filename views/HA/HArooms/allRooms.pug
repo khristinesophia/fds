@@ -26,12 +26,8 @@ html(lang="en")
       // Header Title for page
       .row
         .col-8.d-flex.align-items-center
-          h2.text Rooms
-          
-        h2 Nav
         include ../../partials/navHARoom.pug
         //- ---------- table section ----------
-        hr
 
         .container.shadow.mt-3.pt-3.pb-3.bg-white
           h2 All Rooms 
@@ -52,9 +48,10 @@ html(lang="en")
                   td #{r.roomfloor}
                   td #{r.status}
                   td
-                    form(action=`HArooms/delete/${r.roomnum}`, method="POST")
-                      input(type="hidden", name="_method", value="DELETE")
-                      button(type="submit") Delete
+                    a.delete-icon(data-roomnum=r.roomnum data-roomtype=r.roomtype onclick="openDeleteRoom(this)" role='button')
+                      i.fa-solid.fa-trash-can.fa-xl
+                    include ../../mixins/modals.pug
+                    +deleteRoom(r.roomnum)  
     
     //Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
