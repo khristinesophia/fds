@@ -29,46 +29,7 @@ html(lang="en")
           h2.text Rooms
           
         h2 Nav
-        .container.mt-3
-          .d-flex.justify-content-between.align-items-stretch.pt-2.text-white
-            ul#menu.nav.nav-pills.justify-content-between.flex-shrink-0.mb-sm-auto.mb-0.align-items-center.align-items-sm-stretch
-              // all rooms
-              li.nav-item.line
-                a.nav-link.align-middle.nav_text.room_active(href='/HArooms')
-                  i.fa-solid.fa-bed.me-sm-1.ms-2
-                  span All Rooms
-              // vacant rooms
-              li.nav-item.line
-                a.nav-link.align-middle.nav_text(href='/HArooms/vacantRooms')
-                  i.fa-solid.fa-tags.me-sm-1.ms-2
-                  span Vacant Rooms
-              // vacant rooms
-              li.nav-item.line
-                a.nav-link.align-middle.nav_text(href='/HArooms/reservedRooms')
-                  i.fa-solid.fa-tags.me-sm-1.ms-2
-                  span Reserved Rooms    
-              // occupied rooms
-              li.nav-item.line
-                a.nav-link.align-middle.nav_text(href='/HArooms/occupiedRooms')
-                  i.fa-solid.fa-house-lock.me-sm-1.ms-2
-                  span Occupied Rooms
-              // on-change rooms
-              li.nav-item.line
-                a.nav-link.align-middle.nav_text(href='/HArooms/onchangeRooms')
-                  i.fa-solid.fa-broom.me-sm-1.ms-2
-                  span On-Change Rooms
-              // out-of-order rooms
-              li.nav-item.line
-                a.nav-link.align-middle.nav_text(href='/HArooms/outoforderRooms')
-                  i.fa-solid.fa-circle-minus.me-sm-1.ms-2
-                  span Out-of-Order Rooms
-              // add a rooms
-              li.nav-item.ps-2
-                a.nav-link.align-middle.nav_text(href='/HArooms/addRooms')
-                  i.fa-solid.fa-house-medical.me-sm-1.ms-2
-                  span Add a Room
-
-
+        include ../../partials/navHARoom.pug
         //- ---------- table section ----------
         hr
 
@@ -102,4 +63,6 @@ html(lang="en")
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     script(src='/js/modal.js') 
+    script(src='/js/room_nav.js') 
     script(src='/js/nav-active.js') 
+    

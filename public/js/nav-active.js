@@ -8,3 +8,5 @@ document.querySelectorAll('.nav-item').forEach((item) => {
     item.classList.add('active');
   }
 });
+
+

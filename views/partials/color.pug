@@ -13,6 +13,7 @@ style.
     top: 0;
     left: 0;
     right: 0;
+    background-color: #fff; 
     z-index: 1000; /* Ensure it's above other elements */
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* Add a shadow */
     }
@@ -112,12 +113,17 @@ style.
     }
 
     .nav-item.active {
-    background-color: #fff!important;
+    background-color: #fff;
     color: #{hotelColor.accent};
-    font-weight: 600 !important;
+    font-weight: 600;
     border-radius: 5px;
+    }
+
+    .nav_room.active {
+    background-color: yellow;
     }
 
     .active .nav-link {
     color: #{hotelColor.accent};
     }
+

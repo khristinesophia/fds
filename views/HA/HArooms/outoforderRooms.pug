@@ -29,22 +29,7 @@ html(lang="en")
           h2.text Rooms
    
         h2 Navs
-        nav
-        ul
-            li
-                a(href="/HArooms") All Rooms
-            li
-                a(href="/HArooms/vacantRooms") Vacant Rooms
-            li
-                a(href="/HArooms/reservedRooms") Reserved Rooms
-            li
-                a(href="/HArooms/occupiedRooms") Occupied Rooms
-            li
-                a(href="/HArooms/onchangeRooms") On-Change Rooms
-            li
-                a(href="/HArooms/outoforderRooms") Out-of-Order Rooms
-            li
-                a(href="/HArooms/addRooms") Add Rooms
+        include ../../partials/navHARoom.pug
 
         //- ---------- table section ----------
         hr
@@ -76,3 +61,4 @@ html(lang="en")
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     script(src='/js/modal.js') 
     script(src='/js/nav-active.js') 
+    script(src='/js/room_nav.js') 
