@@ -1,17 +1,60 @@
-nav
-    ul
-        li
-            a(href="/dashboard/hoteladmin") Dashboard
-        li
-            a(href="/profile") Profile
-        li
-            a(href="/users") Users
-        li
-            a(href="/roomtype") Room Types
-        li
-            a(href="/HArooms") Rooms
-        li
-            a(href="#") Occupancy Demand
-        li
-            a(href="#") Promos and Deals
-hr
+#navbar-wrapper
+  // Sidebar
+  .sidebar
+    .sidebar-logo
+      img(src='/images/logo-white.png' alt='Logo')
+    .separator
+    ul.nav.flex-column
+      li.nav-item
+        a.nav-link(href="/dashboard/hoteladmin")
+          i.fas.fa-brands.fa-slack.fa-xl
+          span Dashboard
+      li.nav-item
+        a.nav-link(href='/profile')
+          i.fas.fa-solid.fa-user-tie.fa-xl
+          span Profile
+      li.nav-item
+        a.nav-link(href='/users')
+          i.fas.fa-solid.fa-users.fa-xl
+          span User
+      li.nav-item
+        a.nav-link(href='/roomtype')
+          i.fas.fa-solid.fa-users.fa-xl
+          span Room Types
+      li.nav-item
+        a.nav-link(href='/HArooms')
+          i.fas.fa-solid.fa-door-open.fa-xl
+          span Rooms
+      li.nav-item
+        a.nav-link(href='#')
+          i.fas.fa-solid.fa-chart-line.fa-xl
+          span Occupancy Demand
+      li.nav-item
+        a.nav-link(href='#')
+          i.fas.fa-solid.fa-tag.fa-xl
+          span Promos And Deals            
+
+
+    // Sign out
+    ul.nav.flex-column.sign-out-sticky
+      li.nav-item.btn-log
+        form(action="/logout/hoteladmin", method="POST")
+          button.nav-link(type="submit") 
+            i.fas.fa-solid.fa-right-from-bracket.fa-xl
+            span Sign Out
+        //-a.nav-link(href='login.html')
+          i.fas.fa-solid.fa-right-from-bracket.fa-xl
+          span Sign Out
+
+          ul.nav.flex-column
+  
+      
+  // Head Navigation
+  nav.navbar.navbar-expand-lg.navbar-light.upper.shadow
+    .container-fluid
+      #navbarNav.navbar-collapse.justify-content-end
+        // User (Right-aligned)
+        .navbar-text
+          a.navbar-brand.text-dark(href='#')
+            i.fa-solid.fa-users-between-lines.me-sm-2
+            span.ms-1.d-sm-inline Hotel Admin

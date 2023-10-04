@@ -16,43 +16,7 @@
 .card-body h6 {
     font-size: 14px;
 }
-.btn{
-    background: #333;
-    color: #fff;
-    width: 200px;
-}
-.btn:hover{
-    background: #1d1d1d;
-    color: #fff;
-    transition: .1s;
-}
-.btn-secondary{
-    background: #fff;
-    color: #333;
-}
-.btn-secondary:hover{
-    background: #555;
-    color: #fff;
-}
 
-.delete-icon {
-    display: inline-block;
-    padding: 5px;
-    background-color: rgb(248, 202, 210);
-    color: rgb(240, 51, 51);
-    text-align: center;
-    width: 40px; 
-    height: 40px;
-    line-height: 30px; 
-    text-decoration: none; 
-    border-radius: 3px;
-    border-color: transparent;
-}
-
-.delete-icon:hover {
-    background-color: rgb(252, 161, 175);
-    color: red;
-}
 .input-group{
     width: 700px;
 }
@@ -128,6 +92,13 @@
     color: rgb(202, 92, 2);
 }
 
+.showpass{
+    width: 466px;
+}
+.showpassicon{
+    height: 38px;
+    background-color: white;
+}
 
     
 
