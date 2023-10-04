@@ -11,9 +11,9 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 
 
 // render HA dashboard
-router.get('/hoteladmin', isAuthenticated, getHotelColor, async(req,res)=>{
+router.get('/manager', isAuthenticated, getHotelColor, async(req,res)=>{
 
-    res.render('dashboard/HA',{
+    res.render('dashboard/manager',{
         hotelColor: req.hotelColor
     })
 })
