@@ -15,14 +15,14 @@ mixin addhotel
                             input.btn(type="submit", value="Submit")                   
 
     
-mixin addHA 
+mixin addFDM
     #modal.modal
         .modal-content
             .modal-header
-                h5.modal-title(id='') Add Hotel Admin
+                h5.modal-title(id='') Add Front Desk Manager
                 button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
             .modal-body.mb-3
-                form(id="addhoteladminform", action="/hoteladmins", method="POST")
+                form(id="addhoteladminform", action="/fdmanagers", method="POST")
 
                     label.col-form-label(for="username") Username:
                     input.form-control(type="text", id="username", name="username", required)

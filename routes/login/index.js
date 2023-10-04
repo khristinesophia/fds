@@ -16,11 +16,11 @@ router.get('/:userCode', (req, res)=>{
     if(userCode == 'SA'){
         res.render('login/loginSA')
     }
-    if(userCode == 'HA'){
-        res.render('login/loginHA')
+    if(userCode == 'FDM'){
+        res.render('login/loginFDM')
     }
-    if(userCode == 'R'){
-        res.render('login/loginR')
+    if(userCode == 'FDR'){
+        res.render('login/loginFDR')
     }
     
 })
@@ -50,8 +50,8 @@ router.post('/superadmin', async (req, res)=>{
     }
 })
 
-// HA
-router.post('/hoteladmin', async (req, res)=>{
+// FDM
+router.post('/manager', async (req, res)=>{
 
     const { username, password } = req.body
     try {
@@ -69,7 +69,7 @@ router.post('/hoteladmin', async (req, res)=>{
             if(user.firstlogin === false){
                 res.redirect('/setup')
             } else{
-                res.redirect('/dashboard/hoteladmin')
+                res.redirect('/dashboard/manager')
             }
         } else {
             // error handling for invalid credentials
@@ -81,7 +81,7 @@ router.post('/hoteladmin', async (req, res)=>{
     }
 })
 
-// R
+// FDR
 router.post('/receptionist', async (req, res)=>{
 
     const { username, password } = req.body

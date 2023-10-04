@@ -10,13 +10,13 @@ router.post('/superadmin', (req, res)=>{
 
 router.post('/hoteladmin', (req, res)=>{
     req.session.destroy(()=>{
-        res.redirect('/login/HA');
+        res.redirect('/login/FDM');
     })
 })
 
 router.post('/receptionist', (req, res)=>{
     req.session.destroy(()=>{
-        res.redirect('/login/R');
+        res.redirect('/login/FDR');
     })
 })
 

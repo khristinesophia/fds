@@ -27,25 +27,25 @@ const login = require('./routes/login')
 const logout = require('./routes/logout')
     // superadmin user routes
 const hotels = require('./routes/SA/hotels')
-const hoteladmins = require('./routes/SA/hoteladmins')
+const fdmanagers = require('./routes/SA/fdmanagers')
 const superadmins = require('./routes/SA/superadmins')
     // dashboard route
 const dashboard = require('./routes/dashboard')
-    // hotel admin user routes
-const setup = require('./routes/HA/setup')
-const profile = require('./routes/HA/profile')
-const users = require('./routes/HA/users')
-const HArooms = require('./routes/HA/HArooms')
-const roomtype = require('./routes/HA/roomtype')
+    // front desk manager user routes
+const setup = require('./routes/FDM/setup')
+const profile = require('./routes/FDM/profile')
+const users = require('./routes/FDM/users')
+const FDMrooms = require('./routes/FDM/FDMrooms')
+const roomtype = require('./routes/FDM/roomtype')
     // receptionist user routes
 const Rrooms = require('./routes/receptionist/Rrooms')
 
-    // register routes as middleware
+// register routes as middleware
 app.use('/login', login)
 app.use('/logout', logout)
     // superadmin user routes
 app.use('/hotels', hotels)
-app.use('/hoteladmins', hoteladmins)
+app.use('/fdmanagers', fdmanagers)
 app.use('/superadmins', superadmins)
     // dashboard route
 app.use('/dashboard', dashboard)
@@ -53,7 +53,7 @@ app.use('/dashboard', dashboard)
 app.use('/setup', setup)
 app.use('/profile', profile)
 app.use('/users', users)
-app.use('/HArooms', HArooms)
+app.use('/FDMrooms', FDMrooms)
 app.use('/roomtype', roomtype)
     // receptionist user routes
 app.use('/Rrooms', Rrooms)
