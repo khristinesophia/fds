@@ -17,7 +17,7 @@ const upload = multer({ dest: 'uploads/' });
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const allRoomtype = await pool.query('SELECT roomtype, description, price, capacity, roomimage FROM room_type WHERE hotelid = $1' , [hotelid])
+        const allRoomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1' , [hotelid])
 
         // Convert binary data to base64 string
         allRoomtype.rows.forEach(row => {
@@ -114,6 +114,7 @@ router.post('/delete/:id', isAuthenticated, async(req,res)=>{
         const { id } = req.params
         const hotelid = req.session.hotelID
 
+        console.log(req.params)
         console.log(`Hotel ID: ${hotelid}`);
         console.log(`ID: ${id}`);
 

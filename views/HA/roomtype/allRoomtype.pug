@@ -52,7 +52,7 @@ html(lang="en")
               button
                 a(href=`/roomtype/edit/${r.typeid}`) Edit
 
-              form(action=`roomtype/delete/${r.typeid}`, method="POST")
+              form(action=`/roomtype/delete/${r.typeid}`, method="POST")
                 input(type="hidden", name="_method", value="DELETE")
                 button(type="submit") Delete
 
