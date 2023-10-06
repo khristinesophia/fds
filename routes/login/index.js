@@ -26,29 +26,34 @@ router.get('/:userCode', (req, res)=>{
 })
 
 // SA
-router.post('/superadmin', async (req, res)=>{
-
-    const { username, password } = req.body
+router.post('/superadmin', async (req, res) => {
+    const { username, password } = req.body;
     try {
         // get user from DB
-        const result = await pool.query('SELECT * FROM superadmin_login WHERE username = $1', [username])
-        const user = result.rows[0]
+        const result = await pool.query('SELECT * FROM superadmin_login WHERE username = $1', [username]);
+        const user = result.rows[0];
 
         // if user exists and password is correct
-        if(user && await bcrypt.compare(password, user.hashpassword)){
-            req.session.userID = user.userid
-            req.session.username = user.username
+        if (user && await bcrypt.compare(password, user.hashpassword)) {
+            req.session.userID = user.userid;
+            req.session.username = user.username;
 
             // redirect to hotels page
-            res.redirect('/hotels')
+            res.redirect('/hotels');
         } else {
-            // error handling for invalid credentials
-            res.status(401).send('Invalid credentials.')
+            // Display the error message box
+            res.render('login/loginSA', {
+                loginError: true  // Pass a flag to indicate an error
+            });
         }
     } catch (error) {
-        res.send(error.message)
+        res.send(error.message);
     }
-})
+});
+
+
+
+
 
 // FDM
 router.post('/manager', async (req, res)=>{
@@ -72,8 +77,10 @@ router.post('/manager', async (req, res)=>{
                 res.redirect('/dashboard/manager')
             }
         } else {
-            // error handling for invalid credentials
-            res.status(401).send('Invalid credentials.')
+            // Display the error message box
+            res.render('login/loginFDM', {
+                loginError: true  // Pass a flag to indicate an error
+            });
         }
 
     } catch (error) {
@@ -99,8 +106,10 @@ router.post('/receptionist', async (req, res)=>{
             // redirect 
             res.redirect('/dashboard/receptionist')
         } else {
-            // error handling for invalid credentials
-            res.status(401).send('Invalid credentials.')
+            // Display the error message box
+            res.render('login/loginFDR', {
+                loginError: true  // Pass a flag to indicate an error
+            });
         }
     } catch (error) {
         res.send(error.message)

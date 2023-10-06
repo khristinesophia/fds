@@ -145,3 +145,25 @@
 .back{
     color: black;
 }
+
+#error-box {
+    border: 1px solid rgb(240, 61, 61);
+    background-color: rgb(255, 211, 211);
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+.error-text-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }  
+#error-line1 {
+    font-weight: bold;
+    font-size: 18px;
+  }
+#error-line2 {
+    font-size: 16px;
+  }
+  
