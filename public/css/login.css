@@ -151,6 +151,7 @@
     background-color: rgb(255, 211, 211);
     padding: 10px;
     margin-bottom: 10px;
+    color: red; 
   }
 .error-text-container {
     display: flex;
