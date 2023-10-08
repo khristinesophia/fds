@@ -66,6 +66,10 @@ function closeEditSAModal() {
 }
 
 
+
+
+// JavaScript code for handling the modal and form submission
+
 function openChangeSAModal(clickedElement) {
   var modal = document.getElementById('changepassword');
   modal.classList.add('modal-active');
@@ -78,13 +82,76 @@ function openChangeSAModal(clickedElement) {
   var changePasswordForm = document.querySelector('#changepassword form');
   if (changePasswordForm) {
     changePasswordForm.action = `/superadmins/changepassword/${userId}`;
+    
+    // Add a submit event listener to the form
+    changePasswordForm.addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Get the old password and other form data
+      var oldPassword = document.getElementById('oldpassword').value;
+      var newPassword = document.getElementById('newpassword').value;
+      var confirmPassword = document.getElementById('conpassword').value;
+
+      // Reset any previous error messages
+      var errorElement = document.getElementById('error-message');
+      if (errorElement) {
+        errorElement.textContent = '';
+      }
+
+      // Send a POST request to the server to handle password change
+      fetch(this.action, {
+        method: 'POST',
+        body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          // Show the error message in the modal
+          if (errorElement) {
+            errorElement.textContent = data.error;
+            errorElement.style.display = 'block'; // Show the error message
+          }
+        } else {
+          // Password updated successfully, close the modal or perform any other actions
+          closeChangeSAModal();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle other error scenarios if needed
+      });
+    });
   }
 }
 
 function closeChangeSAModal() {
   var modal = document.getElementById('changepassword');
   modal.classList.remove('modal-active');
+
+  // Clear the input fields
+  var oldPasswordInput = document.getElementById('oldpassword');
+  var newPasswordInput = document.getElementById('newpassword');
+  var confirmPasswordInput = document.getElementById('conpassword');
+
+  if (oldPasswordInput && newPasswordInput && confirmPasswordInput) {
+    oldPasswordInput.value = '';
+    newPasswordInput.value = '';
+    confirmPasswordInput.value = '';
+  }
+
+  // Hide the error message element
+  var errorElement = document.getElementById('error-message');
+  if (errorElement) {
+    errorElement.textContent = '';
+    errorElement.style.display = 'none'; // Hide the error message
+  }
 }
+
+
+
 
 // You can call openChangeSAModal(clickedElement) to open the modal.
 
