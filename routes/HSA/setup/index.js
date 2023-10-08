@@ -18,7 +18,7 @@ router.get('/', isAuthenticated, async(req, res)=>{
     const hotel = await pool.query('SELECT * FROM hotels WHERE hotelid = $1', [hotelid])
     const colors = await pool.query('SELECT * FROM colorstack')
 
-    res.render('FDM/setup/setup', {
+    res.render('HSA/setup/setup', {
         h: hotel.rows[0],
         colorStacksArray: colors.rows
     })
