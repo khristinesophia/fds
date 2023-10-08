@@ -89,6 +89,7 @@ mixin editSA
                         button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="closeEditSAModal()") Cancel
                         input.btn(type="submit", value="Submit")
 
+// Inside your Pug template for the modal
 mixin changeSA
     #changepassword.modal
         .modal-content
@@ -116,11 +117,15 @@ mixin changeSA
                         input#conpassword.form-control(type='password' name='confirmPassword')
                         .input-group-append
                             span#showconPasswordToggle.input-group-text.showpassicon
-                                i#showconPasswordIcon.fas.fa-eye-slash                          
+                                i#showconPasswordIcon.fas.fa-eye-slash
+
+                    // Error message element
+                    p.mt-3.err#error-message
 
                     .modal-footer
                         button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="closeChangeSAModal()") Cancel
-                        input.btn(type="submit", value="Submit")                        
+                        input.btn(type="submit", value="Submit")
+
 
 mixin addR 
     #modal.modal
