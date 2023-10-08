@@ -125,7 +125,7 @@ function openDeleteRoom(clickedElement) {
 
   // Set the form action in the modal
   var deleteForm = document.getElementById('delete-user-form');
-  deleteForm.action = `/HArooms/delete/${roomnum}`;
+  deleteForm.action = `/HSArooms/delete/${roomnum}`;
 }
 function closeDeleteRoom() {
   var modal = document.getElementById('deleteroom');

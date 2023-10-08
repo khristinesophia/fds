@@ -36,12 +36,23 @@ html(lang="en")
       br
 
       label(for="roomimage") Room Image:
-      input(type="file", name="roomimage")
       if r.roomimage
-        img(src=`data:${r.imagetype};base64,${r.roomimage.toString('base64')}`, alt="Room Image")
+        img#imagePreview(src=`data:${r.imagetype};base64,${r.roomimage.toString('base64')}`, alt="Room Image", style="width: 300px; height: 200px;")
+        input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)", required)
       else
         p No image available
       br
       br
 
       input(type="submit", value="Submit")
+
+          //- JavaScript code for image preview 
+    script.
+      function previewImage(event) {
+        const reader = new FileReader();
+        reader.onload = function() {
+          const output = document.getElementById('imagePreview');
+          output.src = reader.result;
+        };
+        reader.readAsDataURL(event.target.files[0]);
+      }

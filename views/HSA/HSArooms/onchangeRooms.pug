@@ -21,16 +21,19 @@ html(lang="en")
     //- sa head lagi nakalagay ang color.pug
     include ../../partials/color.pug
   body
-    include ../../partials/navFDM.pug
+    include ../../partials/navHSA.pug
+
     .content
       // Header Title for page
       .row
         .col-8.d-flex.align-items-center
-        include ../../partials/navFDMrooms.pug
+        include ../../partials/navHSArooms.pug
+
+
 
 
         .container.shadow.mt-3.pt-3.pb-3.bg-white
-          h2 Out-of-Order Rooms 
+          h2 On-Change Rooms 
           table#myTable.table.table-striped.table-hover(style='width:100%')
             thead
               tr
@@ -40,13 +43,14 @@ html(lang="en")
                 th Status
 
             tbody
-              each r in outoforderRoomsArray
+              each r in onchangeRoomsArray
                 tr
                   td #{r.roomnum}
                   td #{r.roomtype}
                   td #{r.roomfloor}
                   td #{r.status}
-            
+                  
+    
     //Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
     script(src='/js/table.js')
@@ -56,3 +60,4 @@ html(lang="en")
     script(src='/js/modal.js') 
     script(src='/js/nav-active.js') 
     script(src='/js/room_nav.js') 
+
