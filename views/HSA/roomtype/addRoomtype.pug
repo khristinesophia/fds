@@ -54,15 +54,7 @@ html(lang="en")
             input(type="submit" class="btn btn-primary" value="Submit")
             a.btn.btn-secondary(href="/roomtype") Back
 
-        //- JavaScript code for image preview 
-        script.
-          function previewImage(event) {
-            const reader = new FileReader();
-            reader.onload = function() {
-              const output = document.getElementById('imagePreview');
-              output.src = reader.result;
-            };
-            reader.readAsDataURL(event.target.files[0]);
-          }
+    script(src='/js/imgpreview.js') 
+          
 
 
