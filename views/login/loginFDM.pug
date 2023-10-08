@@ -29,6 +29,10 @@ head
             span Front Desk Manager
           .title
             | Sign in
+          #error-box(style='display: none;')
+            .error-text-container
+              #error-line1 Wrong Credentials!
+              #error-line2 Invalid username or password  
           form#login-hotel-admin(action="/login/manager", method="POST")
             .input-field
               input#username.input(type='text' name='username' required='' autocomplete='off')
@@ -38,5 +42,14 @@ head
               label(for='password') Password
             .input-field
               input.ha.submit(type='submit' value='Sign In')
+
+
+            // JavaScript to show the error message
+            script.
+              if (#{loginError}) {
+                window.addEventListener('DOMContentLoaded', (event) => {
+                  document.getElementById('error-box').style.display = 'block';
+                });  
+              }
 
   script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')

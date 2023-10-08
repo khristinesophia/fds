@@ -96,34 +96,40 @@ router.get('/changePW/:id', (req, res)=>{
         id: id
     })
 })
-// change pw
-router.post('/changepassword/:id', async(req, res)=>{
-    const { id } = req.params
-    const { oldPassword, newPassword, confirmPassword } = req.body
+router.post('/changepassword/:id', async (req, res) => {
+    const { id } = req.params;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
 
-    // get old hashpassword
-    const result = await pool.query('SELECT * FROM superadmin_login WHERE userid = $1', [id])
-    const hashedOldPassword = result.rows[0].hashpassword
+    // Get old hashpassword from the database
+    const result = await pool.query('SELECT * FROM superadmin_login WHERE userid = $1', [id]);
+    const hashedOldPassword = result.rows[0].hashpassword;
 
-    // compare old password with old hashpassword
+    // Compare old password with old hashpassword
     const isPasswordValid = await bcrypt.compare(oldPassword, hashedOldPassword);
 
     if (!isPasswordValid) {
-        console.log('Wrong old password')
+        console.log('Wrong old password');
+        // Send an error response with the message
+        return res.status(400).json({ error: 'Wrong old password. Please try again.' });
     }
 
-    // compare new and confirm password
+    // Compare new and confirm password
     if (newPassword !== confirmPassword) {
-        console.log('New password and confirm password do not match')
+        console.log('New password and confirm password do not match');
+        // Send an error response with the message
+        return res.status(400).json({ error: 'New password and confirm password do not match. Please try again.' });
     }
 
-    // hash new password
+    // Hash new password
     const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
 
-    await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE userid = $2', [hashedNewPassword, id])
+    // Update the password in the database only if the old password is correct
+    await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE userid = $2', [hashedNewPassword, id]);
 
-    res.redirect('/superadmins')
-})
+    // Send a success response
+    return res.status(200).json({ message: 'Password updated successfully.' });
+});
+
 
 
 
