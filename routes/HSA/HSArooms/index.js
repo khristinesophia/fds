@@ -14,7 +14,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
         const hotelid = req.session.hotelID
         const allRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 ORDER BY roomnum ASC' , [hotelid])
 
-        res.render('FDM/FDMrooms/allRooms', {
+        res.render('HSA/HSArooms/allRooms', {
             allRoomsArray: allRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -32,7 +32,7 @@ router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         const vacantRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, roomprice, capacity, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'Vacant']);
 
 
-        res.render('FDM/FDMrooms/vacantRooms', {
+        res.render('HSA/HSArooms/vacantRooms', {
             vacantRoomsArray: vacantRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -67,7 +67,7 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 
         const reservedRooms = await pool.query(reservedRoomsQuery, [hotelid])
 
-        res.render('FDM/FDMrooms/reservedRooms', {
+        res.render('HSA/HSArooms/reservedRooms', {
             reservedRoomsArray: reservedRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -104,7 +104,7 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 
         const occupiedRooms = await pool.query(occupiedRoomsQuery, [hotelid, 'Occupied'])
 
-        res.render('FDM/FDMrooms/occupiedRooms', {
+        res.render('HSA/HSArooms/occupiedRooms', {
             occupiedRoomsArray: occupiedRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -120,7 +120,7 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         const hotelid = req.session.hotelID
         const onchangeRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'On-Change'])
 
-        res.render('FDM/FDMrooms/onchangeRooms', {
+        res.render('HSA/HSArooms/onchangeRooms', {
             onchangeRoomsArray: onchangeRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -136,7 +136,7 @@ router.get('/outoforderRooms', isAuthenticated, getHotelColor, async(req, res)=>
         const hotelid = req.session.hotelID
         const outoforderRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'Out-of-Order'])
 
-        res.render('FDM/FDMrooms/outoforderRooms', {
+        res.render('HSA/HSArooms/outoforderRooms', {
             outoforderRoomsArray: outoforderRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -152,7 +152,7 @@ router.get('/addRooms', isAuthenticated, getHotelColor, async(req, res) => {
         const hotelid = req.session.hotelID
         const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
         
-        res.render('FDM/FDMrooms/addRooms', {
+        res.render('HSA/HSArooms/addRooms', {
             roomTypesArray: roomtype.rows, 
             hotelColor: req.hotelColor  
         });
@@ -180,7 +180,7 @@ router.post('/addRooms', isAuthenticated, async(req, res)=>{
             [hotelid, roomnum, roomtype, roomprice, roomfloor, capacity, status]
           );
           console.log("Room Successfully Added!");
-          res.redirect('/HArooms');
+          res.redirect('/HSArooms');
 
     } catch (error) {
         console.error(error.message)
@@ -195,7 +195,7 @@ router.post('/delete/:id', isAuthenticated, async(req,res)=>{
 
         const deleteSuperAdmin = await pool.query('DELETE FROM rooms WHERE roomnum = $1 AND hotelid = $2', [id, hotelid])
         console.log(`Room Number ${id} Successfully Deleted!`);
-        res.redirect('/HArooms')
+        res.redirect('/HSArooms')
     } catch (error) {
         console.error(error.message)
     }

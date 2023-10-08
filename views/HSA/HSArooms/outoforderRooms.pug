@@ -15,44 +15,38 @@ html(lang="en")
     link(rel='stylesheet', href='/css/font.css')
     link(rel='stylesheet', href='/css/navigation.css')
     link(rel='stylesheet', href='/css/table.css')
-
+    
     title Rooms
+
     //- sa head lagi nakalagay ang color.pug
     include ../../partials/color.pug
   body
-    include ../../partials/navFDM.pug
-
+    include ../../partials/navHSA.pug
     .content
       // Header Title for page
       .row
         .col-8.d-flex.align-items-center
-        include ../../partials/navFDMrooms.pug
-        //- ---------- table section ----------
+        include ../../partials/navHSArooms.pug
+
 
         .container.shadow.mt-3.pt-3.pb-3.bg-white
-          h2 All Rooms 
+          h2 Out-of-Order Rooms 
           table#myTable.table.table-striped.table-hover(style='width:100%')
             thead
               tr
                 th Room Number
                 th Room Type
                 th Room Floor
-                th Room Status
-                th Action
+                th Status
 
             tbody
-              each r in allRoomsArray
+              each r in outoforderRoomsArray
                 tr
                   td #{r.roomnum}
                   td #{r.roomtype}
                   td #{r.roomfloor}
                   td #{r.status}
-                  td
-                    a.delete-icon(data-roomnum=r.roomnum data-roomtype=r.roomtype onclick="openDeleteRoom(this)" role='button')
-                      i.fa-solid.fa-trash-can.fa-xl
-                    include ../../mixins/modals.pug
-                    +deleteRoom(r.roomnum)  
-    
+            
     //Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
     script(src='/js/table.js')
@@ -60,6 +54,5 @@ html(lang="en")
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     script(src='/js/modal.js') 
-    script(src='/js/room_nav.js') 
     script(src='/js/nav-active.js') 
-    
+    script(src='/js/room_nav.js') 
