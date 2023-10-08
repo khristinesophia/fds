@@ -47,6 +47,13 @@ router.get('/', isAuthenticated, async(req, res)=>{
     try {
         const allHotels = await pool.query('SELECT * FROM hotels')
 
+        // Convert binary data to base64 string
+        allHotels.rows.forEach(row => {
+            if (row.hotelimage) {
+                row.hotelimage = 'data:' + row.imagetype + ';base64,' + row.hotelimage.toString('base64')
+            }
+        })
+
         res.render('SA/hotels/hotels', {
             allHotelsArray: allHotels.rows
         })
