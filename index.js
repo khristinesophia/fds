@@ -32,11 +32,11 @@ const superadmins = require('./routes/SA/superadmins')
     // dashboard route
 const dashboard = require('./routes/dashboard')
     // front desk manager user routes
-const setup = require('./routes/FDM/setup')
-const profile = require('./routes/FDM/profile')
-const users = require('./routes/FDM/users')
-const FDMrooms = require('./routes/FDM/FDMrooms')
-const roomtype = require('./routes/FDM/roomtype')
+const setup = require('./routes/HSA/setup')
+const profile = require('./routes/HSA/profile')
+const users = require('./routes/HSA/users')
+const FDMrooms = require('./routes/HSA/HSArooms')
+const roomtype = require('./routes/HSA/roomtype')
     // receptionist user routes
 const Rrooms = require('./routes/receptionist/Rrooms')
 
@@ -53,7 +53,7 @@ app.use('/dashboard', dashboard)
 app.use('/setup', setup)
 app.use('/profile', profile)
 app.use('/users', users)
-app.use('/FDMrooms', FDMrooms)
+app.use('/HSArooms', FDMrooms)
 app.use('/roomtype', roomtype)
     // receptionist user routes
 app.use('/Rrooms', Rrooms)

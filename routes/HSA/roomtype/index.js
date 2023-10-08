@@ -26,7 +26,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
             }
         });
 
-        res.render('FDM/roomtype/allRoomtype', {
+        res.render('HSA/roomtype/allRoomtype', {
             allRoomtypeArray: allRoomtype.rows,
             hotelColor: req.hotelColor
         })
@@ -39,7 +39,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 //view add roomtype form
 router.get('/addRoomtype', isAuthenticated, getHotelColor, async(req, res) => {
     try {
-        res.render('FDM/roomtype/addRoomtype', {
+        res.render('HSA/roomtype/addRoomtype', {
             hotelColor: req.hotelColor  
         });
     } catch (error) {
@@ -70,14 +70,14 @@ router.post('/addRoomtype', isAuthenticated, upload.single('roomimage'), async(r
 })
 
 // view edit form
-router.get("/edit/:id", isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/edit/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const { id } = req.params
         const hotelid = req.session.hotelID
 
         const roomtype = await pool.query('SELECT * FROM room_type WHERE typeid = $1 and hotelid = $2', [id, hotelid])
 
-        res.render('FDM/roomtype/editRoomtype', {
+        res.render('HSA/roomtype/editRoomtype', {
             r: roomtype.rows[0],
             hotelColor: req.hotelColor
         })
@@ -87,21 +87,24 @@ router.get("/edit/:id", isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 // edit room type
-router.post("/edit/type/:id", isAuthenticated, async(req, res)=>{
+router.post('/edit/:id', isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
         const { roomtype, description, price, capacity } = req.body;
         const hotelid = req.session.hotelID
+        if (req.file) {
+            const roomimage = fs.readFileSync(req.file.path);
 
-        const roomimage = fs.readFileSync(req.file.path);
+            await pool.query(
+            'UPDATE room_type SET roomtype = $1, description = $2, price = $3, capacity = $4, roomimage = $5 WHERE typeid = $6 AND hotelid = $7',
+            [roomtype, description, price, capacity, roomimage, id, hotelid]
+            );
 
-        await pool.query(
-        'UPDATE room_type SET roomtype = $1, description = $2, price = $3, capacity = $4, roomimage = $5 WHERE typeid = $6 AND hotelid = $7',
-        [roomtype, description, price, capacity, roomimage, id, hotelid]
-        );
-
-        console.log('Room Type Successfully Updated!');
-        res.redirect('/roomtype');
+            console.log('Room Type Successfully Updated!');
+            res.redirect('/roomtype');
+        } else {
+            console.log('No file uploaded');
+        }
     } catch (error) {
         console.error(error.message)
     }
