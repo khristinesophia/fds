@@ -2,7 +2,6 @@ const path = require('path')
 
 const express = require('express')
 const multer = require('multer'); // For handling file uploads
-const fs = require('fs');
 const router = express.Router()
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 

@@ -10,11 +10,18 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 
 
 
-// read
+// read profile
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
         const hotel = await pool.query('SELECT * FROM hotels WHERE hotelid = $1', [hotelid])
+
+        // Convert binary data to base64 string
+        hotel.rows.forEach(row => {
+            if (row.hotelimage) {
+                row.hotelimage = 'data:' + row.imagetype + ';base64,' + row.hotelimage.toString('base64')
+            }
+        })
 
         res.render('FDM/profile/profile', {
             h: hotel.rows[0],
@@ -27,7 +34,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 
-// render edit page
+// render edit profile
 router.get('/editprofile', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
