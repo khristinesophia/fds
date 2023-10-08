@@ -1,5 +1,7 @@
 const path = require('path')
 
+const fs = require('fs');
+
 const express = require('express')
 const router = express.Router()
 const pool = require(path.join(__basedir, 'config', 'db-config'))
@@ -84,7 +86,7 @@ router.get('/edit/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 // edit room type
-router.post('/edit/:id', isAuthenticated, async(req, res)=>{
+router.post('/edit/:id', isAuthenticated, upload.single('roomimage'), async(req, res)=>{
     try {
         const { id } = req.params
         const { roomtype, description, price, capacity } = req.body;
