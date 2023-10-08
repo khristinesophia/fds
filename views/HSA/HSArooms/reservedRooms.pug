@@ -34,6 +34,7 @@ html(lang="en")
               tr
                 th Reservation ID
                 th Room Number
+                th Room Image
                 th Room Type
                 th Guest Name
                 th Reservation Date
@@ -45,6 +46,11 @@ html(lang="en")
                 tr
                   td #{r.reservationid}
                   td #{r.roomnum}
+                  td
+                    if r.roomimage
+                      img(src=r.roomimage, style="width: 200px; height: 100px;")
+                    else
+                      p No image available
                   td #{r.roomtype}
                   td #{r.fullname}
                   td #{r.reservationdate}
