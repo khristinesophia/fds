@@ -4,6 +4,9 @@ const express = require('express')
 const router = express.Router()
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
+const fs = require('fs')
+const multer = require('multer')
+
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
 
@@ -12,7 +15,30 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const allRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 ORDER BY roomnum ASC' , [hotelid])
+       
+        const allRoomsQuery = `
+            SELECT
+                r.roomnum,
+                rt.roomimage,
+                r.roomtype,
+                r.roomfloor,
+                r.status
+            FROM
+                rooms r
+            INNER JOIN
+                room_type rt ON r.roomtype = rt.roomtype
+            WHERE
+                r.hotelid = $1 ORDER BY roomnum ASC;
+        `;
+
+        const allRooms = await pool.query(allRoomsQuery, [hotelid])
+
+        // Convert binary data to base64 string
+        allRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('HSA/HSArooms/allRooms', {
             allRoomsArray: allRooms.rows,
@@ -28,9 +54,32 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        
-        const vacantRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, roomprice, capacity, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'Vacant']);
 
+        const vacantRoomsQuery = `
+            SELECT
+                r.roomnum,
+                rt.roomimage,
+                r.roomtype,
+                r.roomfloor,
+                rt.price,
+                rt.capacity,
+                r.status
+            FROM
+                rooms r
+            INNER JOIN
+                room_type rt ON r.roomtype = rt.roomtype
+            WHERE
+                r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
+        `;
+
+        const vacantRooms = await pool.query(vacantRoomsQuery, [hotelid, 'Vacant'])
+
+        // Convert binary data to base64 string
+        vacantRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('HSA/HSArooms/vacantRooms', {
             vacantRoomsArray: vacantRooms.rows,
@@ -52,6 +101,7 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
             SELECT
                 r.reservationid,
                 r.roomnum,
+                rt.roomimage,
                 r.roomtype,
                 rd.fullname,
                 TO_CHAR(r.reservationdate, 'YYYY-MM-DD') AS reservationdate,
@@ -61,11 +111,20 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
                 reservations r
             INNER JOIN
                 reservation_guestdetails rd ON r.reservationid = rd.reservationid
+            INNER JOIN
+                room_type rt ON r.roomtype = rt.roomtype
             WHERE
                 r.hotelid = $1 ORDER BY roomnum ASC;
         `;
 
         const reservedRooms = await pool.query(reservedRoomsQuery, [hotelid])
+
+        // Convert binary data to base64 string
+        reservedRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('HSA/HSArooms/reservedRooms', {
             reservedRoomsArray: reservedRooms.rows,
@@ -86,6 +145,7 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         const occupiedRoomsQuery = `
             SELECT
                 r.roomnum,
+                rt.roomimage,
                 r.roomtype,
                 r.roomfloor,
                 gd.fullname,
@@ -98,11 +158,20 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
                 guestaccounts ga ON r.roomnum = ga.roomnum
             INNER JOIN
                 guestaccounts_guestdetails gd ON ga.accountid = gd.accountid
+            INNER JOIN
+                room_type rt ON r.roomtype = rt.roomtype
             WHERE
                 r.hotelid = $1 AND r.status = $2 ORDER BY roomnum ASC;
         `;
 
         const occupiedRooms = await pool.query(occupiedRoomsQuery, [hotelid, 'Occupied'])
+
+        // Convert binary data to base64 string
+        occupiedRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('HSA/HSArooms/occupiedRooms', {
             occupiedRoomsArray: occupiedRooms.rows,
@@ -118,7 +187,30 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const onchangeRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'On-Change'])
+
+        const onchangeRoomsQuery = `
+            SELECT
+                r.roomnum,
+                rt.roomimage,
+                r.roomtype,
+                r.roomfloor,
+                r.status
+            FROM
+                rooms r
+            INNER JOIN
+                room_type rt ON r.roomtype = rt.roomtype
+            WHERE
+                r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
+        `;
+
+        const onchangeRooms = await pool.query(onchangeRoomsQuery, [hotelid, 'On-Change'])
+
+        // Convert binary data to base64 string
+        onchangeRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('HSA/HSArooms/onchangeRooms', {
             onchangeRoomsArray: onchangeRooms.rows,
@@ -134,7 +226,30 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/outoforderRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const outoforderRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'Out-of-Order'])
+
+        const outoforderRoomsQuery = `
+            SELECT
+                r.roomnum,
+                rt.roomimage,
+                r.roomtype,
+                r.roomfloor,
+                r.status
+            FROM
+                rooms r
+            INNER JOIN
+                room_type rt ON r.roomtype = rt.roomtype
+            WHERE
+                r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
+        `;
+
+        const outoforderRooms = await pool.query(outoforderRoomsQuery, [hotelid, 'Out-of-Order'])
+
+        // Convert binary data to base64 string
+        outoforderRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('HSA/HSArooms/outoforderRooms', {
             outoforderRoomsArray: outoforderRooms.rows,

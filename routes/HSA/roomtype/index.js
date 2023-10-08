@@ -16,7 +16,7 @@ const upload = multer({ dest: 'uploads/' })
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const allRoomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1' , [hotelid])
+        const allRoomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1 ORDER BY price ASC' , [hotelid])
 
         // Convert binary data to base64 string
         allRoomtype.rows.forEach(row => {
@@ -53,13 +53,19 @@ router.post('/addRoomtype', isAuthenticated, upload.single('roomimage'), async(r
         const hotelid = req.session.hotelID
 
         const { roomtype, description, price, capacity } = req.body;
-    
-        const roomimage = fs.readFileSync(req.file.path);
+        
+        if (req.file){
+            const roomimage = fs.readFileSync(req.file.path);
 
-        // Insert the room type into the database
-        const insertQuery = 'INSERT INTO room_type (hotelid, roomtype, description, price, capacity, roomimage) VALUES ($1, $2, $3, $4, $5, $6)';
-        await pool.query(insertQuery, [hotelid, roomtype, description, price, capacity, roomimage]);
+            // Insert the room type with image into the database
+            const insertQuery = 'INSERT INTO room_type (hotelid, roomtype, description, price, capacity, roomimage) VALUES ($1, $2, $3, $4, $5, $6)';
+            await pool.query(insertQuery, [hotelid, roomtype, description, price, capacity, roomimage]);
+        } else {
 
+            // Insert the room type without image into the database
+            const insertQuery = 'INSERT INTO room_type (hotelid, roomtype, description, price, capacity) VALUES ($1, $2, $3, $4, $5)';
+            await pool.query(insertQuery, [hotelid, roomtype, description, price, capacity]);
+        }
         console.log('Room Type Successfully Added!');
         res.redirect('/roomtype'); // Redirect to the room type listing page
 
@@ -91,6 +97,8 @@ router.post('/edit/:id', isAuthenticated, upload.single('roomimage'), async(req,
         const { id } = req.params
         const { roomtype, description, price, capacity } = req.body;
         const hotelid = req.session.hotelID
+
+        // check if a new file has been uploaded. If not, you should not update the image in the database.
         if (req.file) {
             const roomimage = fs.readFileSync(req.file.path);
 
@@ -98,17 +106,18 @@ router.post('/edit/:id', isAuthenticated, upload.single('roomimage'), async(req,
             'UPDATE room_type SET roomtype = $1, description = $2, price = $3, capacity = $4, roomimage = $5 WHERE typeid = $6 AND hotelid = $7',
             [roomtype, description, price, capacity, roomimage, id, hotelid]
             );
-
-            console.log('Room Type Successfully Updated!');
-            res.redirect('/roomtype');
         } else {
-            console.log('No file uploaded');
+            await pool.query(
+            'UPDATE room_type SET roomtype = $1, description = $2, price = $3, capacity = $4 WHERE typeid = $5 AND hotelid = $6',
+            [roomtype, description, price, capacity, id, hotelid]
+            );
         }
+        console.log('Room Type Successfully Updated!');
+        res.redirect('/roomtype');
     } catch (error) {
         console.error(error.message)
     }
 })
-
 
 //delete roomtype
 router.post('/delete/:id', isAuthenticated, async(req,res)=>{
