@@ -1,16 +1,16 @@
 const path = require('path')
 
-const fs = require('fs');
-
 const express = require('express')
 const router = express.Router()
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
 const fs = require('fs')
+const multer = require('multer')
 
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
 
+const upload = multer({ dest: 'uploads/' })
 
 //display all roomtype
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
@@ -48,7 +48,7 @@ router.get('/addRoomtype', isAuthenticated, getHotelColor, async(req, res) => {
 
 
 //add roomtype
-router.post('/addRoomtype', isAuthenticated, async(req, res)=>{
+router.post('/addRoomtype', isAuthenticated, upload.single('roomimage'), async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
 
