@@ -5,8 +5,10 @@ const router = express.Router()
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
 const fs = require('fs')
+const multer = require('multer')
 
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
+const upload = multer({ dest: 'uploads/' })
 
 
 
@@ -26,7 +28,7 @@ router.get('/', isAuthenticated, async(req, res)=>{
 
 
 // setup
-router.post('/', isAuthenticated, async(req, res)=>{
+router.post('/', isAuthenticated, upload.single('hotelimage'), async(req, res)=>{
     const hotelid = req.session.hotelID
 
     const { hotelcolor } = req.body

@@ -51,10 +51,11 @@ html(lang="en")
           h3 Let’s personalize this application <br/> with your branding...
           .mb-3
             label.form-label(for='hotellogo') Upload your establishment’s logo
-            input#field3.form-control(type="file", name="hotellogo", accept="image/*", onchange="previewImage(event)", required)
+            input#field3.form-control(type="file", name="hotelimage", accept="image/*", onchange="previewImage(event)", required)
             img#imagePreview(style="width: 300px; height: 200px;")
           .d-flex.justify-content-between
             button.btn.btn-primary.prev-step(type='button') Previous
             input.btn.btn-success(type="submit", value="Submit")
 
     script(src='/js/multistep-form.js') 
+    script(src='/js/imgpreview.js') 
