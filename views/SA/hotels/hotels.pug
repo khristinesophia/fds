@@ -31,8 +31,8 @@ html(lang="en")
               .card.bg-white.line-height.shadow
                 .card-body.text-dark
                   .img-area.mb-4
-                    if h.hotellocation
-                      img.img-fluid.hotel-img(src=`${h.hotellogo}` alt='Hotel Image')
+                    if h.hotelimage
+                      img.img-fluid.hotel-img(src=`${h.hotelimage}` alt='Hotel Image')
                   h4.hotel-name.mb-4
                     span #{h.hotelname}
                   if h.hotellocation
