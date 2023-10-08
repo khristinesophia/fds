@@ -223,3 +223,85 @@ mixin deleteRoom(roomnum)
                     button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteRoom()") Cancel
                     input.btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
+
+
+//- EDIT Receptionist in HSA
+mixin editReceptionistHSA
+    #editreceptionisthsa.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit
+                button.btn-close(type='button' onclick='CLose_Edit_Receptionist_User()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST")
+                    label.col-form-label(for="name") Name:
+                    input.form-control(type="text", name="name", value=`${r.fullname}`, required)
+
+                    label.col-form-label(for="username") Username:
+                    input.form-control(type="text", name="username", value=`${r.username}`, required)
+
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Receptionist_User()") Cancel
+                        input.btn(type="submit", value="Submit") 
+
+//- DELETE Receptionist in HSA
+mixin deleteReceptionistHSA(userId)
+    #deletereceptionisthsa.modal
+        .modal-content
+            .modal-header
+                h5.del.modal-title(id='') Delete
+                button.btn-close(type='button' onclick='CLose_Delete_Receptionist_User()' aria-label='Close')
+            .modal-body
+                p.mb-3
+                    | Are you sure you want to delete this Receptionist record? If you delete this Receptionist, its record will be permanently deleted from the system.
+                h6.title(id='') Receptionist Fullname:
+                .text-center
+                    //- Use an input element of type "text" to display the hotel name
+                    input.form-control#full-name-in-modal(type="text" readonly value=fullname)
+                
+                .form-check.mt-3
+                    input.form-check-input#confirm-checkbox(type="checkbox")
+                    label.form-check-label(for="confirm-checkbox") I Agree
+            .modal-footer.mt-3
+                form#delete-user-form(action='', method="POST")
+                    button.btn.btn-secondary.me-3(type="button", onclick="CLose_Delete_Receptionist_User()") Cancel
+                    input.btn(type="submit" value="Delete" onclick="confirmDelete()")
+                    p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
+
+//- CHANGE PASSWORD Rececptionist in HSA
+mixin changeReceptionistHSA
+    // Modal content for changeReceptionistHSA
+    #changeReceptionistHSA.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Change Password
+                button.btn-close(type='button' onclick='Close_ChangePass_Receptionist_User()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST")
+                    label.col-form-label(for='old-password') Old Password:
+                    .input-group.showpass
+                        input#oldpasswordReceptionist.form-control(type='password' name='oldPassword')
+                        .input-group-append
+                            span#showoldPasswordToggleReceptionist.input-group-text.showpassicon
+                                i#showoldPasswordIconReceptionist.fas.fa-eye-slash
+
+                    label.col-form-label(for='new-password') New Password:
+                    .input-group.showpass
+                        input#newpasswordReceptionist.form-control(type='password' name='newPassword')
+                        .input-group-append
+                            span#shownewPasswordToggleReceptionist.input-group-text.showpassicon
+                                i#shownewPasswordIconReceptionist.fas.fa-eye-slash  
+
+                    label.col-form-label(for='confirm-password') Confirm Password:
+                    .input-group.showpass
+                        input#conpasswordReceptionist.form-control(type='password' name='confirmPassword')
+                        .input-group-append
+                            span#showconPasswordToggleReceptionist.input-group-text.showpassicon
+                                i#showconPasswordIconReceptionist.fas.fa-eye-slash
+
+                    // Error message element
+                    p.mt-3.err#error-message-receptionist
+                    
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Receptionist_User()") Cancel
+                        input.btn(type="submit", value="Submit")

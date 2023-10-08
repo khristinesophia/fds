@@ -54,24 +54,6 @@ document.addEventListener("DOMContentLoaded", () => {
             togglePasswordVisibility("conpasswordReceptionist", "showconPasswordIconReceptionist");
         });
     }
-
-    // Attach event listener for password visibility toggle in another section
-    const passwordInput = document.getElementById("password");
-    const showPasswordIcon = document.getElementById("showPasswordIcon");
-
-    if (passwordInput && showPasswordIcon) {
-        showPasswordIcon.addEventListener("click", function () {
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                showPasswordIcon.classList.remove("fa-eye-slash");
-                showPasswordIcon.classList.add("fa-eye");
-            } else {
-                passwordInput.type = "password";
-                showPasswordIcon.classList.remove("fa-eye");
-                showPasswordIcon.classList.add("fa-eye-slash");
-            }
-        });
-    }
 });
 
 // Your changeSA and changeReceptionistHSA related functions can go here.

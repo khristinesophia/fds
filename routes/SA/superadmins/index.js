@@ -90,7 +90,7 @@ router.post('/delete/:id', isAuthenticated, async(req,res)=>{
 
 
 
-
+//- Change Password
 router.post('/changepassword/:id', async (req, res) => {
     const { id } = req.params;
     const { oldPassword, newPassword, confirmPassword } = req.body;

@@ -99,14 +99,7 @@ router.post('/delete/:id', isAuthenticated,async(req,res)=>{
 })
 
 
-// render change pw form
-router.get('/changePW/FDR/:id', isAuthenticated, getHotelColor, (req, res)=>{
-    const { id } = req.params
-    res.render('HSA/users/changePWfdr', {
-        id: id,
-        hotelColor: req.hotelColor
-    })
-})
+
 // change pw
 router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
@@ -121,11 +114,15 @@ router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
 
     if (!isPasswordValid) {
         console.log('Wrong old password')
+        // Send an error response with the message
+        return res.status(400).json({ error: 'Wrong old password. Please try again.' });
       }
 
     // compare new and confirm password
     if (newPassword !== confirmPassword) {
         console.log('New password and confirm password do not match')
+        // Send an error response with the message
+        return res.status(400).json({ error: 'New password and confirm password do not match. Please try again.' });
     }
 
     // hash new password
@@ -133,7 +130,9 @@ router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
 
     await pool.query('UPDATE user_login SET hashpassword = $1 WHERE userid = $2', [hashedNewPassword, id])
 
-    res.redirect('/users')
+    // Send a success response
+    return res.status(200).json({ message: 'Password updated successfully.' });
+
 })
 
 
