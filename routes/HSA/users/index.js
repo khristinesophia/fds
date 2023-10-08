@@ -20,7 +20,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
         const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login WHERE hotelid = $1', [hotelid])
         const allReceptionists = await pool.query('SELECT * FROM user_login WHERE hotelid = $1', [hotelid])
 
-        res.render('FDM/users/users', {
+        res.render('HSA/users/users', {
             allHotelAdminsArray: allHotelAdmins.rows,
             allReceptionistsArray: allReceptionists.rows,
             hotelColor: req.hotelColor
@@ -59,7 +59,7 @@ router.get("/edit/FDR/:id", isAuthenticated, getHotelColor, async(req, res)=>{
         const { id } = req.params
         const user = await pool.query('SELECT * FROM user_login WHERE userid = $1', [id])
 
-        res.render('FDM/users/editFDR', {
+        res.render('HSA/users/editFDR', {
             r: user.rows[0],
             hotelColor: req.hotelColor
         })
@@ -102,7 +102,7 @@ router.post('/delete/:id', isAuthenticated,async(req,res)=>{
 // render change pw form
 router.get('/changePW/FDR/:id', isAuthenticated, getHotelColor, (req, res)=>{
     const { id } = req.params
-    res.render('FDM/users/changePWfdr', {
+    res.render('HSA/users/changePWfdr', {
         id: id,
         hotelColor: req.hotelColor
     })
@@ -144,7 +144,7 @@ router.get("/edit/FDM/:id", isAuthenticated, getHotelColor, async(req, res)=>{
         const { id } = req.params
         const user = await pool.query('SELECT * FROM hoteladmin_login WHERE userid = $1', [id])
 
-        res.render('FDM/users/editFDM', {
+        res.render('HSA/users/editFDM', {
             ha: user.rows[0],
             hotelColor: req.hotelColor
         })
@@ -173,7 +173,7 @@ router.post("/edit/manager/:id", isAuthenticated, async(req, res)=>{
 // render change pw form
 router.get('/changePW/FDM/:id', isAuthenticated, getHotelColor, (req, res)=>{
     const { id } = req.params
-    res.render('FDM/users/changePWfdm', {
+    res.render('HSA/users/changePWfdm', {
         id: id,
         hotelColor: req.hotelColor
     })
