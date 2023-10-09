@@ -10,7 +10,9 @@ html(lang="en")
     
     //- custom css
     link(rel='stylesheet', href='/css/font.css')
+    link(rel='stylesheet', href='/css/navigation.css')
     link(rel='stylesheet', href='/css/modal.css')
+    link(rel='stylesheet', href='/css/card.css')
 
     //- color.pug
     include ../../partials/color.pug
@@ -20,7 +22,7 @@ html(lang="en")
 
   body
     include ../../partials/navHSA.pug
-    .content
+    //- .content
       .container-fluid
         .row.justify-content-center.align-items-center.h-100
           .col-md-10
@@ -52,7 +54,29 @@ html(lang="en")
                     button.btn.btn-primary
                       a(href="/profile/editprofile") Edit
 
+    .content
+      .row.mx-5.d-flex.justify-content-center
+        .col-12.col-md-12.col-lg-5.mt-4
+          .card.bg-white.shadow.text-center
+            .card-body.text-dark
+              .img-area.mb-4
+                if h.hotelimage
+                  img.logo-img(src=`${h.hotelimage}`, height="300", alt="", style="border-radius: 50%; border: 1px solid black")
+              if hotelColor
+                h6 Color Theme: 
+                  span #{hotelColor.color}
+              hr
+              if h.hotellocation
+                h6 Location: 
+                  span #{h.hotellocation}
+              if h.hotelcontact
+                h6 Contact Number: 
+                  span #{h.hotelcontact}
+              if h.hotelemail
+                h6 Email: 
+                  span #{h.hotelemail}
 
+              a.btn(href="/profile/editprofile") Edit
     //- bootstrap js
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
     
