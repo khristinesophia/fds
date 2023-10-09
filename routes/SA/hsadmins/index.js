@@ -12,7 +12,7 @@ const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 
 
 
-// add 
+// add hsadmin
 router.post('/', isAuthenticated, async(req, res)=>{
     try {
         const { username, password, hotelid } = req.body
@@ -31,7 +31,7 @@ router.post('/', isAuthenticated, async(req, res)=>{
     }
 })
 
-// read all
+// read all hsadmins
 router.get('/', isAuthenticated, async(req, res)=>{
     try {
         const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login T1 INNER JOIN hotels T2 ON T1.hotelid = T2.hotelid')

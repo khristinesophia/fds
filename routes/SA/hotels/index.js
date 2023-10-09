@@ -10,7 +10,7 @@ const randomString = require('random-string')
 
 
 
-// add
+// add hotel
 router.post('/', isAuthenticated, async(req, res)=>{
     try {
 
@@ -42,7 +42,7 @@ router.post('/', isAuthenticated, async(req, res)=>{
     }
 })
 
-// read all
+// read all hotel
 router.get('/', isAuthenticated, async(req, res)=>{
     try {
         const allHotels = await pool.query('SELECT * FROM hotels')
@@ -63,7 +63,7 @@ router.get('/', isAuthenticated, async(req, res)=>{
     }
 })
 
-// delete one
+// delete one hotel
 router.post('/delete/:id', isAuthenticated, async(req,res)=>{
     try {
         const { id } = req.params

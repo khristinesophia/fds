@@ -1,38 +1,43 @@
-.container
-  .d-flex.justify-content-between.align-items-stretch.pt-2
+.container.shadow.mt-3.pt-3.pb-3.bg-white
+  .d-flex.justify-content-between.align-items-stretch
     ul.nav.nav-pills.justify-content-between.flex-shrink-0.mb-sm-auto.mb-0.align-items-center.align-items-sm-stretch
-      // all rooms
+      //- all rooms
       li.nav_room.me-3.p-2
         a.nav-roomlink.align-middle.nav_text.har(href='/HSArooms')
           i.fa-solid.fa-bed.me-sm-1
           span All Rooms
-      // vacant rooms
+      //- vacant rooms
       li.nav_room.me-3.p-2
         a.nav-roomlink.align-middle.nav_text(href='/HSArooms/vacantRooms')
           i.fa-solid.fa-house.me-sm-1
           span Vacant Rooms
-      // reserved rooms
+      //- reserved rooms
       li.nav_room.me-3.p-2
         a.nav-roomlink.align-middle.nav_text(href='/HSArooms/reservedRooms')
           i.fa-solid.fa-tags.me-sm-1
           span Reserved Rooms    
-      // occupied rooms
+      //- occupied rooms
       li.nav_room.me-3.p-2
         a.nav-roomlink.align-middle.nav_text(href='/HSArooms/occupiedRooms')
           i.fa-solid.fa-house-lock.me-sm-1
           span Occupied Rooms
-      // on-change rooms
+      //- on-change rooms
       li.nav_room.me-3.p-2
         a.nav-roomlink.align-middle.nav_text(href='/HSArooms/onchangeRooms')
           i.fa-solid.fa-broom.me-sm-1
           span On-Change Rooms
-      // out-of-order rooms
+      //- out-of-order rooms
       li.nav_room.me-3.p-2
         a.nav-roomlink.align-middle.nav_text(href='/HSArooms/outoforderRooms')
           i.fa-solid.fa-circle-minus.me-sm-1
           span Out-of-Order Rooms
-      // add a room
-      li.nav_room.me-3.p-2
-        a.nav-roomlink.align-middle.nav_text(href='/HSArooms/addRooms')
-          i.fa-solid.fa-house-medical.me-sm-1
-          span Add a Room
+      //- add a room
+      //- li.nav_room.me-3.p-2
+      //-   a.nav-roomlink.align-middle.nav_text(href='/HSArooms/addRooms')
+      //-     i.fa-solid.fa-house-medical.me-sm-1
+      //-     span Add a Room
+
+      //- li.nav_room.me-3.p-2
+      //-   a.btn( onclick="openModal()" role='button') Add Room
+      //-   include ../mixins/modals.pug
+      //-   +addRoom
