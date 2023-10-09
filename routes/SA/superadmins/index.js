@@ -89,13 +89,8 @@ router.post('/delete/:id', isAuthenticated, async(req,res)=>{
 })
 
 
-// render change pw form
-router.get('/changePW/:id', (req, res)=>{
-    const { id } = req.params
-    res.render('SA/SAs/changePW', {
-        id: id
-    })
-})
+
+//- Change Password
 router.post('/changepassword/:id', async (req, res) => {
     const { id } = req.params;
     const { oldPassword, newPassword, confirmPassword } = req.body;

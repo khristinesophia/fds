@@ -215,3 +215,145 @@ function confirmDelete() {
       event.preventDefault();
   }
 }
+
+
+//- Hotel System Admin JS for Modal
+
+//- Edit Receptionist
+  //- Open Edit Modal for Receptionist
+  function Edit_Receptionist_User(clickedElement) {
+    var modal = document.getElementById('editreceptionisthsa');
+    modal.classList.add('modal-active');
+
+    // Get the super admin data from data attributes
+    var userId = clickedElement.getAttribute('data-userid');
+    var fullName = clickedElement.getAttribute('data-fullname');
+    var username = clickedElement.getAttribute('data-username');
+
+    // Populate the form fields with the data from data attributes
+    var nameInput = document.querySelector('#editreceptionisthsa input[name="name"]');
+    var usernameInput = document.querySelector('#editreceptionisthsa input[name="username"]');
+
+    if (nameInput) {
+      nameInput.value = fullName || '';
+    }
+    if (usernameInput) {
+      usernameInput.value = username || '';
+    }
+    // Set the form action in the modal
+    var editForm = document.querySelector('#editreceptionisthsa form');
+    if (editForm) {
+      editForm.action = `/users/edit/receptionist/${userId}`;
+    }
+  }
+  //- Close Edit Modal for Receptionist
+  function CLose_Edit_Receptionist_User() {
+    var modal = document.getElementById('editreceptionisthsa');
+    modal.classList.remove('modal-active');
+  }
+
+//- Delete Receptionist
+  //- Open Delete Modal for Receptionist
+  function Delete_Receptionist_User(clickedElement) {
+    var modal = document.getElementById('deletereceptionisthsa');
+    modal.classList.add('modal-active');
+  
+    // Get the hotel ID and hotel name from data attributes
+    var userId = clickedElement.getAttribute('data-userid');
+    var fullName = clickedElement.getAttribute('data-fullname');
+  
+    // Set the hotel name in the modal
+    var fullNameElement = document.getElementById('full-name-in-modal');
+    fullNameElement.value = fullName; 
+  
+    // Set the form action in the modal
+    var deleteForm = document.getElementById('delete-user-form');
+    deleteForm.action = `/users/delete/${userId}`;
+  }
+  //- Close Delete Modal for Receptionist
+  function CLose_Delete_Receptionist_User() {
+    var modal = document.getElementById('deletereceptionisthsa');
+    modal.classList.remove('modal-active');
+  }
+
+
+
+  function ChangePass_Receptionist_User(clickedElement) {
+    var modal = document.getElementById('changeReceptionistHSA');
+    modal.classList.add('modal-active');
+  
+    // Get the user ID and password hash from data attributes
+    var userId = clickedElement.getAttribute('data-userid');
+    var passwordHash = clickedElement.getAttribute('data-password');
+  
+    // Set the form action in the modal
+    var changePasswordForm = document.querySelector('#changeReceptionistHSA form');
+    if (changePasswordForm) {
+      changePasswordForm.action = `/users/changePW/receptionist/${userId}`;
+      
+      // Add a submit event listener to the form
+      changePasswordForm.addEventListener('submit', function (event) {
+        event.preventDefault(); // Prevent the default form submission
+  
+        // Get the old password and other form data
+        var oldPassword = document.getElementById('oldpasswordReceptionist').value;
+        var newPassword = document.getElementById('newpasswordReceptionist').value;
+        var confirmPassword = document.getElementById('conpasswordReceptionist').value;
+  
+        // Reset any previous error messages
+        var errorElement = document.getElementById('error-message-receptionist');
+        if (errorElement) {
+          errorElement.textContent = '';
+        }
+  
+        // Send a POST request to the server to handle password change
+        fetch(this.action, {
+          method: 'POST',
+          body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            // Show the error message in the modal
+            if (errorElement) {
+              errorElement.textContent = data.error;
+              errorElement.style.display = 'block'; // Show the error message
+            }
+          } else {
+            // Password updated successfully, close the modal or perform any other actions
+            Close_ChangePass_Receptionist_User();
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          // Handle other error scenarios if needed
+        });
+      });
+    }
+}
+
+function Close_ChangePass_Receptionist_User() {
+    var modal = document.getElementById('changeReceptionistHSA');
+    modal.classList.remove('modal-active');
+  
+    // Clear the input fields
+    var oldPasswordInput = document.getElementById('oldpasswordReceptionist');
+    var newPasswordInput = document.getElementById('newpasswordReceptionist');
+    var confirmPasswordInput = document.getElementById('conpasswordReceptionist');
+  
+    if (oldPasswordInput && newPasswordInput && confirmPasswordInput) {
+      oldPasswordInput.value = '';
+      newPasswordInput.value = '';
+      confirmPasswordInput.value = '';
+    }
+  
+    // Hide the error message element
+    var errorElement = document.getElementById('error-message-receptionist');
+    if (errorElement) {
+      errorElement.textContent = '';
+      errorElement.style.display = 'none'; // Hide the error message
+    }
+}
