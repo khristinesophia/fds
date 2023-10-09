@@ -48,7 +48,7 @@ html(lang="en")
 
             .form-group
                 label(for="roomimage") Room Image:
-                input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)", required)
+                input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
                 img#imagePreview(style="width: 300px; height: 200px;")
 
             input(type="submit" class="btn btn-primary" value="Submit")
