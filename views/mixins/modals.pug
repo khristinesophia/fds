@@ -420,6 +420,35 @@ mixin deleteRoomType(roomtype)
                     input.btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
+//- Edit Room Type
+mixin editRoomType
+    #editroomtype.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit
+                button.btn-close(type='button' onclick='Close_Edit_RoomType()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST" , enctype="multipart/form-data")
+                    label.col-form-label(for="type") Room Type:
+                    input.form-control(type="text", name="roomtype", value=`${r.roomtype}`, required)
+
+                    label.col-form-label(for="description") Room Description:
+                    input.form-control(type="text", name="description", value=`${r.description}`, required)
+
+                    label.col-form-label(for="capacity") Room Capacity:
+                    input.form-control(type="text", name="capacity", value=`${r.capacity}`, required)
+
+                    label.col-form-label(for="price") Room Price:
+                    input.form-control(type="text", name="price", value=`${r.price}`, required)
+
+                    label.col-form-label(for="roomimage") Room Image:
+                    input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
+
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="Close_Edit_RoomType()") Cancel
+                        input.btn(type="submit", value="Submit") 
+
+
 
 //- ADD Room 
 mixin addRoom

@@ -533,6 +533,50 @@ function Close_ChangePass_Receptionist_User() {
 
 
 //- Room Type
+
+    //- Open Edit for Room Type
+    function Edit_RoomType(clickedElement) {
+      var modal = document.getElementById('editroomtype');
+      modal.classList.add('modal-active');
+  
+      // Get the super admin data from data attributes
+      var typeId = clickedElement.getAttribute('data-typeid');
+      var roomType = clickedElement.getAttribute('data-roomtype');
+      var roomDescription = clickedElement.getAttribute('data-roomdescription');
+      var roomCapacity = clickedElement.getAttribute('data-roomcapacity');
+      var roomPrice = clickedElement.getAttribute('data-roomprice');
+  
+      // Populate the form fields with the data from data attributes
+      var typeInput = document.querySelector('#editroomtype input[name="roomtype"]');
+      var descriptionInput = document.querySelector('#editroomtype input[name="description"]');
+      var capacityInput = document.querySelector('#editroomtype input[name="capacity"]');
+      var priceInput = document.querySelector('#editroomtype input[name="price"]');
+  
+      if (typeInput) {
+        typeInput.value = roomType || '';
+      }
+      if (descriptionInput) {
+        descriptionInput.value = roomDescription || '';
+      }
+      if (capacityInput) {
+        capacityInput.value = roomCapacity || '';
+      }
+      if (priceInput) {
+        priceInput.value = roomPrice || '';
+      }
+      // Set the form action in the modal
+      var editForm = document.querySelector('#editroomtype form');
+      if (editForm) {
+        editForm.action = `/roomtype/edit/${typeId}`;
+      }
+    }
+    //- Close Edit Modal for Receptionist
+    function Close_Edit_RoomType() {
+      var modal = document.getElementById('editroomtype');
+      modal.classList.remove('modal-active');
+    }
+
+
   //- Delete Room Type
   function openDeleteRoomType(clickedElement) {
     var modal = document.getElementById('deleteroomtype');
