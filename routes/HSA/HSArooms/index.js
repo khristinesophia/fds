@@ -15,6 +15,7 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
        
         const allRoomsQuery = `
             SELECT
@@ -41,6 +42,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
         });
 
         res.render('HSA/HSArooms/allRooms', {
+            roomTypesArray: roomtype.rows, 
             allRoomsArray: allRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -54,6 +56,8 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
+
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
 
         const vacantRoomsQuery = `
             SELECT
@@ -82,6 +86,7 @@ router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         });
 
         res.render('HSA/HSArooms/vacantRooms', {
+            roomTypesArray: roomtype.rows, 
             vacantRoomsArray: vacantRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -95,6 +100,8 @@ router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
+
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
 
         // Updated SQL query to fetch occupied rooms with guest details
         const reservedRoomsQuery = `
@@ -127,6 +134,7 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         });
 
         res.render('HSA/HSArooms/reservedRooms', {
+            roomTypesArray: roomtype.rows, 
             reservedRoomsArray: reservedRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -140,6 +148,8 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
+
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
 
         // Updated SQL query to fetch occupied rooms with guest details
         const occupiedRoomsQuery = `
@@ -174,6 +184,7 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         });
 
         res.render('HSA/HSArooms/occupiedRooms', {
+            roomTypesArray: roomtype.rows, 
             occupiedRoomsArray: occupiedRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -187,6 +198,8 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
+
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
 
         const onchangeRoomsQuery = `
             SELECT
@@ -213,6 +226,7 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         });
 
         res.render('HSA/HSArooms/onchangeRooms', {
+            roomTypesArray: roomtype.rows, 
             onchangeRoomsArray: onchangeRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -226,6 +240,8 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/outoforderRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
+
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
 
         const outoforderRoomsQuery = `
             SELECT
@@ -252,6 +268,7 @@ router.get('/outoforderRooms', isAuthenticated, getHotelColor, async(req, res)=>
         });
 
         res.render('HSA/HSArooms/outoforderRooms', {
+            roomTypesArray: roomtype.rows, 
             outoforderRoomsArray: outoforderRooms.rows,
             hotelColor: req.hotelColor
         })

@@ -280,7 +280,7 @@ function confirmDelete() {
 
 
 
-  function ChangePass_Receptionist_User(clickedElement) {
+function ChangePass_Receptionist_User(clickedElement) {
     var modal = document.getElementById('changeReceptionistHSA');
     modal.classList.add('modal-active');
   

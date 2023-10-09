@@ -24,13 +24,19 @@ html(lang="en")
     include ../../partials/navHSA.pug
     .content
       // Header Title for page
-      .row
-        .col-8.d-flex.align-items-center
-        include ../../partials/navHSArooms.pug
 
+      .row.mx-5
+        .col-8.d-flex.align-items-center
+          h2.text Out-Of-Order Rooms
+        .col-4.d-flex.align-items-center.justify-content-end
+          a.btn( onclick="openModal()" role='button') Add Room
+        include ../../mixins/modals.pug
+        +addRoom
+
+        include ../../partials/navHSArooms.pug
+        //- ---------- table section ----------
 
         .container.shadow.mt-3.pt-3.pb-3.bg-white
-          h2 Out-of-Order Rooms 
           table#myTable.table.table-striped.table-hover(style='width:100%')
             thead
               tr

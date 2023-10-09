@@ -12,7 +12,7 @@ const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 
 
 
-// add 
+// add hsadmin
 router.post('/', isAuthenticated, async(req, res)=>{
     try {
         const { username, password, hotelid } = req.body
@@ -25,19 +25,19 @@ router.post('/', isAuthenticated, async(req, res)=>{
             [username, hashedPassword, hotelid, datecreated]
         )
 
-        res.redirect('/fdmanagers')
+        res.redirect('/hsadmins')
     } catch (error) {
         console.error(error.message)
     }
 })
 
-// read all
+// read all hsadmins
 router.get('/', isAuthenticated, async(req, res)=>{
     try {
         const allHotelAdmins = await pool.query('SELECT * FROM hoteladmin_login T1 INNER JOIN hotels T2 ON T1.hotelid = T2.hotelid')
         const allHotels = await pool.query('SELECT * FROM hotels')
 
-        res.render('SA/FDMs/fdmanagers', {
+        res.render('SA/HSAs/hsadmins', {
             allHotelAdminsArray: allHotelAdmins.rows,
             allHotelsArray: allHotels.rows
         })
