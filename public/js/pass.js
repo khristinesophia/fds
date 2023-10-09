@@ -35,6 +35,24 @@ document.addEventListener("DOMContentLoaded", () => {
             togglePasswordVisibility("conpassword", "showconPasswordIcon");
         });
     }
+        // Attach event listeners for changeAdminHSA modal
+    const showoldPasswordToggleAdmin = document.getElementById("showoldPasswordToggleAdmin");
+    const shownewPasswordToggleAdmin = document.getElementById("shownewPasswordToggleAdmin");
+    const showconPasswordToggleAdmin = document.getElementById("showconPasswordToggleAdmin");
+
+    if (showoldPasswordToggleAdmin && shownewPasswordToggleAdmin && showconPasswordToggleAdmin) {
+        showoldPasswordToggleAdmin.addEventListener("click", () => {
+            togglePasswordVisibility("oldpasswordAdmin", "showoldPasswordIconAdmin");
+        });
+
+        shownewPasswordToggleAdmin.addEventListener("click", () => {
+            togglePasswordVisibility("newpasswordAdmin", "shownewPasswordIconAdmin");
+        });
+
+        showconPasswordToggleAdmin.addEventListener("click", () => {
+            togglePasswordVisibility("conpasswordAdmin", "showconPasswordIconAdmin");
+        });
+    }
 
     // Attach event listeners for changeReceptionistHSA modal
     const showoldPasswordToggleReceptionist = document.getElementById("showoldPasswordToggleReceptionist");

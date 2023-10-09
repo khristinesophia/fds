@@ -225,6 +225,58 @@ mixin addR
                         button.btn.btn-secondary.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
                         input.btn(type="submit", value="Submit")  
 
+//- EDIT Admin in HSA
+mixin editAdminHSA
+    #editadminhsa.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit
+                button.btn-close(type='button' onclick='CLose_Edit_Admin_User()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST")
+                    label.col-form-label(for="username") Username:
+                    input.form-control(type="text", name="username", value=`${ha.username}`, required)
+
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Admin_User()") Cancel
+                        input.btn(type="submit", value="Submit") 
+
+//- CHANGE PASSWORD Rececptionist in HSA
+mixin changeAdminHSA
+    #changeAdminHSA.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Change Password
+                button.btn-close(type='button' onclick='Close_ChangePass_Admin_User()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST")
+                    label.col-form-label(for='old-password') Old Password:
+                    .input-group.showpass
+                        input#oldpasswordAdmin.form-control(type='password' name='oldPassword')
+                        .input-group-append
+                            span#showoldPasswordToggleAdmin.input-group-text.showpassicon
+                                i#showoldPasswordIconAdmin.fas.fa-eye-slash
+
+                    label.col-form-label(for='new-password') New Password:
+                    .input-group.showpass
+                        input#newpasswordAdmin.form-control(type='password' name='newPassword')
+                        .input-group-append
+                            span#shownewPasswordToggleAdmin.input-group-text.showpassicon
+                                i#shownewPasswordIconAdmin.fas.fa-eye-slash  
+
+                    label.col-form-label(for='confirm-password') Confirm Password:
+                    .input-group.showpass
+                        input#conpasswordAdmin.form-control(type='password' name='confirmPassword')
+                        .input-group-append
+                            span#showconPasswordToggleAdmin.input-group-text.showpassicon
+                                i#showconPasswordIconAdmin.fas.fa-eye-slash
+
+                    // Error message element
+                    p.mt-3.err#error-message-admin
+                    
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Admin_User()") Cancel
+                        input.btn(type="submit", value="Submit")
 
 
 //- EDIT Receptionist in HSA

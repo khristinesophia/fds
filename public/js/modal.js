@@ -277,6 +277,121 @@ function confirmDelete() {
 
 
 
+//- Edit Admin
+  //- Open Edit Modal for Receptionist
+  function Edit_Admin_User(clickedElement) {
+    var modal = document.getElementById('editadminhsa');
+    modal.classList.add('modal-active');
+
+    // Get the super admin data from data attributes
+    var userId = clickedElement.getAttribute('data-userid');
+    var username = clickedElement.getAttribute('data-username');
+
+    // Populate the form fields with the data from data attributes
+    var usernameInput = document.querySelector('#editadminhsa input[name="username"]');
+
+    if (usernameInput) {
+      usernameInput.value = username || '';
+    }
+    // Set the form action in the modal
+    var editForm = document.querySelector('#editadminhsa form');
+    if (editForm) {
+      editForm.action = `/users/edit/manager/${userId}`;
+    }
+  }
+  //- Close Edit Modal for Receptionist
+  function CLose_Edit_Admin_User() {
+    var modal = document.getElementById('editadminhsa');
+    modal.classList.remove('modal-active');
+  }
+
+
+//- Change password Admin
+function ChangePass_Admin_User(clickedElement) {
+  var modal = document.getElementById('changeAdminHSA');
+  modal.classList.add('modal-active');
+
+  // Get the user ID and password hash from data attributes
+  var userId = clickedElement.getAttribute('data-userid');
+  var passwordHash = clickedElement.getAttribute('data-password');
+
+  // Set the form action in the modal
+  var changePasswordForm = document.querySelector('#changeAdminHSA form');
+  if (changePasswordForm) {
+    changePasswordForm.action = `/users/changePW/manager/${userId}`;
+    
+    // Add a submit event listener to the form
+    changePasswordForm.addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Get the old password and other form data
+      var oldPassword = document.getElementById('oldpasswordAdmin').value;
+      var newPassword = document.getElementById('newpasswordAdmin').value;
+      var confirmPassword = document.getElementById('conpasswordAdmin').value;
+
+      // Reset any previous error messages
+      var errorElement = document.getElementById('error-message-admin');
+      if (errorElement) {
+        errorElement.textContent = '';
+      }
+
+      // Send a POST request to the server to handle password change
+      fetch(this.action, {
+        method: 'POST',
+        body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          // Show the error message in the modal
+          if (errorElement) {
+            errorElement.textContent = data.error;
+            errorElement.style.display = 'block'; // Show the error message
+          }
+        } else {
+          // Password updated successfully, close the modal or perform any other actions
+          Close_ChangePass_Admin_User();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle other error scenarios if needed
+      });
+    });
+  }
+}
+
+function Close_ChangePass_Admin_User() {
+  var modal = document.getElementById('changeAdminHSA');
+  modal.classList.remove('modal-active');
+
+  // Clear the input fields
+  var oldPasswordInput = document.getElementById('oldpasswordAdmin');
+  var newPasswordInput = document.getElementById('newpasswordAdmin');
+  var confirmPasswordInput = document.getElementById('conpasswordAdmin');
+
+  if (oldPasswordInput && newPasswordInput && confirmPasswordInput) {
+    oldPasswordInput.value = '';
+    newPasswordInput.value = '';
+    confirmPasswordInput.value = '';
+  }
+
+  // Hide the error message element
+  var errorElement = document.getElementById('error-message-admin');
+  if (errorElement) {
+    errorElement.textContent = '';
+    errorElement.style.display = 'none'; // Hide the error message
+  }
+}
+
+
+
+
+
+
 //- Edit Receptionist
   //- Open Edit Modal for Receptionist
   function Edit_Receptionist_User(clickedElement) {
@@ -335,7 +450,7 @@ function confirmDelete() {
   }
 
 
-
+//- Change password Receptionist 
 function ChangePass_Receptionist_User(clickedElement) {
     var modal = document.getElementById('changeReceptionistHSA');
     modal.classList.add('modal-active');

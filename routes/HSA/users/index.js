@@ -100,7 +100,7 @@ router.post('/delete/:id', isAuthenticated,async(req,res)=>{
 
 
 
-// change pw
+// Change Password for Receptionist
 router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
     const { oldPassword, newPassword, confirmPassword } = req.body
@@ -177,7 +177,11 @@ router.get('/changePW/FDM/:id', isAuthenticated, getHotelColor, (req, res)=>{
         hotelColor: req.hotelColor
     })
 })
-// change pw
+
+
+
+
+// Change password for Admin
 router.post('/changePW/manager/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
     const { oldPassword, newPassword, confirmPassword } = req.body
@@ -191,11 +195,16 @@ router.post('/changePW/manager/:id', isAuthenticated, async(req, res)=>{
 
     if (!isPasswordValid) {
         console.log('Wrong old password')
+        // Send an error response with the message
+        return res.status(400).json({ error: 'Wrong old password. Please try again.' });
+   
       }
 
     // compare new and confirm password
     if (newPassword !== confirmPassword) {
         console.log('New password and confirm password do not match')
+        // Send an error response with the message
+        return res.status(400).json({ error: 'New password and confirm password do not match. Please try again.' });
     }
 
     // hash new password
@@ -203,7 +212,8 @@ router.post('/changePW/manager/:id', isAuthenticated, async(req, res)=>{
 
     await pool.query('UPDATE hoteladmin_login SET hashpassword = $1 WHERE userid = $2', [hashedNewPassword, id])
 
-    res.redirect('/users')
+    // Send a success response
+    return res.status(200).json({ message: 'Password updated successfully.' });
 })
 
 
