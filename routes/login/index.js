@@ -16,11 +16,11 @@ router.get('/:userCode', (req, res)=>{
     if(userCode == 'SA'){
         res.render('login/loginSA')
     }
-    if(userCode == 'FDM'){
-        res.render('login/loginFDM')
+    if(userCode == 'HSA'){
+        res.render('login/loginHSA')
     }
-    if(userCode == 'FDR'){
-        res.render('login/loginFDR')
+    if(userCode == 'R'){
+        res.render('login/loginR')
     }
     
 })
