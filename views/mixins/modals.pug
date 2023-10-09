@@ -172,6 +172,36 @@ mixin changeSA
                         input.btn(type="submit", value="Submit")
 
 
+//- EDIT Profile in HSA
+mixin editProfileHSA(hotelId, colorStacksArray)
+    #editprofilehsa.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit
+                button.btn-close(type='button' onclick='CLose_Edit_Profile()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST")
+
+                    label.col-form-label(for="name") Name:
+                    input.form-control(type="text", name="hotelname", value=`${h.hotelname}`, required)
+
+                    label.col-form-label(for="location") Location:
+                    input.form-control(type="text", name="hotellocation", value=`${h.hotellocation}`, required)
+
+                    label.col-form-label(for="contact") Contact Number:
+                    input.form-control(type="text", name="hotelcontact", value=`${h.hotelcontact}`, required)
+
+                    label.col-form-label(for="email") Email:
+                    input.form-control(type="email", name="hotelemail", value=`${h.hotelemail}`, required)
+
+                    label.col-form-label(for="") Color Theme:
+                    select.form-select(name='hotelColor', id='hotelColor')
+
+
+                    
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Profile()") Cancel
+                        input.btn(type="submit", value="Submit") 
 
 
 //- ADD Receptionist in HSA
@@ -194,6 +224,8 @@ mixin addR
                     .modal-footer
                         button.btn.btn-secondary.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
                         input.btn(type="submit", value="Submit")  
+
+
 
 //- EDIT Receptionist in HSA
 mixin editReceptionistHSA
@@ -435,3 +467,7 @@ mixin deleteRoom(roomnum)
                     button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteRoom()") Cancel
                     input.btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
+
+
+
+                    

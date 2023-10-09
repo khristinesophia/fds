@@ -220,6 +220,62 @@ function confirmDelete() {
 
 
 //- Hotel System Admin JS for Modal
+  //- Edit Profile
+    //- Open Edit Modal for Profile
+    function Edit_Profile(clickedElement) {
+      var modal = document.getElementById('editprofilehsa');
+      modal.classList.add('modal-active');
+    
+      // Get the super admin data from data attributes
+      var hotelId = clickedElement.getAttribute('data-hotelid');
+      var hotelName = clickedElement.getAttribute('data-hname');
+      var hotelLocation = clickedElement.getAttribute('data-hlocation');
+      var hotelContact = clickedElement.getAttribute('data-hcontact');
+      var hotelEmail = clickedElement.getAttribute('data-hemail');
+      var hotelColor = clickedElement.getAttribute('data-hotelcolor'); // Get the hotelColor
+    
+      // Populate the form fields with the data from data attributes
+      var nameInput = document.querySelector('#editprofilehsa input[name="hotelname"]');
+      var locationInput = document.querySelector('#editprofilehsa input[name="hotellocation"]');
+      var contactInput = document.querySelector('#editprofilehsa input[name="hotelcontact"]');
+      var emailInput = document.querySelector('#editprofilehsa input[name="hotelemail"]');
+      var colorSelect = document.querySelector('#editprofilehsa select[name="hotelcolor"]'); // Get the color dropdown
+    
+      if (nameInput) {
+        nameInput.value = hotelName || '';
+      }
+      if (locationInput) {
+        locationInput.value = hotelLocation || '';
+      }
+      if (contactInput) {
+        contactInput.value = hotelContact || '';
+      }
+      if (emailInput) {
+        emailInput.value = hotelEmail || '';
+      }
+      if (colorSelect) {
+        // Loop through the options and set the selected option based on hotelColor
+        for (var i = 0; i < colorSelect.options.length; i++) {
+          if (colorSelect.options[i].value === hotelColor) {
+            colorSelect.options[i].selected = true;
+          }
+        }
+      }
+    
+      // Set the form action in the modal
+      var editForm = document.querySelector('#editprofilehsa form');
+      if (editForm) {
+        editForm.action = `/profile/edit/${hotelId}`;
+      }
+    }
+    
+    //- Close Edit Modal for Receptionist
+    function CLose_Edit_Profile() {
+      var modal = document.getElementById('editprofilehsa');
+      modal.classList.remove('modal-active');
+    }
+
+
 
 //- Edit Receptionist
   //- Open Edit Modal for Receptionist
