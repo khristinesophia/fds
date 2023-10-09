@@ -199,6 +199,8 @@ function closeDeleteRoom() {
   modal.classList.remove('modal-active');
 }
 
+//- Checkbox
+
 function confirmDelete() {
   var checkbox = document.getElementById('confirm-checkbox');
   var errorMessage = document.getElementById('checkbox-error-message');
@@ -357,3 +359,27 @@ function Close_ChangePass_Receptionist_User() {
       errorElement.style.display = 'none'; // Hide the error message
     }
 }
+
+
+//- Room Type
+  //- Delete Room Type
+  function openDeleteRoomType(clickedElement) {
+    var modal = document.getElementById('deleteroomtype');
+    modal.classList.add('modal-active');
+  
+    // Get the hotel ID and hotel name from data attributes
+    var typeid = clickedElement.getAttribute('data-typeid');
+    var roomtype = clickedElement.getAttribute('data-roomtype');
+  
+    // Set the hotel name in the modal
+    var roomTypeElement = document.getElementById('room-type-in-modal');
+    roomTypeElement.value = roomtype; // Set the value, not textContent
+  
+    // Set the form action in the modal
+    var deleteForm = document.getElementById('delete-user-form');
+    deleteForm.action = `/roomtype/delete/${typeid}`;
+  }
+  function closeDeleteRoomType() {
+    var modal = document.getElementById('deleteroomtype');
+    modal.classList.remove('modal-active');
+  }

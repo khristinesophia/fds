@@ -62,7 +62,13 @@ html(lang="en")
                     button
                       a(href=`/roomtype/edit/${r.typeid}`) Edit
 
-                    form(action=`/roomtype/delete/${r.typeid}`, method="POST")
+
+                    a.delete-icon(data-typeid=r.typeid data-roomtype=r.roomtype  onclick="openDeleteRoomType(this)" role='button')
+                      i.fa-solid.fa-trash-can.fa-xl
+                    include ../../mixins/modals.pug
+                    +deleteRoomType(r.typeid)  
+
+                    //form(action=`/roomtype/delete/${r.typeid}`, method="POST")
                       input(type="hidden", name="_method", value="DELETE")
                       button(type="submit") Delete
 
