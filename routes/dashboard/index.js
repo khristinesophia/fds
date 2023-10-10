@@ -19,8 +19,11 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, async(req,res)=>{
 })
 
 // render R dashboard
-router.get('/receptionist', isAuthenticated, (req,res)=>{
-    res.render('dashboard/receptionist')
+router.get('/receptionist', isAuthenticated, getHotelColor, async (req,res)=>{
+    
+    res.render('dashboard/receptionist',{
+        hotelColor: req.hotelColor
+    })
 })
 
 
