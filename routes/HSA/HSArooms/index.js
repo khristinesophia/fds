@@ -30,7 +30,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
                 room_type rt ON r.roomtype = rt.roomtype
             WHERE
                 r.hotelid = $1 ORDER BY roomnum ASC;
-        `;
+        `
 
         const allRooms = await pool.query(allRoomsQuery, [hotelid])
 
