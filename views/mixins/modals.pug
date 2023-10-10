@@ -172,6 +172,36 @@ mixin changeSA
                         input.btn(type="submit", value="Submit")
 
 
+//- EDIT Profile in HSA
+mixin editProfileHSA(hotelId, colorStacksArray)
+    #editprofilehsa.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit
+                button.btn-close(type='button' onclick='CLose_Edit_Profile()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST")
+
+                    label.col-form-label(for="name") Name:
+                    input.form-control(type="text", name="hotelname", value=`${h.hotelname}`, required)
+
+                    label.col-form-label(for="location") Location:
+                    input.form-control(type="text", name="hotellocation", value=`${h.hotellocation}`, required)
+
+                    label.col-form-label(for="contact") Contact Number:
+                    input.form-control(type="text", name="hotelcontact", value=`${h.hotelcontact}`, required)
+
+                    label.col-form-label(for="email") Email:
+                    input.form-control(type="email", name="hotelemail", value=`${h.hotelemail}`, required)
+
+                    label.col-form-label(for="") Color Theme:
+                    select.form-select(name='hotelColor', id='hotelColor')
+
+
+                    
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Profile()") Cancel
+                        input.btn(type="submit", value="Submit") 
 
 
 //- ADD Receptionist in HSA
@@ -194,6 +224,60 @@ mixin addR
                     .modal-footer
                         button.btn.btn-secondary.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
                         input.btn(type="submit", value="Submit")  
+
+//- EDIT Admin in HSA
+mixin editAdminHSA
+    #editadminhsa.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit
+                button.btn-close(type='button' onclick='CLose_Edit_Admin_User()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST")
+                    label.col-form-label(for="username") Username:
+                    input.form-control(type="text", name="username", value=`${ha.username}`, required)
+
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Admin_User()") Cancel
+                        input.btn(type="submit", value="Submit") 
+
+//- CHANGE PASSWORD Rececptionist in HSA
+mixin changeAdminHSA
+    #changeAdminHSA.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Change Password
+                button.btn-close(type='button' onclick='Close_ChangePass_Admin_User()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST")
+                    label.col-form-label(for='old-password') Old Password:
+                    .input-group.showpass
+                        input#oldpasswordAdmin.form-control(type='password' name='oldPassword')
+                        .input-group-append
+                            span#showoldPasswordToggleAdmin.input-group-text.showpassicon
+                                i#showoldPasswordIconAdmin.fas.fa-eye-slash
+
+                    label.col-form-label(for='new-password') New Password:
+                    .input-group.showpass
+                        input#newpasswordAdmin.form-control(type='password' name='newPassword')
+                        .input-group-append
+                            span#shownewPasswordToggleAdmin.input-group-text.showpassicon
+                                i#shownewPasswordIconAdmin.fas.fa-eye-slash  
+
+                    label.col-form-label(for='confirm-password') Confirm Password:
+                    .input-group.showpass
+                        input#conpasswordAdmin.form-control(type='password' name='confirmPassword')
+                        .input-group-append
+                            span#showconPasswordToggleAdmin.input-group-text.showpassicon
+                                i#showconPasswordIconAdmin.fas.fa-eye-slash
+
+                    // Error message element
+                    p.mt-3.err#error-message-admin
+                    
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Admin_User()") Cancel
+                        input.btn(type="submit", value="Submit")
+
 
 //- EDIT Receptionist in HSA
 mixin editReceptionistHSA
@@ -336,6 +420,35 @@ mixin deleteRoomType(roomtype)
                     input.btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
+//- Edit Room Type
+mixin editRoomType
+    #editroomtype.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit
+                button.btn-close(type='button' onclick='Close_Edit_RoomType()' aria-label='Close')
+            .modal-body.mb-3
+                form(action='', method="POST" , enctype="multipart/form-data")
+                    label.col-form-label(for="type") Room Type:
+                    input.form-control(type="text", name="roomtype", value=`${r.roomtype}`, required)
+
+                    label.col-form-label(for="description") Room Description:
+                    textarea.form-control( name="description", value=`${r.description}`, required)
+
+                    label.col-form-label(for="capacity") Room Capacity:
+                    input.form-control(type="text", name="capacity", value=`${r.capacity}`, required)
+
+                    label.col-form-label(for="price") Room Price:
+                    input.form-control(type="text", name="price", value=`${r.price}`, required)
+
+                    label.col-form-label(for="roomimage") Room Image:
+                    input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
+
+                    .modal-footer
+                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="Close_Edit_RoomType()") Cancel
+                        input.btn(type="submit", value="Submit") 
+
+
 
 //- ADD Room 
 mixin addRoom
@@ -435,3 +548,7 @@ mixin deleteRoom(roomnum)
                     button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteRoom()") Cancel
                     input.btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
+
+
+
+                    

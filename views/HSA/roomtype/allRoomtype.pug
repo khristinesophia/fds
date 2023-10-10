@@ -14,6 +14,7 @@ html(lang="en")
     link(rel='stylesheet', href='/css/modal.css')
     link(rel='stylesheet', href='/css/font.css')
     link(rel='stylesheet', href='/css/navigation.css')
+    link(rel='stylesheet', href='/css/action_button.css')
     link(rel='stylesheet', href='/css/table.css')
     link(rel='stylesheet', href='/css/card.css')
 
@@ -99,7 +100,7 @@ html(lang="en")
           
             //- card
             .col-12.col-md-12.col-lg-3.mt-4
-              .card.bg-white.line-height.shadow
+              .card.bg-white.line-height.shadow.h-100
                 .card-body.text-dark
                   .img-area.mb-4
                     if r.roomimage
@@ -114,7 +115,7 @@ html(lang="en")
                     h6.hotel-number.mb-3
                         | Description: 
                         span #{r.description}
-                  if r.price      
+                  if r.capacity      
                     h6.hotel-email.mb-3
                         | Capacity: 
                         span #{r.capacity}
@@ -124,13 +125,22 @@ html(lang="en")
                         span #{r.price}
                 .card-footer.pb-3.pt-3
                   .d-flex.justify-content-end
-                      button
-                        a(href=`/roomtype/edit/${r.typeid}`) Edit
-
-                      a.delete-icon(data-typeid=r.typeid data-roomtype=r.roomtype  onclick="openDeleteRoomType(this)" role='button')
-                        i.fa-solid.fa-trash-can.fa-xl
-                      include ../../mixins/modals.pug
-                      +deleteRoomType(r.typeid)
+                    
+                    //button
+                      a(href=`/roomtype/edit/${r.typeid}`) Edit
+                    //- Edit
+                    a.sa-icon.sa-edit(data-typeid=r.typeid data-roomtype=r.roomtype
+                     data-roomdescription=r.description data-roomprice=r.price 
+                     data-roomcapacity=r.capacity data-roomimage=r.roomimage
+                     onclick="Edit_RoomType(this)" role='button')
+                      i.fa-solid.fa-pen-to-square.fa-lg  
+                    include ../../mixins/modals.pug
+                    +editRoomType(r.typeid)  
+                    //-Delete
+                    a.delete-icon(data-typeid=r.typeid data-roomtype=r.roomtype  onclick="openDeleteRoomType(this)" role='button')
+                      i.fa-solid.fa-trash-can.fa-xl
+                    include ../../mixins/modals.pug
+                    +deleteRoomType(r.typeid)
                       
                   //- card end
 

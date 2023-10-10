@@ -52,15 +52,19 @@ router.get('/editprofile', isAuthenticated, getHotelColor, async(req, res)=>{
     }
 })
 // edit
-router.post('/', isAuthenticated, async(req, res)=>{
+router.post('/edit/:id', isAuthenticated, async(req, res)=>{
     try {
-        const hotelid = req.session.hotelID
+        const { id } = req.params
         const { hotelname, hotellocation, hotelcontact, hotelemail, hotelcolor } = req.body
         
         const editHotel = await pool.query(`UPDATE hotels 
-            SET hotelname = $1, hotellocation = $2, hotelcontact = $3, hotelemail = $4, hotelcolor = $5
+            SET hotelname = $1,
+                hotellocation = $2, 
+                hotelcontact = $3, 
+                hotelemail = $4, 
+                hotelcolor = $5
             WHERE hotelid = $6`,
-            [hotelname, hotellocation, hotelcontact, hotelemail, hotelcolor, hotelid]
+            [hotelname, hotellocation, hotelcontact, hotelemail, hotelcolor, id]
         )
 
         res.redirect('/profile')

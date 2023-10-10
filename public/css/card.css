@@ -22,8 +22,6 @@
 .input-group{
     width: 700px;
 }
-
-
-.dataTable table tr {
-    border: solid 1px black;
+textarea.form-control {
+    min-height: calc(1.5em + (0.75rem + 2cm));
 }

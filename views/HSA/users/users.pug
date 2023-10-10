@@ -11,11 +11,12 @@ html(lang="en")
     script(src='//code.jquery.com/jquery-1.11.1.min.js')
     link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
     
-    
+     
     link(rel='stylesheet', href='/css/font.css')
     link(rel='stylesheet', href='/css/navigation.css')
     link(rel='stylesheet', href='/css/action_button.css')
     link(rel='stylesheet', href='/css/modal.css')
+    link(rel='stylesheet', href='/css/table.css')
     
     
 
@@ -32,7 +33,7 @@ html(lang="en")
 
 
         .container.shadow.mt-3.pt-3.pb-3.bg-white
-          table#myTable.table.table-striped.table-hover(style='width:100%')
+          table.table.table-striped.table-hover(style='width:100%')
             thead
               tr
                 th Username
@@ -45,11 +46,18 @@ html(lang="en")
                   td #{ha.username}
                   td #{ha.datecreated}
                   td
-                    button
-                      a(href=`users/edit/FDM/${ha.userid}`) Edit
+                    .d-flex.justify-content-start
+                      //- Edit
+                      a.sa-icon.sa-edit(data-userid=ha.userid data-username=ha.username onclick="Edit_Admin_User(this)" role='button')
+                        i.fa-solid.fa-pen-to-square.fa-lg  
+                      include ../../mixins/modals.pug
+                      +editAdminHSA(ha.userid)
+                      //- Change Password   
+                      a.sa-icon.sa-pass(data-userid=ha.userid data-password=ha.hashpassword onclick="ChangePass_Admin_User(this)" role='button')
+                        i.fa-solid.fa-key.fa-lg
+                      include ../../mixins/modals.pug
+                      +changeAdminHSA(ha.userid)
 
-                    button
-                      a(href=`users/changePW/FDM/${ha.userid}`) Change Password
 
         //- ---------- receptionist section ----------
 

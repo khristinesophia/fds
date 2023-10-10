@@ -220,6 +220,177 @@ function confirmDelete() {
 
 
 //- Hotel System Admin JS for Modal
+  //- Edit Profile
+    //- Open Edit Modal for Profile
+    function Edit_Profile(clickedElement) {
+      var modal = document.getElementById('editprofilehsa');
+      modal.classList.add('modal-active');
+    
+      // Get the super admin data from data attributes
+      var hotelId = clickedElement.getAttribute('data-hotelid');
+      var hotelName = clickedElement.getAttribute('data-hname');
+      var hotelLocation = clickedElement.getAttribute('data-hlocation');
+      var hotelContact = clickedElement.getAttribute('data-hcontact');
+      var hotelEmail = clickedElement.getAttribute('data-hemail');
+      var hotelColor = clickedElement.getAttribute('data-hotelcolor'); // Get the hotelColor
+    
+      // Populate the form fields with the data from data attributes
+      var nameInput = document.querySelector('#editprofilehsa input[name="hotelname"]');
+      var locationInput = document.querySelector('#editprofilehsa input[name="hotellocation"]');
+      var contactInput = document.querySelector('#editprofilehsa input[name="hotelcontact"]');
+      var emailInput = document.querySelector('#editprofilehsa input[name="hotelemail"]');
+      var colorSelect = document.querySelector('#editprofilehsa select[name="hotelcolor"]'); // Get the color dropdown
+    
+      if (nameInput) {
+        nameInput.value = hotelName || '';
+      }
+      if (locationInput) {
+        locationInput.value = hotelLocation || '';
+      }
+      if (contactInput) {
+        contactInput.value = hotelContact || '';
+      }
+      if (emailInput) {
+        emailInput.value = hotelEmail || '';
+      }
+      if (colorSelect) {
+        // Loop through the options and set the selected option based on hotelColor
+        for (var i = 0; i < colorSelect.options.length; i++) {
+          if (colorSelect.options[i].value === hotelColor) {
+            colorSelect.options[i].selected = true;
+          }
+        }
+      }
+    
+      // Set the form action in the modal
+      var editForm = document.querySelector('#editprofilehsa form');
+      if (editForm) {
+        editForm.action = `/profile/edit/${hotelId}`;
+      }
+    }
+    
+    //- Close Edit Modal for Receptionist
+    function CLose_Edit_Profile() {
+      var modal = document.getElementById('editprofilehsa');
+      modal.classList.remove('modal-active');
+    }
+
+
+
+//- Edit Admin
+  //- Open Edit Modal for Receptionist
+  function Edit_Admin_User(clickedElement) {
+    var modal = document.getElementById('editadminhsa');
+    modal.classList.add('modal-active');
+
+    // Get the super admin data from data attributes
+    var userId = clickedElement.getAttribute('data-userid');
+    var username = clickedElement.getAttribute('data-username');
+
+    // Populate the form fields with the data from data attributes
+    var usernameInput = document.querySelector('#editadminhsa input[name="username"]');
+
+    if (usernameInput) {
+      usernameInput.value = username || '';
+    }
+    // Set the form action in the modal
+    var editForm = document.querySelector('#editadminhsa form');
+    if (editForm) {
+      editForm.action = `/users/edit/manager/${userId}`;
+    }
+  }
+  //- Close Edit Modal for Receptionist
+  function CLose_Edit_Admin_User() {
+    var modal = document.getElementById('editadminhsa');
+    modal.classList.remove('modal-active');
+  }
+
+
+//- Change password Admin
+function ChangePass_Admin_User(clickedElement) {
+  var modal = document.getElementById('changeAdminHSA');
+  modal.classList.add('modal-active');
+
+  // Get the user ID and password hash from data attributes
+  var userId = clickedElement.getAttribute('data-userid');
+  var passwordHash = clickedElement.getAttribute('data-password');
+
+  // Set the form action in the modal
+  var changePasswordForm = document.querySelector('#changeAdminHSA form');
+  if (changePasswordForm) {
+    changePasswordForm.action = `/users/changePW/manager/${userId}`;
+    
+    // Add a submit event listener to the form
+    changePasswordForm.addEventListener('submit', function (event) {
+      event.preventDefault(); // Prevent the default form submission
+
+      // Get the old password and other form data
+      var oldPassword = document.getElementById('oldpasswordAdmin').value;
+      var newPassword = document.getElementById('newpasswordAdmin').value;
+      var confirmPassword = document.getElementById('conpasswordAdmin').value;
+
+      // Reset any previous error messages
+      var errorElement = document.getElementById('error-message-admin');
+      if (errorElement) {
+        errorElement.textContent = '';
+      }
+
+      // Send a POST request to the server to handle password change
+      fetch(this.action, {
+        method: 'POST',
+        body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.error) {
+          // Show the error message in the modal
+          if (errorElement) {
+            errorElement.textContent = data.error;
+            errorElement.style.display = 'block'; // Show the error message
+          }
+        } else {
+          // Password updated successfully, close the modal or perform any other actions
+          Close_ChangePass_Admin_User();
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        // Handle other error scenarios if needed
+      });
+    });
+  }
+}
+
+function Close_ChangePass_Admin_User() {
+  var modal = document.getElementById('changeAdminHSA');
+  modal.classList.remove('modal-active');
+
+  // Clear the input fields
+  var oldPasswordInput = document.getElementById('oldpasswordAdmin');
+  var newPasswordInput = document.getElementById('newpasswordAdmin');
+  var confirmPasswordInput = document.getElementById('conpasswordAdmin');
+
+  if (oldPasswordInput && newPasswordInput && confirmPasswordInput) {
+    oldPasswordInput.value = '';
+    newPasswordInput.value = '';
+    confirmPasswordInput.value = '';
+  }
+
+  // Hide the error message element
+  var errorElement = document.getElementById('error-message-admin');
+  if (errorElement) {
+    errorElement.textContent = '';
+    errorElement.style.display = 'none'; // Hide the error message
+  }
+}
+
+
+
+
+
 
 //- Edit Receptionist
   //- Open Edit Modal for Receptionist
@@ -279,7 +450,7 @@ function confirmDelete() {
   }
 
 
-
+//- Change password Receptionist 
 function ChangePass_Receptionist_User(clickedElement) {
     var modal = document.getElementById('changeReceptionistHSA');
     modal.classList.add('modal-active');
@@ -362,6 +533,50 @@ function Close_ChangePass_Receptionist_User() {
 
 
 //- Room Type
+
+    //- Open Edit for Room Type
+    function Edit_RoomType(clickedElement) {
+      var modal = document.getElementById('editroomtype');
+      modal.classList.add('modal-active');
+  
+      // Get the super admin data from data attributes
+      var typeId = clickedElement.getAttribute('data-typeid');
+      var roomType = clickedElement.getAttribute('data-roomtype');
+      var roomDescription = clickedElement.getAttribute('data-roomdescription');
+      var roomCapacity = clickedElement.getAttribute('data-roomcapacity');
+      var roomPrice = clickedElement.getAttribute('data-roomprice');
+  
+      // Populate the form fields with the data from data attributes
+      var typeInput = document.querySelector('#editroomtype input[name="roomtype"]');
+      var descriptionInput = document.querySelector('#editroomtype input[name="description"]');
+      var capacityInput = document.querySelector('#editroomtype input[name="capacity"]');
+      var priceInput = document.querySelector('#editroomtype input[name="price"]');
+  
+      if (typeInput) {
+        typeInput.value = roomType || '';
+      }
+      if (descriptionInput) {
+        descriptionInput.value = roomDescription || '';
+      }
+      if (capacityInput) {
+        capacityInput.value = roomCapacity || '';
+      }
+      if (priceInput) {
+        priceInput.value = roomPrice || '';
+      }
+      // Set the form action in the modal
+      var editForm = document.querySelector('#editroomtype form');
+      if (editForm) {
+        editForm.action = `/roomtype/edit/${typeId}`;
+      }
+    }
+    //- Close Edit Modal for Receptionist
+    function Close_Edit_RoomType() {
+      var modal = document.getElementById('editroomtype');
+      modal.classList.remove('modal-active');
+    }
+
+
   //- Delete Room Type
   function openDeleteRoomType(clickedElement) {
     var modal = document.getElementById('deleteroomtype');
