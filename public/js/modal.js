@@ -548,7 +548,7 @@ function Close_ChangePass_Receptionist_User() {
   
       // Populate the form fields with the data from data attributes
       var typeInput = document.querySelector('#editroomtype input[name="roomtype"]');
-      var descriptionInput = document.querySelector('#editroomtype input[input="description"]');
+      var descriptionInput = document.querySelector('#editroomtype textarea[name="description"]');
       var capacityInput = document.querySelector('#editroomtype input[name="capacity"]');
       var priceInput = document.querySelector('#editroomtype input[name="price"]');
   
