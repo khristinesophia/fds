@@ -1,14 +1,48 @@
-nav
-    ul
-        li
-            a(href="/dashboard/receptionist") Dashboard
-        li
-            a(href="/Rrooms") Rooms
-        li
-            a(href="#") Reservations
-        li
-            a(href="#") Guest Accounts
-            
-form(action="/logout/receptionist", method="POST")
-    button(type="submit") Sign Out
-hr
+#navbar-wrapper
+  // Sidebar
+  .sidebar
+    .sidebar-logo
+      img(src='/images/logo-white.png' alt='Logo')
+    .separator
+    ul.nav.flex-column
+      li.nav-item
+        a.nav-link(href="/dashboard/receptionist")
+          i.fas.fa-solid.fa-chart-simple.fa-xl
+          span Dashboard
+      li.nav-item
+        a.nav-link(href='/Rrooms')
+          i.fas.fa-solid.fa-hotel.fa-xl
+          span Rooms
+      li.nav-item
+        a.nav-link(href='#')
+          i.fas.fa-solid.fa-users.fa-xl
+          span Reservation
+      li.nav-item
+        a.nav-link(href='#')
+          i.fas.fa-solid.fa-layer-group.fa-xl
+          span Guest Account 
+
+
+    // Sign out
+    ul.nav.flex-column.sign-out-sticky
+      li.nav-item.btn-log
+        form(action="/logout/receptionist", method="POST")
+          button.nav-link(type="submit") 
+            i.fas.fa-solid.fa-right-from-bracket.fa-xl
+            span Sign Out
+        //-a.nav-link(href='login.html')
+          i.fas.fa-solid.fa-right-from-bracket.fa-xl
+          span Sign Out
+
+          ul.nav.flex-column
+      
+  // Head Navigation
+  nav.navbar.navbar-expand-lg.navbar-light.upper.shadow
+    .container-fluid
+      #navbarNav.navbar-collapse.justify-content-end
+        // User (Right-aligned)
+        .navbar-text
+          a.navbar-brand.text-dark(href='#')
+            i.fa-solid.fa-user-tie.me-sm-2
+            span.ms-1.d-sm-inline Receptionist
+
