@@ -59,8 +59,14 @@ app.use('/roomtype', roomtype)
 app.use('/Rrooms', Rrooms)
 
 
-app.get('/', (req, res) => {
-    res.render('landing')
+// app.get('/', (req, res) => {
+//     res.render('landing')
+// })
+
+app.get('/', (req, res)=>{
+    res.render('login/loginSA', {
+        route: "/login"
+    })
 })
 
 
