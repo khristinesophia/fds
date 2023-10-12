@@ -32,6 +32,52 @@ function closeDeleteHotelModal() {
   modal.classList.remove('modal-active');
 }
 
+function openEditHotel(clickedElement){
+  // get edit hotel modal
+  var modal = document.getElementById('edithotel')
+
+  // add modal-active class
+  modal.classList.add('modal-active')
+
+  // get the hotel data attributes
+  var hotelid = clickedElement.getAttribute('data-hotelid')
+  var hotelname = clickedElement.getAttribute('data-hotelname')
+  var hotellocation = clickedElement.getAttribute('data-hotellocation')
+  var hotelcontact = clickedElement.getAttribute('data-hotelcontact')
+  var hotelemail = clickedElement.getAttribute('data-hotelemail')
+
+  // Populate the form fields with the data from data attributes
+  var nameInput = document.querySelector('#edithotel input[name="hotelname"]')
+  var locationInput = document.querySelector('#edithotel input[name="hotellocation"]')
+  var contactInput = document.querySelector('#edithotel input[name="hotelcontact"]')
+  var emailInput = document.querySelector('#edithotel input[name="hotelemail"]')
+  
+  if (nameInput) {
+    nameInput.value = hotelname || '';
+  }
+  if (locationInput) {
+    locationInput.value = hotellocation || '';
+  }
+  if (contactInput) {
+    contactInput.value = hotelcontact || '';
+  }
+  if (emailInput) {
+    emailInput.value = hotelemail || '';
+  }
+
+  
+  // Set the form action in the modal
+  var editForm = document.querySelector('#edithotelform');
+  if (editForm) {
+    editForm.action = `/hotels/edit/${hotelid}`;
+  }
+}
+
+function closeEditHotel(){
+  var modal = document.getElementById('edithotel');
+  modal.classList.remove('modal-active');
+}
+
 
 function openEditSAModal(clickedElement) {
   var modal = document.getElementById('editsuper');
