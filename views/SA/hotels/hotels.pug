@@ -32,7 +32,7 @@ html(lang="en")
                 .card-body.text-dark
                   .img-area.mb-4
                     if h.hotelimage
-                      img.img-fluid.hotel-img(src=`${h.hotelimage}` alt='Hotel Image')
+                      img.img-fluid.hotel-img(src=`${h.hotelimage}` alt='Hotel Image' style='object-position: center;')
                   h4.hotel-name.mb-4
                     span #{h.hotelname}
                   if h.hotellocation
