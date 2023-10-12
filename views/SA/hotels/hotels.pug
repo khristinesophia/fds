@@ -51,6 +51,11 @@ html(lang="en")
                         span #{h.hotelemail}
                 .card-footer.pb-3.pt-3
                   .d-flex.justify-content-end
+                      a.sa-icon.sa-edit(data-hotelid=h.hotelid data-hotelname=h.hotelname data-hotellocation=h.hotellocation data-hotelcontact=h.hotelcontact data-hotelemail=h.hotelemail onclick="openEditHotel(this)" role='button')
+                        i.fa-solid.fa-pen-to-square.fa-lg  
+                      include ../../mixins/modals.pug
+                      +edithotel(h.hotelid)
+
                       a.delete-icon(data-hotelid=h.hotelid data-hotelname=h.hotelname onclick="openDeleteHotelModal(this)" role='button')
                         i.fa-solid.fa-trash-can.fa-xl
                       include ../../mixins/modals.pug

@@ -76,6 +76,32 @@ router.get('/', isAuthenticated, async(req, res)=>{
     }
 })
 
+// edit one hotel
+router.post('/edit/:id', async(req, res)=>{
+    try {
+        // get id from params
+        const { id } = req.params
+
+        // get values from the request body
+        const { hotelname, hotellocation, hotelcontact, hotelemail } = req.body
+
+        const editHotelQuery = `
+            UPDATE hotels
+            SET hotelname = $1, 
+                hotellocation = $2, 
+                hotelcontact = $3, 
+                hotelemail = $4
+            WHERE hotelid = $5
+        `
+
+        const editHotel = await pool.query(editHotelQuery, [hotelname, hotellocation, hotelcontact, hotelemail, id])
+    
+        res.redirect('/hotels')
+    } catch (error) {
+        
+    }
+})
+
 // delete one hotel
 router.post('/delete/:id', isAuthenticated, async(req,res)=>{
     try {
