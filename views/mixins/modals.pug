@@ -9,6 +9,15 @@ mixin addhotel
                     
                         label.col-form-label(for="hotelname") Hotel Name:
                         input.form-control(type="text", id="hotelname", name="hotelname", required)
+
+                        label.col-form-label(for="hotellocation") Location:
+                        input.form-control(type="text", id="hotellocation", name="hotellocation", required)
+
+                        label.col-form-label(for="hotelcontact") Contact Number:
+                        input.form-control(type="text", id="hotelcontact", name="hotelcontact", required)
+
+                        label.col-form-label(for="hotelemail") Email:
+                        input.form-control(type="text", id="hotelemail", name="hotelemail", required)
                         //- ganto talaga indentation ng .modal-footer
                         .modal-footer.mt-3
                             button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
