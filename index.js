@@ -29,6 +29,7 @@ const logout = require('./routes/logout')
 const hotels = require('./routes/SA/hotels')
 const hsadmins = require('./routes/SA/hsadmins')
 const superadmins = require('./routes/SA/superadmins')
+const settings = require('./routes/SA/settings')
     // dashboard route
 const dashboard = require('./routes/dashboard')
     // hotel system admin user routes
@@ -47,6 +48,7 @@ app.use('/logout', logout)
 app.use('/hotels', hotels)
 app.use('/hsadmins', hsadmins)
 app.use('/superadmins', superadmins)
+app.use('/settings', settings)
     // dashboard route
 app.use('/dashboard', dashboard)
     // hotel admin user routes
