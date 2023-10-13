@@ -33,7 +33,7 @@ html(lang="en")
         .col-12.bg-white.shadow.mt-5.p-5
           h2.text Change Password
 
-          form(action='', method="POST")
+          form(action='/settings/changepw', method="POST")
             label.col-form-label(for='old-password') Old Password:
             .input-group.showpass
                 input#oldpassword.form-control(type='password' name='oldPassword')
