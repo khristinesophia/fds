@@ -21,13 +21,13 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
             SELECT
                 r.roomnum,
                 rt.roomimage,
-                r.roomtype,
+                rt.roomtype,
                 r.roomfloor,
                 r.status
             FROM
                 rooms r
             INNER JOIN
-                room_type rt ON r.roomtype = rt.roomtype
+                room_type rt ON r.typeid = rt.typeid
             WHERE
                 r.hotelid = $1 ORDER BY roomnum ASC;
         `
@@ -63,7 +63,7 @@ router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
             SELECT
                 r.roomnum,
                 rt.roomimage,
-                r.roomtype,
+                rt.roomtype,
                 r.roomfloor,
                 rt.price,
                 rt.capacity,
@@ -71,7 +71,7 @@ router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
             FROM
                 rooms r
             INNER JOIN
-                room_type rt ON r.roomtype = rt.roomtype
+                room_type rt ON r.typeid = rt.typeid
             WHERE
                 r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
         `;
@@ -107,9 +107,9 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         const reservedRoomsQuery = `
             SELECT
                 r.reservationid,
-                r.roomnum,
+                ro.roomnum,
                 rt.roomimage,
-                r.roomtype,
+                rt.roomtype,
                 rd.fullname,
                 TO_CHAR(r.reservationdate, 'YYYY-MM-DD') AS reservationdate,
                 TO_CHAR(r.checkindate, 'YYYY-MM-DD HH:MI:SS') AS checkindate,
@@ -119,7 +119,9 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
             INNER JOIN
                 reservation_guestdetails rd ON r.reservationid = rd.reservationid
             INNER JOIN
-                room_type rt ON r.roomtype = rt.roomtype
+                room_type rt ON r.typeid = rt.typeid
+            INNER JOIN
+                rooms ro ON r.roomid = ro.roomid
             WHERE
                 r.hotelid = $1 ORDER BY roomnum ASC;
         `;
@@ -156,7 +158,7 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
             SELECT
                 r.roomnum,
                 rt.roomimage,
-                r.roomtype,
+                rt.roomtype,
                 r.roomfloor,
                 gd.fullname,
                 TO_CHAR(ga.checkindate, 'YYYY-MM-DD HH:MI:SS') AS checkindate,
@@ -165,11 +167,11 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
             FROM
                 rooms r
             INNER JOIN
-                guestaccounts ga ON r.roomnum = ga.roomnum
+                guestaccounts ga ON r.roomid = ga.roomid
             INNER JOIN
                 guestaccounts_guestdetails gd ON ga.accountid = gd.accountid
             INNER JOIN
-                room_type rt ON r.roomtype = rt.roomtype
+                room_type rt ON r.typeid = rt.typeid
             WHERE
                 r.hotelid = $1 AND r.status = $2 ORDER BY roomnum ASC;
         `;
@@ -205,13 +207,13 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
             SELECT
                 r.roomnum,
                 rt.roomimage,
-                r.roomtype,
+                rt.roomtype,
                 r.roomfloor,
                 r.status
             FROM
                 rooms r
             INNER JOIN
-                room_type rt ON r.roomtype = rt.roomtype
+                room_type rt ON r.typeid = rt.typeid
             WHERE
                 r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
         `;
@@ -247,13 +249,13 @@ router.get('/outoforderRooms', isAuthenticated, getHotelColor, async(req, res)=>
             SELECT
                 r.roomnum,
                 rt.roomimage,
-                r.roomtype,
+                rt.roomtype,
                 r.roomfloor,
                 r.status
             FROM
                 rooms r
             INNER JOIN
-                room_type rt ON r.roomtype = rt.roomtype
+                room_type rt ON r.typeid = rt.typeid
             WHERE
                 r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
         `;
@@ -307,12 +309,21 @@ router.post('/addRooms', isAuthenticated, async(req, res)=>{
             res.status(401).send('The Room Number already exists. Please select different Room Number');
         }
 
-        const addRooms = await pool.query(
-            'INSERT INTO rooms (hotelid, roomnum, roomtype, roomprice, roomfloor, capacity, status) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-            [hotelid, roomnum, roomtype, roomprice, roomfloor, capacity, status]
-          );
+        //get the typeid of the roomtype
+        const typeidResult = await pool.query('SELECT typeid FROM room_type WHERE hotelid = $1 AND roomtype = $2', [hotelid, roomtype]);
+
+        if (typeidResult.rows.length > 0) {
+            const typeid = typeidResult.rows[0].typeid;
+        
+            const addRooms = await pool.query(
+                'INSERT INTO rooms (hotelid, roomnum, typeid, roomprice, roomfloor, capacity, status) VALUES ($1, $2, $3, $4, $5, $6, $7)',
+                [hotelid, roomnum, typeid, roomprice, roomfloor, capacity, status]
+            );
           console.log("Room Successfully Added!");
           res.redirect('/HSArooms');
+        }else {
+            res.status(400).send('The selected room type does not exist.');
+        }
 
     } catch (error) {
         console.error(error.message)
@@ -332,11 +343,6 @@ router.post('/delete/:id', isAuthenticated, async(req,res)=>{
         console.error(error.message)
     }
 })
-
-
-//add room types
-
-
 
 
 module.exports = router
