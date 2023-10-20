@@ -36,7 +36,7 @@ html(lang="en")
 
                 label.col-form-label(for='hotelcolor') Color Theme
                 select.form-select(id='hotelcolor', name='hotelcolor')
-                  option(value=h.hotelcolor)= h.hotelcolor
+                  option(value=h.hotelcolor, disabled, selected)=h.hotelcolor
                   each c in colorStacksArray
                     option(value=c.color)= c.color
                 hr  
