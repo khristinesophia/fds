@@ -11,7 +11,7 @@ head
   link(rel='stylesheet' href='/css/login.css')
 
   //- title
-  title Login | Super Admin
+  title Login
 
   //- body
   body
@@ -25,22 +25,27 @@ head
         .text
           p Unlock the gateway to hospitality excellence.
       .col-md-6.right
-        .back-button
-          button.btn.btn-transparent
-            a.back(href='/') Back
 
         // Form
         .input-box
           header
-            | Welcome
+            | Welcome User
             br
-            span Super Admin
           .title
             | Sign in
           #error-box(style='display: none;')
             .error-text-container
-              #error-line1 Wrong Credentials!
-              #error-line2 Invalid username or password  
+              #error-line1
+                if (userNotFound)
+                  | User Not Found!
+                else
+                  | Wrong Credentials!
+              #error-line2
+                if (userNotFound)
+                  | The username does not exist.
+                else
+                  | Invalid username or password
+
           
           form#login-super-admin(action='/login' , method="POST")
             .input-field
