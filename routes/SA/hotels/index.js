@@ -1,20 +1,30 @@
+//- path import
 const path = require('path')
 
+//- express and router
 const express = require('express')
 const router = express.Router()
+
+//- pool import
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
+//- middleware import
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
+
+//- packages
 const randomString = require('random-string')
 
 
 
 
-// add hotel
+//- add hotel route
+//- "/hotels"
 router.post('/', isAuthenticated, async(req, res)=>{
     try {
+        // get values from the request body
+        const { hotelname, hotellocation, hotelcontact, hotelemail } = req.body
 
-        const { hotelname } = req.body
+        // first generate of hotelid
         let hotelid = randomString();
 
         // retrieve record matching generated hotelid
@@ -28,11 +38,14 @@ router.post('/', isAuthenticated, async(req, res)=>{
             hotelid = randomString();
         } 
 
-        const newHotel = await pool.query(`INSERT INTO hotels(hotelid, hotelname) VALUES($1, $2) RETURNING *`,
-            [hotelid, hotelname]
-        )
+        // add hotel query
+        const addHotelQuery = `
+            INSERT INTO hotels(hotelid, hotelname, hotellocation, hotelcontact, hotelemail)
+            VALUES($1, $2, $3, $4, $5)
+        `
 
-        // **add successfully added here
+        // execute query
+        const newHotel = await pool.query(addHotelQuery, [hotelid, hotelname, hotellocation, hotelcontact, hotelemail])
 
         // redirect
         res.redirect('/hotels')
@@ -60,6 +73,32 @@ router.get('/', isAuthenticated, async(req, res)=>{
 
     } catch (error) {
         console.error(error.message)
+    }
+})
+
+// edit one hotel
+router.post('/edit/:id', async(req, res)=>{
+    try {
+        // get id from params
+        const { id } = req.params
+
+        // get values from the request body
+        const { hotelname, hotellocation, hotelcontact, hotelemail } = req.body
+
+        const editHotelQuery = `
+            UPDATE hotels
+            SET hotelname = $1, 
+                hotellocation = $2, 
+                hotelcontact = $3, 
+                hotelemail = $4
+            WHERE hotelid = $5
+        `
+
+        const editHotel = await pool.query(editHotelQuery, [hotelname, hotellocation, hotelcontact, hotelemail, id])
+    
+        res.redirect('/hotels')
+    } catch (error) {
+        
     }
 })
 

@@ -29,6 +29,7 @@ const logout = require('./routes/logout')
 const hotels = require('./routes/SA/hotels')
 const hsadmins = require('./routes/SA/hsadmins')
 const superadmins = require('./routes/SA/superadmins')
+const settings = require('./routes/SA/settings')
     // dashboard route
 const dashboard = require('./routes/dashboard')
     // hotel system admin user routes
@@ -39,6 +40,7 @@ const HSArooms = require('./routes/HSA/HSArooms')
 const roomtype = require('./routes/HSA/roomtype')
     // receptionist user routes
 const Rrooms = require('./routes/receptionist/Rrooms')
+const guestaccounts = require(path.join(__basedir, 'routes', 'receptionist', 'guestaccounts'))
 
 // register routes as middleware
 app.use('/login', login)
@@ -47,6 +49,7 @@ app.use('/logout', logout)
 app.use('/hotels', hotels)
 app.use('/hsadmins', hsadmins)
 app.use('/superadmins', superadmins)
+app.use('/settings', settings)
     // dashboard route
 app.use('/dashboard', dashboard)
     // hotel admin user routes
@@ -57,10 +60,17 @@ app.use('/HSArooms', HSArooms)
 app.use('/roomtype', roomtype)
     // receptionist user routes
 app.use('/Rrooms', Rrooms)
+app.use('/ga', guestaccounts)
 
 
-app.get('/', (req, res) => {
-    res.render('landing')
+// app.get('/', (req, res) => {
+//     res.render('landing')
+// })
+
+app.get('/', (req, res)=>{
+    res.render('login/loginSA', {
+        route: "/login"
+    })
 })
 
 

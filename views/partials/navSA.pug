@@ -18,12 +18,16 @@
         a.nav-link(href='/superadmins')
           i.fas.fa-solid.fa-user-gear.fa-xl
           span Super Admins
+      li.nav-item
+        a.nav-link(href='/settings')
+          i.fas.fa-solid.fa-gear.fa-xl
+          span Settings
 
 
     // Sign out
     ul.nav.flex-column.sign-out-sticky
       li.nav-item.btn-log
-        form(action="/logout/superadmin", method="POST")
+        form(action="/logout", method="POST")
           button.nav-link(type="submit") 
             i.fas.fa-solid.fa-right-from-bracket.fa-xl
             span Sign Out

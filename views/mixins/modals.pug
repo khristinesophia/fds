@@ -9,10 +9,44 @@ mixin addhotel
                     
                         label.col-form-label(for="hotelname") Hotel Name:
                         input.form-control(type="text", id="hotelname", name="hotelname", required)
+
+                        label.col-form-label(for="hotellocation") Location:
+                        input.form-control(type="text", id="hotellocation", name="hotellocation", required)
+
+                        label.col-form-label(for="hotelcontact") Contact Number:
+                        input.form-control(type="text", id="hotelcontact", name="hotelcontact", required)
+
+                        label.col-form-label(for="hotelemail") Email:
+                        input.form-control(type="text", id="hotelemail", name="hotelemail", required)
                         //- ganto talaga indentation ng .modal-footer
                         .modal-footer.mt-3
                             button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
-                            input.btn(type="submit", value="Submit")                   
+                            input.btn(type="submit", value="Submit")           
+
+mixin edithotel 
+    #edithotel.modal  
+            .modal-content
+                .modal-header
+                    h5.modal-title(id='') Edit Hotel
+                    button.btn-close(type='button' onclick='closeEditHotel()' aria-label='Close')
+                .modal-body.mb-3 
+                    form(id="edithotelform", action="", method="POST")
+                    
+                        label.col-form-label(for="hotelname") Hotel Name:
+                        input.form-control(type="text", id="hotelname", name="hotelname", required)
+
+                        label.col-form-label(for="hotellocation") Location:
+                        input.form-control(type="text", id="hotellocation", name="hotellocation", required)
+
+                        label.col-form-label(for="hotelcontact") Contact Number:
+                        input.form-control(type="text", id="hotelcontact", name="hotelcontact", required)
+
+                        label.col-form-label(for="hotelemail") Email:
+                        input.form-control(type="text", id="hotelemail", name="hotelemail", required)
+                        //- ganto talaga indentation ng .modal-footer
+                        .modal-footer.mt-3
+                            button.btn.btn-secondary(type="button", onclick="closeEditHotel()") Cancel
+                            input.btn(type="submit", value="Submit")          
 
 mixin deletehotel(hotelId)
     #deletehotel.modal
