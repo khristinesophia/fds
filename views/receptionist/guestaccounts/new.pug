@@ -42,7 +42,7 @@ html(lang="en")
                             nav.nav.nav-pills.nav-fill
                                 a.nav-link.tab-pills(href='#') Guest Details
                                 a.nav-link.tab-pills(href='#') Stay Details
-                                a.nav-link.tab-pills(href='#') Ancillary Services
+                                //- a.nav-link.tab-pills(href='#') Ancillary Services
                                 a.nav-link.tab-pills(href='#') Room Payment
                                 a.nav-link.tab-pills(href='#') Finish
                         //- card body
@@ -105,13 +105,13 @@ html(lang="en")
                                     label.form-label.fw-bold(for='promocode') Promo Code
                                     input#promocode.form-control(type='text' name='promocode' placeholder='')
                             //- Ancillary Services tab
-                            .tab.d-none
-                                .mb-3
-                                    label.form-label.fw-bold(for='') Ancillary Services
-                                    each a in ancillaries
-                                        br
-                                        input.form-check-input(type="checkbox" name="ancillaries" value=`${a.ancillary_id}`)
-                                        label.form-check-label.ms-2 #{a.ancillary_desc}
+                            //- .tab.d-none
+                            //-     .mb-3
+                            //-         label.form-label.fw-bold(for='') Ancillary Services
+                            //-         each a in ancillaries
+                            //-             br
+                            //-             input.form-check-input(type="checkbox" name="ancillaries" value=`${a.ancillary_id}`)
+                            //-             label.form-check-label.ms-2 #{a.ancillary_desc}
                             //- Room Payment tab
                             .tab.d-none
                                 //- mode of payment

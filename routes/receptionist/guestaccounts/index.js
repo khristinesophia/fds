@@ -3,6 +3,7 @@ const path = require('path')
 
 //- express and router
 const express = require('express')
+const { type } = require('os')
 const router = express.Router()
 
 //- pool import
@@ -14,11 +15,15 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 
 //- utils
 const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
+const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 
 
 
 
-//- render "register a guest account" form
+
+
+
+//- render "new" form/page
 //- "/ga/new"
 router.use('/new', isAuthenticated, getHotelColor, async(req, res)=>{
     const hotelid = req.session.hotelID
@@ -43,24 +48,22 @@ router.use('/new', isAuthenticated, getHotelColor, async(req, res)=>{
     `
     const roomTypes = await pool.query(getRoomTypesQuery, [hotelid])
 
-    //- select ancillary services
-    const getAncillariesQuery = `
-        SELECT * FROM ancillaries
-        WHERE ancillary_status = $1
-    `
+    // //- select ancillary services
+    // const getAncillariesQuery = `
+    //     SELECT * FROM ancillaries
+    //     WHERE ancillary_status = $1
+    // `
 
-    const ancillaries = await pool.query(getAncillariesQuery, ['Available'])
+    // const ancillaries = await pool.query(getAncillariesQuery, ['Available'])
 
     res.render('receptionist/guestaccounts/new', {
         hotelColor: req.hotelColor,
         roomTypes: roomTypes.rows,
-        rooms: rooms.rows,
-        ancillaries: ancillaries.rows
+        rooms: rooms.rows
     })
 })
 
-
-//- register a guest account
+//- handle register
 //- "/ga/register"
 router.post('/register', async(req,res)=>{
     const hotelid = req.session.hotelID
@@ -94,9 +97,77 @@ router.post('/register', async(req,res)=>{
     //- insert to "transactions" T
     const q3 = `
         INSERT INTO transactions(hotelid, accountid, roomid, description, price, qty, amount, date, approvalcode)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
     `
     const q3result = await pool.query(q3, [hotelid, accountid, roomid, description, price, qty, amount, date, approvalcode])
+
+    res.redirect('/ga')
+})
+
+
+//- render "list" page
+//- "/ga"
+router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
+    const hotelid = req.session.hotelID
+
+    //- select all guest accounts
+    const q1 = `
+        SELECT * FROM guestaccounts t1
+        JOIN guestaccounts_guestdetails t2
+            ON t1.accountid = t2.accountid
+        JOIN rooms t3
+            ON t1.roomid = t3.roomid
+        WHERE t1.hotelid = $1
+    `
+    const q1result = await pool.query(q1, [hotelid])
+
+    q1result.rows.forEach((ga)=>{
+        if(ga.checkindate){
+            ga.checkindate = formatDate(ga.checkindate)
+        }
+        if(ga.checkoutdate){
+            ga.checkoutdate = formatDate(ga.checkoutdate)
+        }
+    })
+
+    res.render('receptionist/guestaccounts/list', {
+        hotelColor: req.hotelColor,
+        guestaccounts: q1result.rows
+    })
+})
+
+//- render "detail" page
+//- "ga/:id"
+router.get('/:id', isAuthenticated, getHotelColor, async(req, res)=>{
+    const hotelid = req.session.hotelID
+    const { id } = req.params
+
+    const q1 = `
+        SELECT * FROM guestaccounts t1
+        JOIN guestaccounts_guestdetails t2
+            ON t1.accountid = t2.accountid
+        JOIN room_type t3 
+            ON t1.typeid = t3.typeid
+        JOIN rooms t4 
+            ON t1.roomid = t4.roomid 
+        WHERE t1.accountid = $1 AND
+            t1.hotelid = $2
+    `
+    const q1result = await pool.query(q1, [id, hotelid])
+
+    q1result.rows.forEach((ga)=>{
+        if(ga.checkindate){
+            ga.checkindate = formatDate(ga.checkindate)
+        }
+        if(ga.checkoutdate){
+            ga.checkoutdate = formatDate(ga.checkoutdate)
+        }
+    })
+
+    res.render('receptionist/guestaccounts/detail', {
+        hotelColor: req.hotelColor,
+        ga: q1result.rows[0]
+    })
 })
 
 
