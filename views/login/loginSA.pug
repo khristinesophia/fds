@@ -25,14 +25,8 @@ head
         .text
           p Unlock the gateway to hospitality excellence.
       .col-md-6.right
-
         // Form
         .input-box
-          header
-            | Welcome User
-            br
-          .title
-            | Sign in
           #error-box(style='display: none;')
             .error-text-container
               #error-line1
@@ -44,9 +38,11 @@ head
                 if (userNotFound)
                   | The username does not exist.
                 else
-                  | Invalid username or password
-
-          
+                  | Invalid username or password  
+          header
+            | Welcome User
+          .title
+            | Sign in  
           form#login-super-admin(action='/login' , method="POST")
             .input-field
               input#username.input(type='text' name='username' required='' autocomplete='off')
