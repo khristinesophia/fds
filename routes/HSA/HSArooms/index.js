@@ -316,8 +316,8 @@ router.post('/addRooms', isAuthenticated, async(req, res)=>{
             const typeid = typeidResult.rows[0].typeid;
         
             const addRooms = await pool.query(
-                'INSERT INTO rooms (hotelid, roomnum, typeid, roomprice, roomfloor, capacity, status) VALUES ($1, $2, $3, $4, $5, $6, $7)',
-                [hotelid, roomnum, typeid, roomprice, roomfloor, capacity, status]
+                'INSERT INTO rooms (hotelid, roomnum, typeid, roomfloor, status) VALUES ($1, $2, $3, $4, $5)',
+                [hotelid, roomnum, typeid, roomfloor, status]
             );
           console.log("Room Successfully Added!");
           res.redirect('/HSArooms');

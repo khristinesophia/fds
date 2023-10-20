@@ -1,0 +1,282 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+        //- bootstrap
+        link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+
+        //- jquery
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js' integrity='sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==' crossorigin='anonymous' referrerpolicy='no-referrer')
+
+        //- custom css
+        link(rel='stylesheet', href='/css/font.css')
+        link(rel='stylesheet', href='/css/modal.css')
+        link(rel='stylesheet', href='/css/navigation.css')
+        link(rel='stylesheet', href='/css/table.css')
+
+        //- title
+        title Register a Guest Account
+
+        //- sa head lagi nakalagay ang color.pug
+        include ../../partials/color.pug
+    //-body
+    body
+        //- sidenav
+        include ../../partials/navR.pug
+
+        //- main content
+        .content
+            //- page title
+            .row.mx-5
+                h2.text Register a Guest Account
+        
+            //- multistep form section
+            section.mt-4
+                .container
+                    //- form
+                    form.card(method="POST" action="/ga/register")
+                        //- card header
+                        .card-header.text-dark
+                            nav.nav.nav-pills.nav-fill
+                                a.nav-link.tab-pills(href='#') Guest Details
+                                a.nav-link.tab-pills(href='#') Stay Details
+                                a.nav-link.tab-pills(href='#') Ancillary Services
+                                a.nav-link.tab-pills(href='#') Room Payment
+                                a.nav-link.tab-pills(href='#') Finish
+                        //- card body
+                        .card-body
+                            //- Guest Details tab
+                            .tab.d-none
+                                //- last Name
+                                .mb-3
+                                    label.form-label.fw-bold(for='fullname') Full Name
+                                    input#fullname.form-control(type='text' name='fullname' placeholder="")
+                                //- address
+                                .mb-3
+                                    label.form-label.fw-bold(for='address') Home Address
+                                    input#address.form-control(type='text' name='address' placeholder="")
+                                //- email
+                                .mb-3
+                                    label.form-label.fw-bold(for='email') Email
+                                    input#email.form-control(type='email' name='email' placeholder="")
+                                //- contact no
+                                .mb-3
+                                    label.form-label.fw-bold(for='contactno') Contact Number
+                                    input#contactno.form-control(type='text' name='contactno' placeholder="")
+                            //- Stay Details tab
+                            .tab.d-none
+                                .row
+                                    //- check-in date
+                                    .mb-3.col-md-6
+                                        label.form-label.fw-bold(for='checkindate') Check-In Date
+                                        input#checkindate.form-control(type='date' name='checkindate')
+                                    //- check-out date
+                                    .mb-3.col-md-6
+                                        label.form-label.fw-bold(for='checkoutdate') Check-Out Date
+                                        input#checkoutdate.form-control(type='date' name='checkoutdate')
+                                //- number of days
+                                .mb-3
+                                    label.form-label.fw-bold(for='numofdays') Number of Days
+                                    input#numofdays.form-control(type='number' name='numofdays' placeholder='' readonly)
+                                .row
+                                    //- number of adults
+                                    .mb-3.col-md-6
+                                        label.form-label.fw-bold(for='adultno') Number of Adults
+                                        input#adultno.form-control(type='number' name='adultno' placeholder='')
+                                    //- number of children
+                                    .mb-5.col-md-6
+                                        label.form-label.fw-bold(for='childno') Number of Children
+                                        input#childno.form-control(type='number' name='childno' placeholder='')
+                                //- room type
+                                .mb-3
+                                    label.form-label.fw-bold(for='roomtype') Room Types
+                                    select.form-select(id='roomtype', name='roomtype')
+                                        each rt in roomTypes
+                                            option(value=rt.typeid data-typeid=rt.typeid data-price=rt.price)= rt.roomtype
+                                //- room number
+                                .mb-5
+                                    label.form-label.fw-bold(for='roomid') Room Number
+                                    select.form-select(id='roomid', name='roomid') Room Number
+
+                                //- promo code
+                                .mb-3
+                                    label.form-label.fw-bold(for='promocode') Promo Code
+                                    input#promocode.form-control(type='text' name='promocode' placeholder='')
+                            //- Ancillary Services tab
+                            .tab.d-none
+                                .mb-3
+                                    label.form-label.fw-bold(for='') Ancillary Services
+                                    each a in ancillaries
+                                        br
+                                        input.form-check-input(type="checkbox" name="ancillaries" value=`${a.ancillary_id}`)
+                                        label.form-check-label.ms-2 #{a.ancillary_desc}
+                            //- Room Payment tab
+                            .tab.d-none
+                                //- mode of payment
+                                .mb-3
+                                    label.form-label.fw-bold(for='modeofpayment') Mode of Payment
+                                    select.form-select(id='modeofpayment' name='modeofpayment')
+                                        option(value='Credit Card') Credit Card
+                                        option(value='Debit Card') Debit Card
+                                        option(value='Cash') Cash
+                                //- approval code
+                                .mb-3
+                                    label.form-label.fw-bold(for='approvalcode') Approval Code
+                                    input.form-control(type='text' id='approvalcode' name='approvalcode' placeholder='')
+                                .row
+                                    input(type='hidden' name='description' value='Room Accommodation')
+                                    //- price
+                                    .mb-3.col-md-6
+                                        label.form-label.fw-bold(for='price') Price
+                                        input#price.form-control(type='number' name='price' placeholder='' readonly)
+                                    //- qty
+                                    .mb-3.col-md-6
+                                        label.form-label.fw-bold(for='qty') Number of Days
+                                        input#qty.form-control(type='number' name='qty' placeholder='' readonly)
+                                //- amount
+                                .mb-3
+                                    label.form-label.fw-bold(for='amount') Amount
+                                    input#amount.form-control(type='number' name='amount' placeholder='' readonly)
+                            script.
+                                const rooms = !{JSON.stringify(rooms)}
+
+                                //- checkin date and checkout date is changed
+                                const checkInDateInput = document.querySelector('#checkindate')
+                                const checkOutDateInput = document.querySelector('#checkoutdate')
+                                const numOfDaysInput = document.querySelector('#numofdays')
+
+                                //- roomtype is changed
+                                const roomTypeSelect = document.querySelector('select[name="roomtype"]')
+                                const roomNumSelect = document.querySelector('select[name="roomid"]')
+                                const roomNumOptions = document.querySelectorAll('select[name="roomid"] option')
+
+                                const priceInput = document.querySelector('#price')
+                                const qtyInput = document.querySelector('#qty')
+                                const amountInput = document.querySelector('#amount')
+
+                                //- calculateNumDays
+                                function calculateNumDays() {
+                                    const checkInDate = new Date(checkInDateInput.value)
+                                    const checkOutDate = new Date(checkOutDateInput.value)
+                                    const difference = checkOutDate - checkInDate
+                                    const numDays = Math.floor(difference / (1000 * 60 * 60 * 24))
+
+                                    numOfDaysInput.value = numDays
+                                    qtyInput.value = numDays
+                                }
+
+                                function getRangeOfDates(d1, d2) {
+                                    const startDate = new Date(d1);
+                                    const endDate = new Date(d2);
+                                    const dates = []
+
+                                    for (var d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
+                                        dates.push(new Date(d))
+                                    }
+                                    return dates
+                                }
+
+                                function updateRoomNumbers(){
+                                    const selectedOption = roomTypeSelect.options[roomTypeSelect.selectedIndex]
+                                    const selectedTypeId = selectedOption.getAttribute('data-typeid')
+                                    const selectedTypePrice = selectedOption.getAttribute('data-price')
+                                    
+                                    //- price input in "Room Payment" tab is updated based on roomtype
+                                    priceInput.value = selectedTypePrice
+
+                                    //- room num options is cleared
+                                    roomNumSelect.innerHTML = ''
+                                    roomNumOptions.forEach((option)=>{
+                                        option.value = ''
+                                        option.innerHTML = ''
+                                    })
+
+                                    rooms.forEach((room) => {
+                                        //- get range of checkin date to checkoutdate of the reservation
+                                        //- i.e. when the room is occupied
+                                        let dates = []
+                                        let valid = true
+                                        if(room.checkindate && room.checkoutdate){
+                                            dates = getRangeOfDates(room.checkindate, room.checkoutdate)
+                                        }
+                                        
+                                        if(dates.length > 0){
+                                            dates.forEach((date)=>{
+
+                                                //- convert to yyyy-mm-dd format
+                                                const dateString = date
+                                                const temp = new Date(dateString)
+                                                const reservedDate = temp.getFullYear() + "-"  +(temp.getMonth() + 1) + "-" + temp.getDate()
+
+                                                //- if date matches checkin date value, room is not valid (cannot be chosen for checkin)
+                                                if(reservedDate == checkInDateInput.value){
+                                                    valid = false
+                                                }
+                                            })
+                                        }
+                                        
+                                        
+                                        //- if room's room type matches selected room type
+                                        //- and is vacant
+                                        //- and is valid
+                                        //- add to roomnum select's options
+                                        if (room.typeid == selectedTypeId && room.status === 'Vacant' && valid === true) {
+                                            const newOption = document.createElement('option')
+                                            newOption.value = room.roomid
+                                            newOption.innerText = room.roomnum
+                                            roomNumSelect.appendChild(newOption);
+                                        }
+                                    })
+                                }
+
+                                function updateAmount(){
+                                    if(priceInput.value != null && qtyInput.value != null){
+                                        amountInput.value = priceInput.value * qtyInput.value
+                                    }
+                                }
+
+                                //- checkin date and checkout date is changed
+                                //- calculateNumDays is called
+                                checkInDateInput.addEventListener('change', calculateNumDays)
+                                checkOutDateInput.addEventListener('change', calculateNumDays)
+                                
+                                //- roomtype, checkin date, and checkout date is changed
+                                //- updateRoomNumbers is called
+                                document.addEventListener('DOMContentLoaded', updateRoomNumbers)
+                                roomTypeSelect.addEventListener('change', updateRoomNumbers)
+                                checkInDateInput.addEventListener('change', updateRoomNumbers)
+                                checkOutDateInput.addEventListener('change', updateRoomNumbers)
+
+                                //- 
+                                document.addEventListener('DOMContentLoaded', updateAmount)
+                                checkInDateInput.addEventListener('change', updateAmount)
+                                checkOutDateInput.addEventListener('change', updateAmount)
+                                roomNumSelect.addEventListener('change', updateAmount)
+                            // Finish tab
+                            .tab.d-none
+                                p All Set! Click submit to register this guest account.
+                                input.btn.btn-primary(type="submit" value="Submit") 
+                        .card-footer.text-end
+                            .d-flex
+                                button#back_button.btn.btn-link(type='button' onclick='back()') Back
+                                button#next_button.btn.btn-primary.ms-auto(type='button' onclick='next()') Next
+
+
+    //-Table
+    script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+    script(src='/js/table.js')
+    //-Bootstrap Js
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    //-FontAwesome
+    script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
+    //-Customize JS
+    script(src='/js/modal.js') 
+    script(src='/js/nav-active.js') 
+    script(src='/js/room_nav.js') 
+    script(src='/js/multistepform.js') 
+
+    
+
+               
