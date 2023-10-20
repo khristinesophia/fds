@@ -40,6 +40,7 @@ const HSArooms = require('./routes/HSA/HSArooms')
 const roomtype = require('./routes/HSA/roomtype')
     // receptionist user routes
 const Rrooms = require('./routes/receptionist/Rrooms')
+const guestaccounts = require(path.join(__basedir, 'routes', 'receptionist', 'guestaccounts'))
 
 // register routes as middleware
 app.use('/login', login)
@@ -59,6 +60,7 @@ app.use('/HSArooms', HSArooms)
 app.use('/roomtype', roomtype)
     // receptionist user routes
 app.use('/Rrooms', Rrooms)
+app.use('/ga', guestaccounts)
 
 
 // app.get('/', (req, res) => {

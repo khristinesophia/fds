@@ -66,7 +66,7 @@ router.post('/', async(req, res)=>{
                 // redirect to hotels page
                 res.redirect('/hotels')
             } else{
-                res.render('/', {
+                res.render('login/loginSA', {
                     loginError: true  // pass a flag to indicate an error
                 })
             }
@@ -88,7 +88,7 @@ router.post('/', async(req, res)=>{
                     res.redirect('/dashboard/hsadmin')
                 }
             } else{
-                res.render('/', {
+                res.render('login/loginSA', {
                     loginError: true  // pass a flag to indicate an error
                 })
             }
@@ -105,7 +105,7 @@ router.post('/', async(req, res)=>{
                 // redirect 
                 res.redirect('/dashboard/receptionist')
             } else {
-                res.render('/', {
+                res.render('login/loginSA', {
                     loginError: true  // pass a flag to indicate an error
                 })
             }
