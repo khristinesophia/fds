@@ -53,7 +53,14 @@ router.post('/', async(req, res)=>{
             userType = 'r'
             user = r_result.rows[0]
         }
-
+        
+        // Check if the username is not found in any of the tables
+        if (sa_length === 0 && hsa_length === 0 && r_length === 0) {
+            res.render('login/loginSA', {
+                loginError: true,  // pass a flag to indicate an error
+                userNotFound: true  // pass a flag to indicate username not found
+            });
+        }
 
         // handle sa login
         if(userType === 'sa'){
@@ -116,112 +123,6 @@ router.post('/', async(req, res)=>{
     }
 })
 
-
-
-
-// 3 separate login forms logic below
-
-//- render login form
-router.get('/:userCode', (req, res)=>{
-    const { userCode } = req.params
-
-    if(userCode == 'SA'){
-        res.render('login/loginSA')
-    }
-    if(userCode == 'HSA'){
-        res.render('login/loginHSA')
-    }
-    if(userCode == 'R'){
-        res.render('login/loginR')
-    }
-    
-})
-
-
-//- "/login/superadmin" route
-router.post('/superadmin', async (req, res) => {
-    const { username, password } = req.body
-    try {
-        // get user from DB
-        const result = await pool.query('SELECT * FROM superadmin_login WHERE username = $1', [username])
-        const user = result.rows[0]
-
-        // if user exists and password is correct
-        if (user && await bcrypt.compare(password, user.hashpassword)) {
-            req.session.userID = user.userid
-            req.session.username = user.username
-
-            // redirect to hotels page
-            res.redirect('/hotels')
-        } else {
-            // Display the error message box
-            res.render('login/loginSA', {
-                loginError: true  // Pass a flag to indicate an error
-            })
-        }
-    } catch (error) {
-        res.send(error.message)
-    }
-})
-
-
-//- "/login/hsadmin" route
-router.post('/hsadmin', async (req, res)=>{
-    const { username, password } = req.body
-    try {
-        // get user from DB
-        const result = await pool.query('SELECT * FROM hoteladmin_login WHERE username = $1', [username])
-        const user = result.rows[0]
-
-        // if user exists and password is correct
-        if(user && await bcrypt.compare(password, user.hashpassword)){
-            req.session.userID = user.userid
-            req.session.username = user.username
-            req.session.hotelID = user.hotelid
-
-            // redirect 
-            if(user.firstlogin === false){
-                res.redirect('/setup')
-            } else{
-                res.redirect('/dashboard/hsadmin')
-            }
-        } else {
-            // Display the error message box
-            res.render('login/loginHSA', {
-                loginError: true  // Pass a flag to indicate an error
-            })
-        }
-    } catch (error) {
-        res.send(error.message)
-    }
-})
-
-
-//- "/login/receptionist" route
-router.post('/receptionist', async (req, res)=>{
-    const { username, password } = req.body
-    try {
-        // get user from DB
-        const result = await pool.query('SELECT * FROM user_login WHERE username = $1', [username])
-        const user = result.rows[0]
-
-        // if user exists and password is correct
-        if(user && await bcrypt.compare(password, user.hashpassword)){
-            req.session.userID = user.userid
-            req.session.username = user.username
-            req.session.hotelID = user.hotelid
-
-            // redirect 
-            res.redirect('/dashboard/receptionist')
-        } else {
-            res.render('login/loginR', {
-                loginError: true  // Pass a flag to indicate an error
-            })
-        }
-    } catch (error) {
-        res.send(error.message)
-    }
-})
 
 
 

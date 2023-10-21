@@ -25,3 +25,6 @@
 textarea.form-control {
     min-height: calc(1.5em + (0.75rem + 2cm));
 }
+.smaller-card{
+    width: 400px;
+}
