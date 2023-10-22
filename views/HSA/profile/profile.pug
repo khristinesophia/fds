@@ -22,49 +22,20 @@ html(lang="en")
     include ../../partials/color.pug
   body
     include ../../partials/navHSA.pug
-    //- .content
-      .container-fluid
-        .row.justify-content-center.align-items-center.h-100
-          .col-md-10
-            .card.profile
-              .card-body
-                .row
-                  .col-md-6
-                    if h.hotelimage
-                      img.logo-img(src=`${h.hotelimage}`, height="300", alt="")
-                  .col-md-6
-                    if hotelColor
-                      h3.card-title Color Theme:
-                      p.card-text
-                        span #{hotelColor.color}
-                    hr
-                    if h.hotellocation
-                      h6 Location:
-                      p.card-text
-                        span #{h.hotellocation}
-                    if h.hotelcontact
-                      h6 Contact Number:
-                      p.card-text
-                        span #{h.hotelcontact}
-                    if h.hotelemail
-                      h6 Email:
-                      p.card-text
-                        span #{h.hotelemail}
-
-                    button.btn.btn-primary
-                      a(href="/profile/editprofile") Edit
 
     .content
-      .row.mx-5.d-flex.justify-content-center
-        .col-12.col-md-12.col-lg-5.mt-4
-          .card.bg-white.shadow.text-center
+      .row.mx-5
+
+        //- (LEFT) Profile Section Informations
+        .col-12.col-md-12.col-lg-3.mt-4
+          .card.bg-white.shadow
             .card-body.text-dark
-              .img-area.mb-4
-              if h.hotelimage
-                img.logo-img(src=`${h.hotelimage}`, height="300", alt="", style="border-radius: 50%; border: 1px solid black")
-              if hotelColor
-                h6 Color Theme: 
-                  span #{hotelColor.color}
+              .img-area.mb-4.text-center
+                if h.hotelimage
+                  img.logo-img(src=`${h.hotelimage}`, height="300", alt="", style="border-radius: 50%; border: 1px solid black")
+                if hotelColor
+                  h6 Color Theme: 
+                    span #{hotelColor.color}
               hr
               if h.hotellocation
                 h6 Location: 
@@ -78,38 +49,41 @@ html(lang="en")
 
               //- a.btn(href="/profile/editprofile") Edit
 
-          .card.bg-white.shadow
-            .card-body.text-dark
-              h2.text.text-center.mb-3 Edit Profile
+        .col-9.mx-auto
+            //- Edit Profile 
+            .col-12.col-md-12.mt-4
+              .card.bg-white.shadow
+                .card-body.text-dark
+                  h2.text.mb-3 Edit Profile
 
-              form(action=`/profile/edit/${h.hotelid}`, method="POST")
+                  form(action=`/profile/edit/${h.hotelid}`, method="POST")
 
-                label.col-form-label(for='hotelcolor') Color Theme
-                select.form-select(id='hotelcolor', name='hotelcolor')
-                  option(value=h.hotelcolor)=h.hotelcolor
-                  each c in colorStacksArray
-                    option(value=c.color)= c.color
-                hr  
-                
-                label.col-form-label(for="hotelname") Hotel Name:
-                input.form-control(type="text", id="hotelname", name="hotelname", value=`${h.hotelname ? h.hotelname : ''}`, required)
+                    h2.col-form-label(for='hotelcolor') Color Theme
+                    select.form-select(id='hotelcolor', name='hotelcolor')
+                      option(value=h.hotelcolor)=h.hotelcolor
+                      each c in colorStacksArray
+                        option(value=c.color)= c.color
+                    hr  
+                    
+                    h2.col-form-label(for="hotelname") Hotel Name:
+                    input.form-control(type="text", id="hotelname", name="hotelname", value=`${h.hotelname ? h.hotelname : ''}`, required)
 
-                label.col-form-label(for="hotellocation") Hotel Location:
-                input.form-control(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation ? h.hotellocation : ''}` required)
+                    h2.col-form-label(for="hotellocation") Hotel Location:
+                    input.form-control(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation ? h.hotellocation : ''}` required)
 
-                label.col-form-label(for="hotelcontact") Hotel Contact:
-                input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact ? h.hotelcontact : ''}` required)
+                    h2.col-form-label(for="hotelcontact") Hotel Contact:
+                    input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact ? h.hotelcontact : ''}` required)
 
-                label.col-form-label(for="hotelemail") Hotel Email:
-                input.form-control(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail ? h.hotelemail : ''}` required)
+                    h2.col-form-label(for="hotelemail") Hotel Email:
+                    input.form-control(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail ? h.hotelemail : ''}` required)
 
-                input.btn.mt-3(type="submit", value="Submit")
+                    input.btn.mt-3(type="submit", value="Submit")
 
-            //thres an error here 
-              a.btn(data-hotelid=h.hotelid data-hotelcolor=hotelColor data-hname=h.hotelname data-hlocation=h.hotellocation 
-              data-hcontact=h.hotelcontact data-hemail=h.hotelemail onclick="Edit_Profile(this)" role='button') Edit
-              include ../../mixins/modals.pug
-              +editProfileHSA(h.hotelid, colorStacksArray)
+                //thres an error here 
+                  a.btn(data-hotelid=h.hotelid data-hotelcolor=hotelColor data-hname=h.hotelname data-hlocation=h.hotellocation 
+                  data-hcontact=h.hotelcontact data-hemail=h.hotelemail onclick="Edit_Profile(this)" role='button') Edit
+                  include ../../mixins/modals.pug
+                  +editProfileHSA(h.hotelid, colorStacksArray)
 
 
               
