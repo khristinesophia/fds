@@ -38,53 +38,72 @@ html(lang="en")
                 //- modulenav
                 include ../../partials/navRga.pug
             
-                .container.shadow.mt-3.pt-3.pb-3.bg-white
-                    h4 Guest Details
-                    p Full Name: 
-                        if ga.fullname
-                            span #{ga.fullname}
-                    p Home Address:
-                        if ga.address
-                            span #{ga.address}
-                    p Email:
-                        if ga.email
-                            span #{ga.email}
-                    p Contact Number:
-                        if ga.contactno
-                            span #{ga.contactno}
+                .container.shadow.mt-3.p-0.bg-white
+                    .px-5.py-3.mb-3.bg
+                        h4.m-0 Guest Details
+                    .px-5.py-2
+                        .row 
+                            p.col-md-2.fw-bold Full Name: 
+                            if ga.fullname
+                                span.col-md-10 #{ga.fullname}
+                        .row
+                            p.col-md-2.fw-bold Home Address:
+                            if ga.address
+                                span.col-md-10 #{ga.address}
+                        .row
+                            p.col-md-2.fw-bold Email:
+                            if ga.email
+                                span.col-md-10 #{ga.email}
+                        .row
+                            p.col-md-2.fw-bold Contact Number:
+                            if ga.contactno
+                                span.col-md-10 #{ga.contactno}
 
-                .container.shadow.mt-3.pt-3.pb-3.bg-white
-                    h4 Stay Details
-                    p Check-In Date:
-                        if ga.checkindate
-                            span #{ga.checkindate}
-                    p Check-Out Date:
-                        if ga.checkoutdate
-                            span #{ga.checkoutdate}
-                    p Number of Days:
-                        if ga.numofdays
-                            span #{ga.numofdays}
-                    p Number of Adults:
-                        if ga.adultno
-                            span #{ga.adultno}
-                    p Number of Children:
-                        if ga.childno
-                            span #{ga.childno}
-                    p Room Types:
-                        if ga.roomtype
-                            span #{ga.roomtype}
-                    p Room Number:
-                        if ga.roomnum
-                            span #{ga.roomnum}
-                    p Promo Code:
-                        if ga.promocode
-                            span #{ga.promocode}
+                .container.shadow.mt-3.p-0.bg-white
+                    .px-5.py-3.mb-3.bg
+                        h4.m-0 Stay Details
+                    .px-5.py-2
+                        .row
+                            p.col-md-2.fw-bold Check-In Date:
+                            if ga.checkindate
+                                span.col-md-10 #{ga.checkindate}
+                        .row
+                            p.col-md-2.fw-bold Check-Out Date:
+                            if ga.checkoutdate
+                                span.col-md-10 #{ga.checkoutdate}
+                        .row
+                            p.col-md-2.fw-bold Number of Days:
+                            if ga.numofdays
+                                span.col-md-10 #{ga.numofdays}
+                        .row
+                            p.col-md-2.fw-bold Number of Adults:
+                            if ga.adultno
+                                span.col-md-10 #{ga.adultno}
+                        .row
+                            p.col-md-2.fw-bold Number of Children:
+                            if ga.childno
+                                span.col-md-10 #{ga.childno}
+                        .row
+                            p.col-md-2.fw-bold Room Types:
+                            if ga.roomtype
+                                span.col-md-10 #{ga.roomtype}
+                        .row
+                            p.col-md-2.fw-bold Room Number:
+                            if ga.roomnum
+                                span.col-md-10 #{ga.roomnum}
+                        .row
+                            p.col-md-2.fw-bold Promo Code:
+                            if ga.promocode
+                                span.col-md-10 #{ga.promocode}
 
-                .container.shadow.mt-3.pt-3.pb-3.bg-white
-                    h4 Payment Details
-                    p Mode of Payment:
-                        if ga.modeofpayment
-                            span #{ga.modeofpayment}
+                .container.shadow.mt-3.p-0.bg-white
+                    .px-5.py-3.mb-3.bg
+                        h4.m-0 Stay Details
+                    .px-5.py-2
+                        .row
+                            p.col-md-2.fw-bold Mode of Payment:
+                            if ga.modeofpayment
+                                span.col-md-10 #{ga.modeofpayment}
 
 
     //-Bootstrap Js
