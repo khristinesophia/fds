@@ -15,6 +15,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
         const hotel = await pool.query('SELECT * FROM hotels WHERE hotelid = $1', [hotelid])
+        const colors = await pool.query('SELECT * FROM colorstack')
 
         // Convert binary data to base64 string
         hotel.rows.forEach(row => {
@@ -25,7 +26,8 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
         res.render('HSA/profile/profile', {
             h: hotel.rows[0],
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            colorStacksArray: colors.rows
         })
 
     } catch (error) {
@@ -35,22 +37,22 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
 
 // render edit profile
-router.get('/editprofile', isAuthenticated, getHotelColor, async(req, res)=>{
-    try {
-        const hotelid = req.session.hotelID
-        const hotel = await pool.query('SELECT * FROM hotels WHERE hotelid = $1', [hotelid])
-        const colors = await pool.query('SELECT * FROM colorstack')
+// router.get('/editprofile', isAuthenticated, getHotelColor, async(req, res)=>{
+//     try {
+//         const hotelid = req.session.hotelID
+//         const hotel = await pool.query('SELECT * FROM hotels WHERE hotelid = $1', [hotelid])
+//         const colors = await pool.query('SELECT * FROM colorstack')
 
-        res.render('HSA/profile/editprofile', {
-            h: hotel.rows[0],
-            hotelColor: req.hotelColor,
-            colorStacksArray: colors.rows
-        })
+//         res.render('HSA/profile/editprofile', {
+//             h: hotel.rows[0],
+//             hotelColor: req.hotelColor,
+//             colorStacksArray: colors.rows
+//         })
         
-    } catch (error) {
-        console.error(error.message)
-    }
-})
+//     } catch (error) {
+//         console.error(error.message)
+//     }
+// })
 // edit
 router.post('/edit/:id', isAuthenticated, async(req, res)=>{
     try {
