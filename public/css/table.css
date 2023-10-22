@@ -1,3 +1,10 @@
 .dataTable table tr {
     border: solid 1px black;
 }
+.roomimg {
+    border-radius: 5px;
+    width: 200px;
+    height: 100px;
+    object-fit: cover;
+}
+
