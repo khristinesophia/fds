@@ -101,6 +101,15 @@ router.post('/register', async(req,res)=>{
     `
     const q3result = await pool.query(q3, [hotelid, accountid, roomid, description, price, qty, amount, date, approvalcode])
 
+    //- update room status to 'Occupied'
+    const q4 = `
+        UPDATE rooms
+            SET status = $1
+        WHERE roomid = $2 AND 
+            hotelid = $3
+    `
+    const q4result = await pool.query(q4, ['Occupied', roomid, hotelid])
+
     res.redirect('/ga')
 })
 
@@ -136,9 +145,66 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     })
 })
 
+//- render "folio" page
+//- "ga/folio/:id"
+router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
+
+    const hotelid = req.session.hotelID
+    const { id } = req.params
+
+    //- select from "transactions" table (fds)
+    const q1 = `
+        SELECT * FROM transactions
+        WHERE hotelid = $1
+        AND accountid = $2
+    `
+    const q1result = await pool.query(q1, [hotelid, id])
+
+    //- select from "ancillary_transactions" table (ancillary)
+    const q2 = `
+        SELECT 
+            t1.ancillary_desc,
+            t2.ps_code,
+            t2.price,
+            t3.transaction_id,
+            t3.accountid,
+            t3.quantity,
+            t3.amount
+        FROM ancillaries t1
+        JOIN product_service t2
+            ON t1.ancillary_id = t2.ancillary_id
+        JOIN ancillary_transactions t3
+            ON t2.ps_id = t3.ps_id
+        WHERE t3.hotelid = $1
+        AND t3.accountid = $2
+    `
+    const q2result = await pool.query(q2, [hotelid, id])
+
+    //- select from "ga" and "ga_gd" table (fds)
+    const q3 = `
+        SELECT *
+        FROM guestaccounts t1
+            JOIN guestaccounts_guestdetails t2
+                ON t1.accountid = t2.accountid
+            JOIN rooms t3
+                ON t1.roomid = t3.roomid
+        WHERE t1.hotelid = $1 AND 
+            t1.accountid = $2
+    `
+    const q3result = await pool.query(q3, [hotelid, id])
+
+    res.render('receptionist/guestaccounts/folio', {
+        hotelColor: req.hotelColor,
+        t1: q1result.rows,
+        t2: q2result.rows,
+        ga: q3result.rows[0]
+    })
+
+})
+
 //- render "detail" page
 //- "ga/:id"
-router.get('/:id', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
 
