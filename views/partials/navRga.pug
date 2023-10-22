@@ -3,7 +3,7 @@
     ul.nav.nav-pills.justify-content-between.flex-shrink-0.mb-sm-auto.mb-0.align-items-center.align-items-sm-stretch
       //- all rooms
       li.nav_room.me-3.p-2
-        a.nav-roomlink.align-middle.nav_text.har(href='#')
+        a.nav-roomlink.align-middle.nav_text.har(href=`/ga/detail/${ga.accountid}`)
           i.fa-solid.fa-circle-info.me-sm-1
           span Account Information
       //- vacant rooms
@@ -13,6 +13,6 @@
           span Check-Out
       //- reserved rooms
       li.nav_room.me-3.p-2
-        a.nav-roomlink.align-middle.nav_text(href='#')
+        a.nav-roomlink.align-middle.nav_text(href=`/ga/folio/${ga.accountid}`)
           i.fa-solid.fa-file-invoice.me-sm-1
           span Folio 
