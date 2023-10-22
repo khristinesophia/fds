@@ -76,7 +76,34 @@ html(lang="en")
                 h6 Email: 
                   span #{h.hotelemail}
 
-              a.btn(href="/profile/editprofile") Edit
+              //- a.btn(href="/profile/editprofile") Edit
+
+          .card.bg-white.shadow
+            .card-body.text-dark
+              h2.text.text-center.mb-3 Edit Profile
+
+              form(action=`/profile/edit/${h.hotelid}`, method="POST")
+
+                label.col-form-label(for='hotelcolor') Color Theme
+                select.form-select(id='hotelcolor', name='hotelcolor')
+                  option(value=h.hotelcolor)=h.hotelcolor
+                  each c in colorStacksArray
+                    option(value=c.color)= c.color
+                hr  
+                
+                label.col-form-label(for="hotelname") Hotel Name:
+                input.form-control(type="text", id="hotelname", name="hotelname", value=`${h.hotelname ? h.hotelname : ''}`, required)
+
+                label.col-form-label(for="hotellocation") Hotel Location:
+                input.form-control(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation ? h.hotellocation : ''}` required)
+
+                label.col-form-label(for="hotelcontact") Hotel Contact:
+                input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact ? h.hotelcontact : ''}` required)
+
+                label.col-form-label(for="hotelemail") Hotel Email:
+                input.form-control(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail ? h.hotelemail : ''}` required)
+
+                input.btn.mt-3(type="submit", value="Submit")
 
             //thres an error here 
               a.btn(data-hotelid=h.hotelid data-hotelcolor=hotelColor data-hname=h.hotelname data-hlocation=h.hotellocation 
