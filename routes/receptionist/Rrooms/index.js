@@ -12,9 +12,34 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const allRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 ORDER BY roomnum ASC' , [hotelid])
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
+       
+        const allRoomsQuery = `
+            SELECT
+                r.roomnum,
+                rt.roomimage,
+                rt.roomtype,
+                r.roomfloor,
+                r.status
+            FROM
+                rooms r
+            INNER JOIN
+                room_type rt ON r.typeid = rt.typeid
+            WHERE
+                r.hotelid = $1 ORDER BY roomnum ASC;
+        `
 
+        const allRooms = await pool.query(allRoomsQuery, [hotelid])
+
+        // Convert binary data to base64 string
+        allRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
+        
         res.render('receptionist/Rrooms/allRooms', {
+            roomTypesArray: roomtype.rows, 
             allRoomsArray: allRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -28,11 +53,37 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        
-        const vacantRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, roomprice, capacity, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'Vacant']);
 
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
+
+        const vacantRoomsQuery = `
+            SELECT
+                r.roomnum,
+                rt.roomimage,
+                rt.roomtype,
+                r.roomfloor,
+                rt.price,
+                rt.capacity,
+                r.status
+            FROM
+                rooms r
+            INNER JOIN
+                room_type rt ON r.typeid = rt.typeid
+            WHERE
+                r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
+        `;
+
+        const vacantRooms = await pool.query(vacantRoomsQuery, [hotelid, 'Vacant'])
+
+        // Convert binary data to base64 string
+        vacantRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('receptionist/Rrooms/vacantRooms', {
+            roomTypesArray: roomtype.rows, 
             vacantRoomsArray: vacantRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -47,12 +98,15 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
 
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
+
         // Updated SQL query to fetch occupied rooms with guest details
         const reservedRoomsQuery = `
             SELECT
                 r.reservationid,
-                r.roomnum,
-                r.roomtype,
+                ro.roomnum,
+                rt.roomimage,
+                rt.roomtype,
                 rd.fullname,
                 TO_CHAR(r.reservationdate, 'YYYY-MM-DD') AS reservationdate,
                 TO_CHAR(r.checkindate, 'YYYY-MM-DD HH:MI:SS') AS checkindate,
@@ -61,13 +115,25 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
                 reservations r
             INNER JOIN
                 reservation_guestdetails rd ON r.reservationid = rd.reservationid
+            INNER JOIN
+                room_type rt ON r.typeid = rt.typeid
+            INNER JOIN
+                rooms ro ON r.roomid = ro.roomid
             WHERE
                 r.hotelid = $1 ORDER BY roomnum ASC;
         `;
 
         const reservedRooms = await pool.query(reservedRoomsQuery, [hotelid])
 
+        // Convert binary data to base64 string
+        reservedRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
+
         res.render('receptionist/Rrooms/reservedRooms', {
+            roomTypesArray: roomtype.rows, 
             reservedRoomsArray: reservedRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -82,11 +148,14 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
 
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
+
         // Updated SQL query to fetch occupied rooms with guest details
         const occupiedRoomsQuery = `
             SELECT
                 r.roomnum,
-                r.roomtype,
+                rt.roomimage,
+                rt.roomtype,
                 r.roomfloor,
                 gd.fullname,
                 TO_CHAR(ga.checkindate, 'YYYY-MM-DD HH:MI:SS') AS checkindate,
@@ -95,16 +164,26 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
             FROM
                 rooms r
             INNER JOIN
-                guestaccounts ga ON r.roomnum = ga.roomnum
+                guestaccounts ga ON r.roomid = ga.roomid
             INNER JOIN
                 guestaccounts_guestdetails gd ON ga.accountid = gd.accountid
+            INNER JOIN
+                room_type rt ON r.typeid = rt.typeid
             WHERE
                 r.hotelid = $1 AND r.status = $2 ORDER BY roomnum ASC;
         `;
 
         const occupiedRooms = await pool.query(occupiedRoomsQuery, [hotelid, 'Occupied'])
 
+        // Convert binary data to base64 string
+        occupiedRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
+
         res.render('receptionist/Rrooms/occupiedRooms', {
+            roomTypesArray: roomtype.rows, 
             occupiedRoomsArray: occupiedRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -118,9 +197,35 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const onchangeRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'On-Change'])
+
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
+
+        const onchangeRoomsQuery = `
+            SELECT
+                r.roomnum,
+                rt.roomimage,
+                rt.roomtype,
+                r.roomfloor,
+                r.status
+            FROM
+                rooms r
+            INNER JOIN
+                room_type rt ON r.typeid = rt.typeid
+            WHERE
+                r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
+        `;
+
+        const onchangeRooms = await pool.query(onchangeRoomsQuery, [hotelid, 'On-Change'])
+
+        // Convert binary data to base64 string
+        onchangeRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('receptionist/Rrooms/onchangeRooms', {
+            roomTypesArray: roomtype.rows, 
             onchangeRoomsArray: onchangeRooms.rows,
             hotelColor: req.hotelColor
         })
@@ -134,9 +239,35 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 router.get('/outoforderRooms', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const outoforderRooms = await pool.query('SELECT roomnum, roomtype, roomfloor, status FROM rooms WHERE hotelid = $1 AND status = $2 ORDER BY roomnum ASC', [hotelid, 'Out-of-Order'])
+
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
+
+        const outoforderRoomsQuery = `
+            SELECT
+                r.roomnum,
+                rt.roomimage,
+                rt.roomtype,
+                r.roomfloor,
+                r.status
+            FROM
+                rooms r
+            INNER JOIN
+                room_type rt ON r.typeid = rt.typeid
+            WHERE
+                r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
+        `;
+
+        const outoforderRooms = await pool.query(outoforderRoomsQuery, [hotelid, 'Out-of-Order'])
+
+        // Convert binary data to base64 string
+        outoforderRooms.rows.forEach(row => {
+            if (row.roomimage) {
+                row.roomimage = 'data:' + row.imagetype + ';base64,' + row.roomimage.toString('base64');
+            }
+        });
 
         res.render('receptionist/Rrooms/outoforderRooms', {
+            roomTypesArray: roomtype.rows, 
             outoforderRoomsArray: outoforderRooms.rows,
             hotelColor: req.hotelColor
         })
