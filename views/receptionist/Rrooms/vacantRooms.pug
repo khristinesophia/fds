@@ -39,6 +39,7 @@ html(lang="en")
                 thead
                   tr
                     th Room Number
+                    th Room Image
                     th Room Type
                     th Room Floor
                     th Price
@@ -49,6 +50,11 @@ html(lang="en")
                   each r in vacantRoomsArray
                     tr
                       td #{r.roomnum}
+                      td
+                        if r.roomimage
+                          img(src=r.roomimage, style="width: 200px; height: 100px;")
+                        else
+                          p No image available
                       td #{r.roomtype}
                       td #{r.roomfloor}
                       td #{r.roomprice}
