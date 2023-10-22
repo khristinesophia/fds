@@ -48,15 +48,15 @@ router.post('/edit', isAuthenticated, async(req,res)=>{
     res.redirect('/settings')
 })
 
-router.post('/changepw', isAuthenticated, async(req,res)=>{
-    const userid = req.session.userID 
-    const { oldPassword, newPassword, confirmPassword } = req.body
+router.post('/changepw', isAuthenticated, async (req, res) => {
+    const userid = req.session.userID;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
 
-    // get old hashpassword from the database
-    const result = await pool.query('SELECT * FROM superadmin_login WHERE userid = $1', [userid])
-    const hashedOldPassword = result.rows[0].hashpassword
+    // get old hash password from the database
+    const result = await pool.query('SELECT * FROM superadmin_login WHERE userid = $1', [userid]);
+    const hashedOldPassword = result.rows[0].hashpassword;
 
-    // compare old password with old hashpassword
+    // compare old password with old hash password
     const isPasswordValid = await bcrypt.compare(oldPassword, hashedOldPassword);
 
     if (!isPasswordValid) {
@@ -65,8 +65,8 @@ router.post('/changepw', isAuthenticated, async(req,res)=>{
         return res.status(400).json({ error: 'Wrong old password. Please try again.' });
     }
 
-     // Compare new and confirm password
-     if (newPassword !== confirmPassword) {
+    // Compare new and confirm password
+    if (newPassword !== confirmPassword) {
         console.log('New password and confirm password do not match');
         // Send an error response with the message
         return res.status(400).json({ error: 'New password and confirm password do not match. Please try again.' });
@@ -79,10 +79,8 @@ router.post('/changepw', isAuthenticated, async(req,res)=>{
     await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE userid = $2', [hashedNewPassword, userid]);
 
     // Send a success response
-
-    res.redirect('/settings')
-})
-
+    return res.status(200).json({ message: 'Password changed successfully.' });
+});
 
 
 
