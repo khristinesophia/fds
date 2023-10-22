@@ -38,56 +38,57 @@ html(lang="en")
                 //- modulenav
                 include ../../partials/navRga.pug
             
-                .container.shadow.mt-3.pt-3.pb-3.bg-white
-                    table.table.table-borderless(style='width:100%')
-
-                        thead
-                            tr
-                                th Code
-                                th Description
-                                th Price
-                                th Quantity
-                                th Amount
-                        tbody
-                            each t in t1
+                .container.shadow.mt-3.p-0.bg-white
+                    .px-5.py-3.mb-3.bg
+                        h4.m-0 Folio
+                    .px-5.py-3
+                        table.table.table-borderless(style='width:100%')
+                            thead
                                 tr
-                                    td #{t.transactionid}
-                                    td #{t.description}
-                                    td #{t.price}
-                                    td #{t.qty}
-                                    td.amount #{t.amount}
-
-                            each t in t2
+                                    th Code
+                                    th Description
+                                    th Price
+                                    th Quantity
+                                    th Amount
+                            tbody
+                                each t in t1
+                                    tr
+                                        td #{t.transactionid}
+                                        td #{t.description}
+                                        td #{t.price}
+                                        td #{t.qty}
+                                        td.amount #{t.amount}
+                                each t in t2
+                                    tr
+                                        td #{t.ps_code}
+                                        td #{t.ancillary_desc}
+                                        td #{t.price}
+                                        td #{t.quantity}
+                                        td.amount #{t.amount}
                                 tr
-                                    td #{t.ps_code}
-                                    td #{t.ancillary_desc}
-                                    td #{t.price}
-                                    td #{t.quantity}
-                                    td.amount #{t.amount}
-                            tr
-                                td 
-                                td 
-                                td 
-                                td Subtotal
-                                td#subtotal
-                            tr
-                                td 
-                                td 
-                                td 
-                                td Discount
-                                td#discount 0
-                            tr
-                                td 
-                                td 
-                                td 
-                                td Tax
-                                td#tax 12%
-                            tr
-                                td 
-                                td 
-                                td 
-                                td Total Amount
-                                td#totalamount 
+                                    td 
+                                    td 
+                                    td 
+                                    td.fw-bold Subtotal
+                                    td#subtotal
+                                tr
+                                    td 
+                                    td 
+                                    td 
+                                    td.fw-bold Discount
+                                    td#discount 0
+                                tr
+                                    td 
+                                    td 
+                                    td 
+                                    td.fw-bold Tax
+                                    td#tax 12%
+                                tr
+                                    td 
+                                    td 
+                                    td 
+                                    td.fw-bold Total Amount
+                                    td#totalamount 
                     
                     script.
                         const amounts = document.querySelectorAll('td.amount')
