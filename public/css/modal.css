@@ -60,3 +60,29 @@
     text-align: center; 
     display: none;
 }
+
+
+
+#error-message {
+    display: none; /* Initially hide the error message */
+    margin-top: 10px; /* Add spacing from elements above */
+    font-size: 14px;
+    color: #dc3545; /* Red color for error messages, you can change this as needed */
+    text-align: center;
+    /* You can add more styles like padding, border, etc. to fit your design */
+  }
+  #success-message {
+    display: none; /* Initially hide the error message */
+    margin-top: 10px; /* Add spacing from elements above */
+    font-size: 14px;
+    color: #0f5132; /* Red color for error messages, you can change this as needed */
+    text-align: center;
+    /* You can add more styles like padding, border, etc. to fit your design */
+  }  
+  /* Initially hide the error message box */
+.alert.alert-danger {
+    display: none;
+}
+.alert.alert-success {
+    display: none;
+}

@@ -16,7 +16,8 @@ html(lang="en")
 
     .content
       .row.mx-5
-        // Profile Section on the Left
+
+        //- (LEFT) Profile Section Informations
         .col-12.col-md-12.col-lg-4.mt-4
           .card.bg-white.shadow
             .card-body.text-dark
@@ -31,30 +32,30 @@ html(lang="en")
                 h6.mt-3 Username: 
                   span #{u.username}
         
-        // Edit Profile and Change Password on the Right
+        //- (RIGHT) Edit Profile and Change Password
         .col-8.mx-auto
           .row.mx-5
+            //- Edit Profile 
             .col-12.col-md-12.mt-4
               .card.bg-white.shadow
                 .card-body.text-dark
                   h2.text Edit Profile
-            
                   form(action='/settings/edit', method="POST")
                     label.col-form-label(for="name") Name:
                     input.form-control(type="text", name="fullname", value=`${u.fullname}`, required)
             
                     label.col-form-label(for="username") Username:
                     input.form-control(type="text", name="username", value=`${u.username}`, required)
-            
-                    button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="") Cancel
-                    input.btn(type="submit", value="Submit")
-            
+
+                    input.btn.mt-3(type="submit", value="Submit")
+
+            //- Edit Password
             .col-12.col-md-12.mt-4
               .card.bg-white.shadow
                 .card-body.text-dark
                   h2.text Change Password
-            
-                  form(action='/settings/changepw', method="POST")
+                      
+                  form(id="passwordChangeForm", action='/settings/changepw', method="POST")
                     label.col-form-label(for='old-password') Old Password:
                     .input-group.showpass
                       input#oldpassword.form-control(type='password' name='oldPassword')
@@ -68,7 +69,7 @@ html(lang="en")
                       .input-group-append
                         span#shownewPasswordToggle.input-group-text.showpassicon
                           i#shownewPasswordIcon.fas.fa-eye-slash
-            
+
                     label.col-form-label(for='confirm-password') Confirm Password:
                     .input-group.showpass
                       input#conpassword.form-control(type='password' name='confirmPassword')
@@ -76,8 +77,10 @@ html(lang="en")
                         span#showconPasswordToggle.input-group-text.showpassicon
                           i#showconPasswordIcon.fas.fa-eye-slash
             
-                    button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="") Cancel
-                    input.btn(type="submit", value="Submit")
+                    input.btn.mt-3(type="submit", value="Submit")
+                    div#success-message.alert.alert-success(style="display: none")
+                    //- Add this div to display error messages
+                    div#error-message.alert.alert-danger(style="display: none")
 
 
 
@@ -86,4 +89,5 @@ html(lang="en")
     script(src='/js/modal.js') 
     script(src='/js/nav-active.js') 
     script(src='/js/pass.js') 
+    script(src='/js/settingpass.js') 
     
