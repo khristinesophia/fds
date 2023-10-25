@@ -147,6 +147,70 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     })
 })
 
+
+//- render "check-out" page
+//- "ga/checkout/:id"
+router.get('/checkout/:id', isAuthenticated, getHotelColor, async(req,res)=>{
+
+    const hotelid = req.session.hotelID
+    const { id } = req.params
+
+    //- select ga room num and status
+    const q1 = `
+        SELECT 
+            t1.accountid,
+            t2.fullname,
+            t3.roomnum,
+            t3.status
+        FROM guestaccounts t1
+        JOIN guestaccounts_guestdetails t2
+            ON t1.accountid = t2.accountid
+        JOIN rooms t3
+            ON t1.roomid = t3.roomid
+        WHERE t1.hotelid = $1 AND
+            t1.accountid = $2
+    `
+
+    const q1result = await pool.query(q1, [hotelid, id])
+
+    res.render('receptionist/guestaccounts/checkout', {
+        hotelColor: req.hotelColor,
+        ga: q1result.rows[0]
+    })
+})
+
+//- room status 'Occupied' to 'To check out'
+//- "ga/tco/:id"
+router.get('/tco/:id', isAuthenticated, async(req,res)=>{
+
+    const hotelid = req.session.hotelID
+    const { id } = req.params
+
+    const q1 = `
+        UPDATE 
+            rooms 
+        SET 
+            status = 'To check-out' 
+        FROM 
+            guestaccounts
+        WHERE 
+            rooms.roomid = guestaccounts.roomid AND
+            guestaccounts.hotelid = $1 AND 
+            guestaccounts.accountid = $2
+    `
+    const q1result = await pool.query(q1, [hotelid, id])
+
+    const q2 = `
+        SELECT *
+        FROM guestaccounts
+        WHERE hotelid = $1 AND
+        accountid = $2
+    `
+    const q2result = await pool.query(q2, [hotelid, id])
+
+    res.redirect(`/ga/checkout/${q2result.rows[0].accountid}`)
+})
+
 //- render "folio" page
 //- "ga/folio/:id"
 router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
