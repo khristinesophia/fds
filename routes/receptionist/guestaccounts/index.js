@@ -268,6 +268,15 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
 })
 
+//- store approval code for credit/debit card payments
+//- "ga/cardpayment/:id"
+router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
+
+    const hotelid = req.session.hotelID
+    const { id } = req.params
+    const { approvalcode } = req.body
+})
+
 //- render "detail" page
 //- "ga/:id"
 router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
