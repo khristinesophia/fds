@@ -8,6 +8,8 @@ const pool = require(path.join(__basedir, 'config', 'db-config'))
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
 
+const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
+
 const hotelid = 'H0T1L3D7';
 
 //- Route for rendering the view
@@ -31,7 +33,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
             INNER JOIN
                 rooms ro ON r.roomid = ro.roomid
             WHERE
-                r.hotelid = \$1;
+                r.hotelid = $1;
         `;
 
         function getRandomColor() {
@@ -73,7 +75,7 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
     const q1 = `
         SELECT * FROM reservations r
-        JOIN reservation_details rd
+        JOIN reservation_guestdetails rd
             ON r.reservationid = rd.reservationid
         JOIN room_type rt 
             ON r.typeid = rt.typeid
@@ -88,7 +90,7 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
         if(r.checkindate){
             r.checkindate = formatDate(r.checkindate)
         }
-        if(ga.checkoutdate){
+        if(r.checkoutdate){
             r.checkoutdate = formatDate(r.checkoutdate)
         }
     })
