@@ -126,6 +126,8 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
             ON t1.accountid = t2.accountid
         JOIN rooms t3
             ON t1.roomid = t3.roomid
+        JOIN room_type t4
+            ON t1.typeid = t4.typeid
         WHERE t1.hotelid = $1
     `
     const q1result = await pool.query(q1, [hotelid])
