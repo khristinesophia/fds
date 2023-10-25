@@ -96,10 +96,10 @@ router.post('/register', async(req,res)=>{
 
     //- insert to "transactions" T
     const q3 = `
-        INSERT INTO transactions(hotelid, accountid, roomid, description, price, qty, amount, date, approvalcode)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        INSERT INTO transactions(hotelid, accountid, roomid, description, price, qty, amount, date, approvalcode, paid)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
     `
-    const q3result = await pool.query(q3, [hotelid, accountid, roomid, description, price, qty, amount, date, approvalcode])
+    const q3result = await pool.query(q3, [hotelid, accountid, roomid, description, price, qty, amount, date, approvalcode, true])
 
     //- update room status to 'Occupied'
     const q4 = `
