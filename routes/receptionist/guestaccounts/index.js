@@ -218,6 +218,7 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
 
+
     //- select from "transactions" table (fds)
     const q1 = `
         SELECT * FROM transactions
@@ -225,6 +226,7 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
         AND accountid = $2
     `
     const q1result = await pool.query(q1, [hotelid, id])
+
 
     //- select from "ancillary_transactions" table (ancillary)
     const q2 = `
@@ -247,8 +249,27 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     `
     const q2result = await pool.query(q2, [hotelid, id])
 
-    //- select from "ga" and "ga_gd" table (fds)
+
+    //- select from "housekeeping_transactions" table (housekeeping)
     const q3 = `
+        SELECT 
+            t1.transactionid,
+            t1.paid,
+            t2.description,
+            t1.price,
+            t1.qty,
+            t1.amount
+        FROM housekeeping_transactions t1
+        JOIN ref_items t2
+            ON t1.ref_itemid = t2.ref_itemid
+        WHERE t1.hotelid = $1 AND
+            t1.accountid = $2
+    `
+    const q3result = await pool.query(q3, [hotelid, id])
+
+
+    //- select from "ga" and "ga_gd" table (fds)
+    const q4 = `
         SELECT *
         FROM guestaccounts t1
             JOIN guestaccounts_guestdetails t2
@@ -258,13 +279,15 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
         WHERE t1.hotelid = $1 AND 
             t1.accountid = $2
     `
-    const q3result = await pool.query(q3, [hotelid, id])
+    const q4result = await pool.query(q4, [hotelid, id])
 
+    
     res.render('receptionist/guestaccounts/folio', {
         hotelColor: req.hotelColor,
         t1: q1result.rows,
         t2: q2result.rows,
-        ga: q3result.rows[0]
+        t3: q3result.rows,
+        ga: q4result.rows[0]
     })
 
 })

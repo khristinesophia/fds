@@ -74,6 +74,17 @@ html(lang="en")
                                         td #{t.price}
                                         td #{t.quantity}
                                         td.amount #{t.amount}
+                                each t in t3
+                                    tr
+                                        td #{t.transactionid}
+                                        if t.paid
+                                            td Paid
+                                        if t.paid === false 
+                                            td Not paid
+                                        td #{t.description}
+                                        td #{t.price}
+                                        td #{t.qty}
+                                        td.amount #{t.amount}
                                 tr
                                     td 
                                     td 
@@ -106,6 +117,7 @@ html(lang="en")
                     script.
                         const t1 = !{JSON.stringify(t1)}
                         const t2 = !{JSON.stringify(t2)}
+                        const t3 = !{JSON.stringify(t3)}
                         const amounts = document.querySelectorAll('td.amount')
                         const subtotalTD = document.querySelector('#subtotal')
                         const totalamountTD = document.querySelector('#totalamount')
@@ -131,12 +143,18 @@ html(lang="en")
                                     subtotal += parseInt(t.amount)
                                 }
                             })
+                            t3.forEach(t => {
+                                console.log(t)
+                                if(t.paid === false){
+                                    subtotal += parseInt(t.amount)
+                                }
+                            })
 
                             const tax = calculatePercentageOfAmount(subtotal, 12)
                             const totalamount = subtotal + tax
 
-                            subtotalTD.innerText = `${subtotal}.00`
-                            totalamountTD.innerText = `${totalamount}.00`
+                            subtotalTD.innerText = subtotal
+                            totalamountTD.innerText = totalamount
                         })
 
                 if ga.status === "Inspected"
