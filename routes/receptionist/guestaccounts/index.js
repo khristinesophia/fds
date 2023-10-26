@@ -235,7 +235,8 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
             t3.transaction_id,
             t3.accountid,
             t3.quantity,
-            t3.amount
+            t3.amount,
+            t3.paid
         FROM ancillaries t1
         JOIN product_service t2
             ON t1.ancillary_id = t2.ancillary_id

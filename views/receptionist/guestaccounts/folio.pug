@@ -46,6 +46,7 @@ html(lang="en")
                             thead
                                 tr
                                     th Code
+                                    th Paid
                                     th Description
                                     th Price
                                     th Quantity
@@ -54,6 +55,10 @@ html(lang="en")
                                 each t in t1
                                     tr
                                         td #{t.transactionid}
+                                        if t.paid
+                                            td Paid
+                                        if t.paid === false 
+                                            td Not paid
                                         td #{t.description}
                                         td #{t.price}
                                         td #{t.qty}
@@ -61,6 +66,10 @@ html(lang="en")
                                 each t in t2
                                     tr
                                         td #{t.ps_code}
+                                        if t.paid
+                                            td Paid
+                                        if t.paid === false 
+                                            td Not paid
                                         td #{t.ancillary_desc}
                                         td #{t.price}
                                         td #{t.quantity}
@@ -69,28 +78,34 @@ html(lang="en")
                                     td 
                                     td 
                                     td 
+                                    td
                                     td.fw-bold Subtotal
                                     td#subtotal
                                 tr
                                     td 
                                     td 
                                     td 
+                                    td
                                     td.fw-bold Discount
                                     td#discount 0
                                 tr
                                     td 
                                     td 
                                     td 
+                                    td
                                     td.fw-bold Tax
                                     td#tax 12%
                                 tr
                                     td 
                                     td 
                                     td 
+                                    td
                                     td.fw-bold Total Amount
                                     td#totalamount 
                     
                     script.
+                        const t1 = !{JSON.stringify(t1)}
+                        const t2 = !{JSON.stringify(t2)}
                         const amounts = document.querySelectorAll('td.amount')
                         const subtotalTD = document.querySelector('#subtotal')
                         const totalamountTD = document.querySelector('#totalamount')
@@ -101,12 +116,24 @@ html(lang="en")
 
                         document.addEventListener('DOMContentLoaded', ()=>{
                             let subtotal = 0;
-                            amounts.forEach(amount =>{
-                                subtotal += parseInt(amount.innerText)
+                            //- amounts.forEach(amount =>{
+                            //-     subtotal += parseInt(amount.innerText)
+                            //- })
+                            t1.forEach(t => {
+                                console.log(t)
+                                if(t.paid === false){
+                                    subtotal += parseInt(t.amount)
+                                }
+                            })
+                            t2.forEach(t => {
+                                console.log(t)
+                                if(t.paid === false){
+                                    subtotal += parseInt(t.amount)
+                                }
                             })
 
                             const tax = calculatePercentageOfAmount(subtotal, 12)
-                            const totalamount = subtotal - tax
+                            const totalamount = subtotal + tax
 
                             subtotalTD.innerText = `${subtotal}.00`
                             totalamountTD.innerText = `${totalamount}.00`
