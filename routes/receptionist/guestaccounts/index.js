@@ -161,7 +161,8 @@ router.get('/checkout/:id', isAuthenticated, getHotelColor, async(req,res)=>{
             t1.accountid,
             t2.fullname,
             t3.roomnum,
-            t3.status
+            t3.status,
+            t1.settled
         FROM guestaccounts t1
         JOIN guestaccounts_guestdetails t2
             ON t1.accountid = t2.accountid
@@ -181,7 +182,7 @@ router.get('/checkout/:id', isAuthenticated, getHotelColor, async(req,res)=>{
 
 //- room status 'Occupied' to 'To check out'
 //- "ga/tco/:id"
-router.get('/tco/:id', isAuthenticated, async(req,res)=>{
+router.post('/tco/:id', isAuthenticated, async(req,res)=>{
 
     const hotelid = req.session.hotelID
     const { id } = req.params
@@ -191,6 +192,38 @@ router.get('/tco/:id', isAuthenticated, async(req,res)=>{
             rooms 
         SET 
             status = 'To check-out' 
+        FROM 
+            guestaccounts
+        WHERE 
+            rooms.roomid = guestaccounts.roomid AND
+            guestaccounts.hotelid = $1 AND 
+            guestaccounts.accountid = $2
+    `
+    const q1result = await pool.query(q1, [hotelid, id])
+
+    const q2 = `
+        SELECT *
+        FROM guestaccounts
+        WHERE hotelid = $1 AND
+        accountid = $2
+    `
+    const q2result = await pool.query(q2, [hotelid, id])
+
+    res.redirect(`/ga/checkout/${q2result.rows[0].accountid}`)
+})
+
+//- room status 'Inspected' to 'Recently checked-out'
+//- "ga/rco/:id"
+router.post('/rco/:id', isAuthenticated, async(req, res)=>{
+
+    const hotelid = req.session.hotelID
+    const { id } = req.params
+
+    const q1 = `
+        UPDATE 
+            rooms 
+        SET 
+            status = 'Recently checked-out' 
         FROM 
             guestaccounts
         WHERE 
@@ -281,7 +314,7 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     `
     const q4result = await pool.query(q4, [hotelid, id])
 
-    
+
     res.render('receptionist/guestaccounts/folio', {
         hotelColor: req.hotelColor,
         t1: q1result.rows,
@@ -299,6 +332,37 @@ router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
     const { approvalcode } = req.body
+
+    //- update ancillary transactions
+    const q1 = `
+        UPDATE ancillary_transactions
+        SET paid = $1,
+            approvalcode = $2
+        WHERE hotelid = $3 AND
+            accountid = $4
+    `
+    const q1result = await pool.query(q1, [true, approvalcode, hotelid, id])
+
+    //- update housekeeping transactions
+    const q2 = `
+        UPDATE housekeeping_transactions
+        SET paid = $1,
+            approvalcode = $2
+        WHERE hotelid = $3 AND
+            accountid = $4
+    `
+    const q2result = await pool.query(q2, [true, approvalcode, hotelid, id])
+
+    //- update ga "settled column"
+    const q3 = `
+        UPDATE guestaccounts
+        SET settled = $1
+        WHERE hotelid = $2 AND
+            accountid = $3
+    `
+    const q3result = await pool.query(q3, [true, hotelid, id])
+
+    res.redirect(`/ga/checkout/${id}`)
 })
 
 //- render "detail" page
