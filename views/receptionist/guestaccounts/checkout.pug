@@ -44,15 +44,27 @@ html(lang="en")
                     .px-5.py-2
                         .d-flex.justify-content-center
                             .row 
-                                p Room #{ga.roomnum}
+                                p.bg(style='padding: 1rem 2rem; margin-right: 2rem') Room #{ga.roomnum}
                             .row 
-                                p #{ga.status}
+                                - let statusStyles = ''
+                                if ga.status === "Occupied"
+                                    - statusStyles = `background-color: #FFF2F2; color: #CC0000`
+                                if ga.status === "To check-out"
+                                    - statusStyles = `background-color: #FFFFCC; color: #FFCC00`
+                                if ga.status === "Inspected"
+                                    - statusStyles = `background-color: #FFF5E0; color: #FF6600`
+                                if ga.status === "Recently checked-out"
+                                    - statusStyles = `background-color: #CCEDFF; color: #336699`
+                                if ga.status === "Vacant"
+                                    - statusStyles = `background-color: #E6FFE6; color: #339933`
+
+                                p(style=`${statusStyles}; padding: 1rem 2rem`) #{ga.status}
                         if ga.status === "Occupied"
                             p.text-center This room is currently occupied by the guest.<br>Alert housekeeping. Change room status when guest checks out.
                         if ga.status === "To check-out"
                             p.text-center This room is currently ready for inspection.<br>Housekeeping will handle this. Wait for room status to change to “Inspected”.
                         if ga.status === "Inspected" && ga.settled === false
-                            p.text-center This room is already inspected.<br>Process the payment then change the room status to “Recently check-out”
+                            p.text-center This room is already inspected.<br>Process the payment.
                         if ga.settled === true && ga.status != "Recently checked-out"
                             p.text-center This account is already settled.<br>Change the room status to "Recently checked-out"
                         if ga.status === "Recently checked-out"
