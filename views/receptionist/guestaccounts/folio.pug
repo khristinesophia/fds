@@ -172,8 +172,9 @@ html(lang="en")
                                         i.fa-regular.fa-credit-card
                                         p Debit Card
                                 .row 
-                                    i.fa-solid.fa-money-bills
-                                    p Cash
+                                    form(action=`/ga/cashpayment/${ga.accountid}` method="POST") 
+                                        i.fa-solid.fa-money-bills
+                                        input(type="submit" value="Cash")
                                 include ../../mixins/modals.pug
                                 +approvalcode
                 
