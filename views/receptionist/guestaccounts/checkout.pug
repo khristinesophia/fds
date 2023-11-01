@@ -65,7 +65,7 @@ html(lang="en")
                             p.text-center This room is currently ready for inspection.<br>Housekeeping will handle this. Wait for room status to change to “Inspected”.
                         if ga.status === "Inspected" && ga.settled === false
                             p.text-center This room is already inspected.<br>Process the payment.
-                        if ga.settled === true && ga.status === "Inspected"
+                        if ga.status === "Inspected" && ga.settled === true
                             p.text-center This account is already settled.<br>Change the room status to "Recently checked-out"
                         if ga.status === "Recently checked-out"
                             p.text-center This account is already checked-out.<br>Print or download the invoice
@@ -78,7 +78,7 @@ html(lang="en")
                         if ga.status === "Inspected" && ga.settled === false
                             form(action=`/ga/folio/${ga.accountid}`).text-center
                                 input(type="submit" value="Folio")
-                        if ga.settled === true && ga.status === "Inspected"
+                        if ga.status === "Inspected" && ga.settled === true
                             form(action=`/ga/rco/${ga.accountid}` method="POST").text-center
                                 input(type="submit" value="Change")
                         if ga.status === "Recently checked-out"

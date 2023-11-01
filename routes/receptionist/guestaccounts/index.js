@@ -369,14 +369,32 @@ router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
 
-    //- update ga "settled column"
+    //- update ancillary transactions
     const q1 = `
+        UPDATE ancillary_transactions
+        SET paid = $1
+        WHERE hotelid = $2 AND
+            accountid = $3
+    `
+    const q1result = await pool.query(q1, [true, hotelid, id])
+
+    //- update housekeeping transactions
+    const q2 = `
+        UPDATE housekeeping_transactions
+        SET paid = $1
+        WHERE hotelid = $2 AND
+            accountid = $3
+    `
+    const q2result = await pool.query(q2, [true, hotelid, id])
+
+    //- update ga "settled column"
+    const q3 = `
         UPDATE guestaccounts
         SET settled = $1
         WHERE hotelid = $2 AND
             accountid = $3
     `
-    const q1result = await pool.query(q1, [true, hotelid, id])
+    const q3result = await pool.query(q3, [true, hotelid, id])
 
     res.redirect(`/ga/checkout/${id}`)
 })
