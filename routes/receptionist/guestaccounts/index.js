@@ -20,9 +20,6 @@ const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 
 
 
-
-
-
 //- render "new" form/page
 //- "/ga/new"
 router.use('/new', isAuthenticated, getHotelColor, async(req, res)=>{
@@ -383,6 +380,7 @@ router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
 
     res.redirect(`/ga/checkout/${id}`)
 })
+
 
 //- render "detail" page
 //- "ga/:id"
