@@ -20,9 +20,6 @@ const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 
 
 
-
-
-
 //- render "new" form/page
 //- "/ga/new"
 router.use('/new', isAuthenticated, getHotelColor, async(req, res)=>{
@@ -78,11 +75,11 @@ router.post('/register', async(req,res)=>{
 
     //- insert to "guestaccounts" T
     const q1 = `
-        INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode, settled)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
         RETURNING *
     `
-    const q1result = await pool.query(q1, [hotelid, roomtype, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode])
+    const q1result = await pool.query(q1, [hotelid, roomtype, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode, false])
 
     //- get accountid of newly inserted record
     const accountid = q1result.rows[0].accountid
@@ -149,7 +146,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
 
 //- render "check-out" page
-//- "ga/checkout/:id"
+//- "/ga/checkout/:id"
 router.get('/checkout/:id', isAuthenticated, getHotelColor, async(req,res)=>{
 
     const hotelid = req.session.hotelID
@@ -181,7 +178,7 @@ router.get('/checkout/:id', isAuthenticated, getHotelColor, async(req,res)=>{
 })
 
 //- room status 'Occupied' to 'To check out'
-//- "ga/tco/:id"
+//- "/ga/tco/:id"
 router.post('/tco/:id', isAuthenticated, async(req,res)=>{
 
     const hotelid = req.session.hotelID
@@ -213,7 +210,7 @@ router.post('/tco/:id', isAuthenticated, async(req,res)=>{
 })
 
 //- room status 'Inspected' to 'Recently checked-out'
-//- "ga/rco/:id"
+//- "/ga/rco/:id"
 router.post('/rco/:id', isAuthenticated, async(req, res)=>{
 
     const hotelid = req.session.hotelID
@@ -245,7 +242,7 @@ router.post('/rco/:id', isAuthenticated, async(req, res)=>{
 })
 
 //- render "folio" page
-//- "ga/folio/:id"
+//- "/ga/folio/:id"
 router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
     const hotelid = req.session.hotelID
@@ -326,7 +323,7 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 //- store approval code for credit/debit card payments
-//- "ga/cardpayment/:id"
+//- "/ga/cardpayment/:id"
 router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
 
     const hotelid = req.session.hotelID
@@ -365,8 +362,28 @@ router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
     res.redirect(`/ga/checkout/${id}`)
 })
 
+//- update ga "settled column"
+//- "/ga/cashpayment/:id"
+router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
+
+    const hotelid = req.session.hotelID
+    const { id } = req.params
+
+    //- update ga "settled column"
+    const q1 = `
+        UPDATE guestaccounts
+        SET settled = $1
+        WHERE hotelid = $2 AND
+            accountid = $3
+    `
+    const q1result = await pool.query(q1, [true, hotelid, id])
+
+    res.redirect(`/ga/checkout/${id}`)
+})
+
+
 //- render "detail" page
-//- "ga/:id"
+//- "/ga/detail/:id"
 router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
@@ -397,6 +414,135 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
         hotelColor: req.hotelColor,
         ga: q1result.rows[0]
     })
+})
+
+
+
+
+//- archive ga
+//- "ga/archive/:id"
+router.post('/archive/:id', isAuthenticated, async(req, res)=>{
+    const hotelID = req.session.hotelID
+    const { id } = req.params
+
+    //- get ga record
+    const q1 = `
+        SELECT * FROM guestaccounts t1
+        JOIN guestaccounts_guestdetails t2
+            ON t1.accountid = t2.accountid
+        WHERE t1.hotelid = $1 AND
+            t1.accountid = $2
+    `
+    const q1result = await pool.query(q1, [hotelID, id])
+
+    //- destructure
+    const { accountid, hotelid, typeid, roomid, adultno, childno, 
+        reservationdate, checkindate, checkoutdate, numofdays, 
+        modeofpayment, promocode, settled, 
+        fullname, email, contactno, address } = q1result.rows[0]
+
+    //- insert into hist_guestaccounts
+    const q2 = `
+        INSERT INTO hist_guestaccounts(accountid, hotelid, typeid, roomid, adultno, childno, 
+            reservationdate, checkindate, checkoutdate, numofdays, 
+            modeofpayment, promocode, settled)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+    `
+    const q2result = await pool.query(q2, [accountid, hotelid, typeid, roomid, adultno, childno, 
+        reservationdate, checkindate, checkoutdate, numofdays, 
+        modeofpayment, promocode, settled])
+
+    //- insert into hist_guestaccounts_guestdetails
+    const q3 = `
+        INSERT INTO hist_guestaccounts_guestdetails(accountid, hotelid, fullname, email, contactno, address)
+        VALUES($1, $2, $3, $4, $5, $6)
+    `
+    const q3result = await pool.query(q3, [accountid, hotelid, fullname, email, contactno, address])
+    
+
+
+
+
+
+    //- get t record (fds)
+    const q4 = `
+        SELECT * 
+        FROM transactions
+        WHERE accountid = $1 AND
+            hotelid = $2
+    `
+    const q4result = await pool.query(q4, [id, hotelID])
+    const t_fds = q4result.rows
+
+    //- insert into hist_transactions
+    t_fds.forEach(async (t) => {
+        await pool.query(`INSERT INTO hist_transactions(transactionid, hotelid, accountid, roomid, 
+                        description, price, qty, amount, date, 
+                        approvalcode, paid)
+                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            `, [t.transactionid, t.hotelid, t.accountid, t.roomid, 
+                t.description, t.price, t.qty, t.amount, t.date, 
+                t.approvalcode, t.paid]
+        )
+    })
+
+
+
+    //- get t record (anc)
+    const q5 = `
+        SELECT * 
+        FROM ancillary_transactions
+        WHERE accountid = $1 AND
+            hotelid = $2
+    `
+    const q5result = await pool.query(q5, [id, hotelID])
+    const t_anc = q5result.rows
+
+    //- insert into hist_ancillary_transactions
+    t_anc.forEach(async (t) => {
+        await pool.query(`INSERT INTO hist_ancillary_transactions(transaction_id, transaction_date, ps_id, 
+                        quantity, amount, employeeid, archived_date, 
+                        accountid, hotelid, approvalcode, paid)
+                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        `, [t.transaction_id, t.transaction_date, t.ps_id, 
+            t.quantity, t.amount, t.employeeid, t.archived_date, 
+            t.accountid, t.hotelid, t.approvalcode, t.paid])
+    })
+    
+
+
+    //- get t record (hsk)
+    const q6 = `
+        SELECT * 
+        FROM housekeeping_transactions
+        WHERE accountid = $1 AND
+            hotelid = $2
+    `
+    const q6result = await pool.query(q6, [id, hotelID])
+    const t_hsk = q6result.rows
+    
+    //- insert into hist_housekeeping_transactions
+    t_hsk.forEach(async (t) => {
+        await pool.query(`INSERT INTO hist_housekeeping_transactions(transactionid, reservationid, description, roomid,
+                        transaction_type, ref_itemid, transactiondate, employeeid, remarks, 
+                        price, qty, archiveddate, 
+                        accountid, hotelid, amount, paid, approvalcode)
+                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+            `, [t.transactionid, t.reservationid, t.description, t.roomid,
+                t.transaction_type, t.ref_itemid, t.transactiondate, t.employeeid, t.remarks, 
+                t.price, t.qty, t.archiveddate, 
+                t.accountid, t.hotelid, t.amount, t.paid, t.approvalcode])
+    })
+
+    //- delete ga
+    const q7 = `
+        DELETE FROM guestaccounts
+        WHERE hotelid = $1 AND
+            accountid = $2
+    `
+    const q7result = await pool.query(q7, [hotelID, id])
+
+    res.redirect('/archivedga')
 })
 
 
