@@ -425,6 +425,7 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
     const hotelID = req.session.hotelID
     const { id } = req.params
 
+    //- get ga record
     const q1 = `
         SELECT * FROM guestaccounts t1
         JOIN guestaccounts_guestdetails t2
@@ -434,11 +435,13 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
     `
     const q1result = await pool.query(q1, [hotelID, id])
 
+    //- destructure
     const { accountid, hotelid, typeid, roomid, adultno, childno, 
         reservationdate, checkindate, checkoutdate, numofdays, 
         modeofpayment, promocode, settled, 
         fullname, email, contactno, address } = q1result.rows[0]
 
+    //- insert into hist_guestaccounts
     const q2 = `
         INSERT INTO hist_guestaccounts(accountid, hotelid, typeid, roomid, adultno, childno, 
             reservationdate, checkindate, checkoutdate, numofdays, 
@@ -449,12 +452,88 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
         reservationdate, checkindate, checkoutdate, numofdays, 
         modeofpayment, promocode, settled])
 
+    //- insert into hist_guestaccounts_guestdetails
     const q3 = `
         INSERT INTO hist_guestaccounts_guestdetails(accountid, hotelid, fullname, email, contactno, address)
         VALUES($1, $2, $3, $4, $5, $6)
     `
     const q3result = await pool.query(q3, [accountid, hotelid, fullname, email, contactno, address])
     
+
+
+
+
+
+    //- get t record (fds)
+    const q4 = `
+        SELECT * 
+        FROM transactions
+        WHERE accountid = $1 AND
+            hotelid = $2
+    `
+    const q4result = await pool.query(q4, [id, hotelID])
+    const t_fds = q4result.rows
+
+    //- insert into hist_transactions
+    t_fds.forEach(t => {
+        pool.query(`INSERT INTO hist_transactions(transactionid, hotelid, accountid, roomid, 
+                        description, price, qty, amount, date, 
+                        approvalcode, paid)
+                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+            `, [t.transactionid, t.hotelid, t.accountid, t.roomid, 
+                t.description, t.price, t.qty, t.amount, t.date, 
+                t.approvalcode, t.paid]
+        )
+    })
+
+
+
+    //- get t record (anc)
+    const q5 = `
+        SELECT * 
+        FROM ancillary_transactions
+        WHERE accountid = $1 AND
+            hotelid = $2
+    `
+    const q5result = await pool.query(q5, [id, hotelID])
+    const t_anc = q5result.rows
+
+    //- insert into hist_ancillary_transactions
+    t_anc.forEach(t => {
+        pool.query(`INSERT INTO hist_ancillary_transactions(transaction_id, transaction_date, ps_id, 
+                        quantity, amount, employeeid, archived_date, 
+                        accountid, hotelid, approvalcode, paid)
+                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+        `, [t.transaction_id, t.transaction_date, t.ps_id, 
+            t.quantity, t.amount, t.employeeid, t.archived_date, 
+            t.accountid, t.hotelid, t.approvalcode, t.paid])
+    })
+    
+
+
+    //- get t record (hsk)
+    const q6 = `
+        SELECT * 
+        FROM housekeeping_transactions
+        WHERE accountid = $1 AND
+            hotelid = $2
+    `
+    const q6result = await pool.query(q6, [id, hotelID])
+    const t_hsk = q6result.rows
+    
+    //- insert into hist_housekeeping_transactions
+    t_hsk.forEach(t => {
+        pool.query(`INSERT INTO hist_housekeeping_transactions(transactionid, reservationid, description, roomid,
+                        transaction_type, ref_itemid, transactiondate, employeeid, remarks, 
+                        price, qty, archiveddate, 
+                        accountid, hotelid, amount, paid, approvalcode)
+                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17)
+            `, [t.transactionid, t.reservationid, t.description, t.roomid,
+                t.transaction_type, t.ref_itemid, t.transactiondate, t.employeeid, t.remarks, 
+                t.price, t.qty, t.archiveddate, 
+                t.accountid, t.hotelid, t.amount, t.paid, t.approvalcode])
+    })
+
     res.redirect('/archivedga')
 })
 
