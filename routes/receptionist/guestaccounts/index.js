@@ -146,7 +146,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
 
 //- render "check-out" page
-//- "ga/checkout/:id"
+//- "/ga/checkout/:id"
 router.get('/checkout/:id', isAuthenticated, getHotelColor, async(req,res)=>{
 
     const hotelid = req.session.hotelID
@@ -178,7 +178,7 @@ router.get('/checkout/:id', isAuthenticated, getHotelColor, async(req,res)=>{
 })
 
 //- room status 'Occupied' to 'To check out'
-//- "ga/tco/:id"
+//- "/ga/tco/:id"
 router.post('/tco/:id', isAuthenticated, async(req,res)=>{
 
     const hotelid = req.session.hotelID
@@ -210,7 +210,7 @@ router.post('/tco/:id', isAuthenticated, async(req,res)=>{
 })
 
 //- room status 'Inspected' to 'Recently checked-out'
-//- "ga/rco/:id"
+//- "/ga/rco/:id"
 router.post('/rco/:id', isAuthenticated, async(req, res)=>{
 
     const hotelid = req.session.hotelID
@@ -242,7 +242,7 @@ router.post('/rco/:id', isAuthenticated, async(req, res)=>{
 })
 
 //- render "folio" page
-//- "ga/folio/:id"
+//- "/ga/folio/:id"
 router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
     const hotelid = req.session.hotelID
@@ -323,7 +323,7 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 //- store approval code for credit/debit card payments
-//- "ga/cardpayment/:id"
+//- "/ga/cardpayment/:id"
 router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
 
     const hotelid = req.session.hotelID
@@ -363,7 +363,7 @@ router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
 })
 
 //- update ga "settled column"
-//- "ga/cashpayment/:id"
+//- "/ga/cashpayment/:id"
 router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
 
     const hotelid = req.session.hotelID
@@ -383,7 +383,7 @@ router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
 
 
 //- render "detail" page
-//- "ga/detail/:id"
+//- "/ga/detail/:id"
 router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params

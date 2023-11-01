@@ -45,22 +45,14 @@ html(lang="en")
                             tr
                                 th Account ID
                                 th Guest Name
-                                th Room Number
-                                th Room Type
-                                th Check-In Date
-                                th Check-Out Date
                                 th Actions
                         tbody
                             each ga in guestaccounts
                                 tr
                                     td #{ga.accountid}
                                     td #{ga.fullname}
-                                    td #{ga.roomnum}
-                                    td #{ga.roomtype}
-                                    td #{ga.checkindate}
-                                    td #{ga.checkoutdate}
                                     td 
-                                        a.btn(href=`#`) View
+                                        a.btn(href=`/archivedga/detail/${ga.accountid}`) View
 
 
     //-Table
