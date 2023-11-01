@@ -583,3 +583,20 @@ mixin deleteRoom(roomnum)
                     input.btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
+
+
+mixin approvalcode 
+    #modal.modal  
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Approval Code
+                button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
+            .modal-body.mb-3 
+                form(id="", action=`/ga/cardpayment/${ga.accountid}`, method="POST")
+
+                    input.form-control(type="text", id="approvalcode", name="approvalcode", required)
+
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer.mt-3
+                        button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
+                        input.btn(type="submit", value="Submit")                         

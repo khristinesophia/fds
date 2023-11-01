@@ -1,71 +1,105 @@
-/*const path = require('path')
+const path = require('path')
 
 const express = require('express')
 const router = express.Router()
+
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
-const bcrypt = require('bcrypt');
-
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
-const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
 
-const publishable_key = "pk_test_51O2GkmHA4o9CYWEUettB5e5NwxOnRgiVRGuTjp8M6lHFQoI5RHZVvximTqutedm8qCKmUluqtA5dGM8tHQ1QJeZg00AM4TLx4u"
-const secret_key = "sk_test_51O2GkmHA4o9CYWEUZkJlQGpj7gJ8sDZO8YQzyvWT1JQiWcqsfTy6yzMxMoVZnorhCKtD3hQV1eJfWyVYu1kCLlgL00rA5p5YA9"
+const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 
-const stripe = require('stripe')(secret_key) 
+const hotelid = 'H0T1L3D7';
 
-// display reservation form
-router.get('/reservation', isAuthenticated, getHotelColor, async(req, res)=>{
+//- Route for rendering the view
+//router.get('/', async(req, res) => {
+//    res.render('receptionist/reservation1/reservation1');
+//});
+
+router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
-        const hotelid = req.session.hotelID
+        const reservationQuery = `
+            SELECT
+                r.reservationid,
+                ro.roomnum,
+                rd.fullname,
+                TO_CHAR(r.checkindate, 'YYYY-MM-DD') AS checkindate,
+                TO_CHAR(r.checkoutdate, 'YYYY-MM-DD') AS checkoutdate
+            FROM
+                reservations r
+            INNER JOIN
+                reservation_guestdetails rd ON r.reservationid = rd.reservationid
+            INNER JOIN
+                rooms ro ON r.roomid = ro.roomid
+            WHERE
+                r.hotelid = $1;
+        `;
 
-        res.render('receptionist/reservation/reservation', {
-            key: publishable_key,
-            hotelColor: req.hotelColor  
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+              color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        const allReservation = await pool.query(reservationQuery, [hotelid])
+
+        const events = allReservation.rows.map(reservation => ({
+            title: `Name: ${reservation.fullname} - ReservationID: ${reservation.reservationid} | Room: ${reservation.roomnum}`,
+            start: `${reservation.checkindate}T00:00:00`, // Include time information
+            end: `${reservation.checkoutdate}T23:59:59`, // Include time information
+            id: reservation.reservationid,
+            color: getRandomColor(),
+            allDay: false,
+            displayEventTime: false,
+        }));
+
+        res.render('receptionist/reservation/reservation', { 
+            events: JSON.stringify(events),
+            hotelColor: req.hotelColor 
         });
 
     } catch (error) {
         console.error(error.message)
     }
+});
+
+
+//- render "detail" page
+//- "r/:id"
+router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
+    const { id } = req.params
+
+    const q1 = `
+        SELECT * FROM reservations r
+        JOIN reservation_guestdetails rd
+            ON r.reservationid = rd.reservationid
+        JOIN room_type rt 
+            ON r.typeid = rt.typeid
+        JOIN rooms ro 
+            ON r.roomid = ro.roomid 
+        WHERE r.reservationid = $1 AND
+            r.hotelid = $2
+    `
+    const q1result = await pool.query(q1, [id, hotelid])
+
+    q1result.rows.forEach((r)=>{
+        if(r.checkindate){
+            r.checkindate = formatDate(r.checkindate)
+        }
+        if(r.checkoutdate){
+            r.checkoutdate = formatDate(r.checkoutdate)
+        }
+    })
+
+    res.render('receptionist/reservation/detail', {
+        hotelColor: req.hotelColor,
+        r: q1result.rows[0]
+    })
 })
 
-// sample add payment
-router.get('/reservation', isAuthenticated, getHotelColor, async(req, res)=>{
-    try {
-        const hotelid = req.session.hotelID
 
-        stripe.customers.create({
-            email:req.body.stripeEmail,
-            source:req.body.stripeToken,
-            name:'CJ Cantilado',
-            address:'123 Baesa, Quezon City'
-        })
-        .then((customer) => {
-            return stripe.charges.create({
-                amount:7000,
-                description:'Hotel Online Reservation' ,
-                currency:'Pesos' ,
-                customer:customer.id
-            })
-        })
-        .then((charge) => {
-            console.log(charge)
-            res.send("Sucess Payment");
-        })
-
-        res.render('receptionist/reservation/reservation', {
-            hotelColor: req.hotelColor  
-        });
-
-    } catch (error) {
-        console.error(error.message)
-    }
-})
-
-
-
-
-
-
-module.exports = router*/
+module.exports = router

@@ -122,9 +122,26 @@ html(lang="en")
                                         option(value='Debit Card') Debit Card
                                         option(value='Cash') Cash
                                 //- approval code
-                                .mb-3
+                                .mb-3#approvalcodesection
                                     label.form-label.fw-bold(for='approvalcode') Approval Code
                                     input.form-control(type='text' id='approvalcode' name='approvalcode' placeholder='')
+                                
+                                script.
+                                    const mopSelect = document.querySelector('#modeofpayment')
+                                    const approvalCodeInput = document.querySelector('#approvalcodesection')
+
+                                    function toggleApprovalCode(){
+                                        const selectedOption = mopSelect.options[mopSelect.selectedIndex]
+                                        const selectedValue = selectedOption.value
+
+                                        if(selectedValue === 'Credit Card' || selectedValue === 'Debit Card'){
+                                            approvalCodeInput.style.display = 'block'
+                                        }
+                                        if(selectedValue === 'Cash'){
+                                            approvalCodeInput.style.display = 'none'
+                                        }
+                                    }
+                                    document.querySelector('#modeofpayment').addEventListener('change', toggleApprovalCode)
                                 .row
                                     input(type='hidden' name='description' value='Room Accommodation')
                                     //- price
