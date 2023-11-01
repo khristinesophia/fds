@@ -383,7 +383,7 @@ router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
 
 
 //- render "detail" page
-//- "ga/:id"
+//- "ga/detail/:id"
 router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
