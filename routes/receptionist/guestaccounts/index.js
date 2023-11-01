@@ -419,4 +419,46 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
 
 
+//- archive ga
+//- "ga/archive/:id"
+router.post('/archive/:id', isAuthenticated, async(req, res)=>{
+    const hotelID = req.session.hotelID
+    const { id } = req.params
+
+    const q1 = `
+        SELECT * FROM guestaccounts t1
+        JOIN guestaccounts_guestdetails t2
+            ON t1.accountid = t2.accountid
+        WHERE t1.hotelid = $1 AND
+            t1.accountid = $2
+    `
+    const q1result = await pool.query(q1, [hotelID, id])
+
+    const { accountid, hotelid, typeid, roomid, adultno, childno, 
+        reservationdate, checkindate, checkoutdate, numofdays, 
+        modeofpayment, promocode, settled, 
+        fullname, email, contactno, address } = q1result.rows[0]
+
+    const q2 = `
+        INSERT INTO hist_guestaccounts(accountid, hotelid, typeid, roomid, adultno, childno, 
+            reservationdate, checkindate, checkoutdate, numofdays, 
+            modeofpayment, promocode, settled)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+    `
+    const q2result = await pool.query(q2, [accountid, hotelid, typeid, roomid, adultno, childno, 
+        reservationdate, checkindate, checkoutdate, numofdays, 
+        modeofpayment, promocode, settled])
+
+    const q3 = `
+        INSERT INTO hist_guestaccounts_guestdetails(accountid, hotelid, fullname, email, contactno, address)
+        VALUES($1, $2, $3, $4, $5, $6)
+    `
+    const q3result = await pool.query(q3, [accountid, hotelid, fullname, email, contactno, address])
+    
+    res.redirect('/archivedga')
+})
+
+
+
+
 module.exports = router

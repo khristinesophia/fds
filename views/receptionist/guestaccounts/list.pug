@@ -64,7 +64,8 @@ html(lang="en")
                                         td #{ga.checkoutdate}
                                         td 
                                             a.btn(href=`/ga/detail/${ga.accountid}`) View
-
+                                            form(action=`/ga/archive/${ga.accountid}` method='POST') 
+                                                input.btn(type="submit" value="Archive")
 
     //-Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
