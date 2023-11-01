@@ -475,8 +475,8 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
     const t_fds = q4result.rows
 
     //- insert into hist_transactions
-    t_fds.forEach(t => {
-        pool.query(`INSERT INTO hist_transactions(transactionid, hotelid, accountid, roomid, 
+    t_fds.forEach(async (t) => {
+        await pool.query(`INSERT INTO hist_transactions(transactionid, hotelid, accountid, roomid, 
                         description, price, qty, amount, date, 
                         approvalcode, paid)
                     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
@@ -499,8 +499,8 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
     const t_anc = q5result.rows
 
     //- insert into hist_ancillary_transactions
-    t_anc.forEach(t => {
-        pool.query(`INSERT INTO hist_ancillary_transactions(transaction_id, transaction_date, ps_id, 
+    t_anc.forEach(async (t) => {
+        await pool.query(`INSERT INTO hist_ancillary_transactions(transaction_id, transaction_date, ps_id, 
                         quantity, amount, employeeid, archived_date, 
                         accountid, hotelid, approvalcode, paid)
                     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
@@ -522,8 +522,8 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
     const t_hsk = q6result.rows
     
     //- insert into hist_housekeeping_transactions
-    t_hsk.forEach(t => {
-        pool.query(`INSERT INTO hist_housekeeping_transactions(transactionid, reservationid, description, roomid,
+    t_hsk.forEach(async (t) => {
+        await pool.query(`INSERT INTO hist_housekeeping_transactions(transactionid, reservationid, description, roomid,
                         transaction_type, ref_itemid, transactiondate, employeeid, remarks, 
                         price, qty, archiveddate, 
                         accountid, hotelid, amount, paid, approvalcode)
@@ -533,6 +533,14 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
                 t.price, t.qty, t.archiveddate, 
                 t.accountid, t.hotelid, t.amount, t.paid, t.approvalcode])
     })
+
+    //- delete ga
+    const q7 = `
+        DELETE FROM guestaccounts
+        WHERE hotelid = $1 AND
+            accountid = $2
+    `
+    const q7result = await pool.query(q7, [hotelID, id])
 
     res.redirect('/archivedga')
 })
