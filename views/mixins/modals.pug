@@ -594,7 +594,27 @@ mixin approvalcode
             .modal-body.mb-3 
                 form(id="", action=`/ga/cardpayment/${ga.accountid}`, method="POST")
 
+                    input(type="hidden" id="subtotal2" name="subtotal2")
+                    input(type="hidden" id="totalamount2" name="totalamount2")
+                    input(type="hidden" id="paidtodate2" name="paidtodate2")
+                    input(type="hidden" id="balance2" name="balance2")
                     input.form-control(type="text", id="approvalcode", name="approvalcode", required)
+
+                    script.
+                        document.addEventListener('DOMContentLoaded', ()=>{
+                            
+                            const subtotal = parseInt(document.querySelector('#subtotal').innerText)
+                            document.querySelector('#subtotal2').value = subtotal
+
+                            const totalamount = parseInt(document.querySelector('#totalamount').innerText)
+                            document.querySelector('#totalamount2').value = totalamount
+
+                            const paidtodate = parseInt(document.querySelector('#paidtodate').innerText)
+                            document.querySelector('#paidtodate2').value = paidtodate
+
+                            const balance = parseInt(document.querySelector('#balance').innerText)
+                            document.querySelector('#balance2').value = balance
+                        })
 
                     //- ganto talaga indentation ng .modal-footer
                     .modal-footer.mt-3

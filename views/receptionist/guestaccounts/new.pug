@@ -84,11 +84,11 @@ html(lang="en")
                                     //- number of adults
                                     .mb-3.col-md-6
                                         label.form-label.fw-bold(for='adultno') Number of Adults
-                                        input#adultno.form-control(type='number' name='adultno' placeholder='')
+                                        input#adultno.form-control(type='number' name='adultno' placeholder='' value=0)
                                     //- number of children
                                     .mb-5.col-md-6
                                         label.form-label.fw-bold(for='childno') Number of Children
-                                        input#childno.form-control(type='number' name='childno' placeholder='')
+                                        input#childno.form-control(type='number' name='childno' placeholder='' value=0)
                                 //- room type
                                 .mb-3
                                     label.form-label.fw-bold(for='roomtype') Room Types
@@ -96,22 +96,9 @@ html(lang="en")
                                         each rt in roomTypes
                                             option(value=rt.typeid data-typeid=rt.typeid data-price=rt.price)= rt.roomtype
                                 //- room number
-                                .mb-5
+                                .mb-3
                                     label.form-label.fw-bold(for='roomid') Room Number
                                     select.form-select(id='roomid', name='roomid') Room Number
-
-                                //- promo code
-                                .mb-3
-                                    label.form-label.fw-bold(for='promocode') Promo Code
-                                    input#promocode.form-control(type='text' name='promocode' placeholder='')
-                            //- Ancillary Services tab
-                            //- .tab.d-none
-                            //-     .mb-3
-                            //-         label.form-label.fw-bold(for='') Ancillary Services
-                            //-         each a in ancillaries
-                            //-             br
-                            //-             input.form-check-input(type="checkbox" name="ancillaries" value=`${a.ancillary_id}`)
-                            //-             label.form-check-label.ms-2 #{a.ancillary_desc}
                             //- Room Payment tab
                             .tab.d-none
                                 //- mode of payment
@@ -122,7 +109,7 @@ html(lang="en")
                                         option(value='Debit Card') Debit Card
                                         option(value='Cash') Cash
                                 //- approval code
-                                .mb-3#approvalcodesection
+                                .mb-0#approvalcodesection
                                     label.form-label.fw-bold(for='approvalcode') Approval Code
                                     input.form-control(type='text' id='approvalcode' name='approvalcode' placeholder='')
                                 
@@ -142,6 +129,14 @@ html(lang="en")
                                         }
                                     }
                                     document.querySelector('#modeofpayment').addEventListener('change', toggleApprovalCode)
+                                //- promo code
+                                .mt-5
+                                    label.form-label.fw-bold(for='promocode') Promo Code 
+                                    input#promocode.form-control(type='text' name='promocode' placeholder='')
+                                //- discount
+                                .mb-5
+                                    label.form-label.fw-bold(for='discount') Discount 
+                                    input#discount.form-control(type='number' name='discount' placeholder='' value=0)
                                 .row
                                     input(type='hidden' name='description' value='Room Accommodation')
                                     //- price
@@ -169,6 +164,7 @@ html(lang="en")
                                 const roomNumSelect = document.querySelector('select[name="roomid"]')
                                 const roomNumOptions = document.querySelectorAll('select[name="roomid"] option')
 
+                                const discountInput = document.querySelector('#discount')
                                 const priceInput = document.querySelector('#price')
                                 const qtyInput = document.querySelector('#qty')
                                 const amountInput = document.querySelector('#amount')
@@ -248,9 +244,17 @@ html(lang="en")
                                     })
                                 }
 
+                                function calculatePercentageOfAmount(amount, percent) {
+                                    return (percent / 100) * amount;
+                                }
+
                                 function updateAmount(){
                                     if(priceInput.value != null && qtyInput.value != null){
-                                        amountInput.value = priceInput.value * qtyInput.value
+                                        subtotal = priceInput.value * qtyInput.value
+                                        const discount = calculatePercentageOfAmount(subtotal, discountInput.value)
+                                        const tax = calculatePercentageOfAmount(subtotal, 12)
+
+                                        amountInput.value = (subtotal - discount) + tax
                                     }
                                 }
 
@@ -272,6 +276,7 @@ html(lang="en")
                                 checkOutDateInput.addEventListener('change', updateAmount)
                                 roomTypeSelect.addEventListener('change', updateAmount)
                                 roomNumSelect.addEventListener('change', updateAmount)
+                                discountInput.addEventListener('change', updateAmount)
                             // Finish tab
                             .tab.d-none
                                 p All Set! Click submit to register this guest account.
