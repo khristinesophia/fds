@@ -537,9 +537,12 @@ router.get('/invoice/:id', async(req, res)=>{
     invoice.hotel = q5result.rows[0]
     invoice.folio = q6result.rows[0]
 
+    const accountid = q4result.rows[0].accountid
+    const accountname = q4result.rows[0].fullname
+
     const stream = res.writeHead(200, {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': `attachment;filename=invoice.pdf`
+        'Content-Disposition': `attachment;filename=invoice_GA${accountid}_${accountname}.pdf`
     })
 
     createInvoice(
