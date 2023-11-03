@@ -28,3 +28,6 @@ textarea.form-control {
 .smaller-card{
     width: 400px;
 }
+.border{
+    border: 1px solid black;
+}
