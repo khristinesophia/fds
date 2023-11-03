@@ -15,75 +15,89 @@ html(lang="en")
     link(rel='stylesheet', href='/css/card.css')
 
     //- color.pug
-
- 
-    title Profile
-
     include ../../partials/color.pug
+
+    //- title
+    title Profile
   body
     include ../../partials/navHSA.pug
 
     .content
       .row.mx-5
 
-        //- (LEFT) Profile Section Informations
-        .col-12.col-md-12.col-lg-3.mt-4
-          .card.bg-white.shadow
+        //- (LEFT) profile information
+        .col-12.col-md-12.col-lg-3
+
+          //- card start
+          .card.bg-white.shadow.px-4.py-3
+            //- card body
             .card-body.text-dark
-              .img-area.mb-4.text-center
+              //- card image
+              .img-area.text-center
                 if h.hotelimage
-                  img.logo-img(src=`${h.hotelimage}`, height="300", alt="", style="border-radius: 50%; border: 1px solid black")
-                if hotelColor
-                  h6 Color Theme: 
-                    span #{hotelColor.color}
+                  img.logo-img(src=`${h.hotelimage}`, height="250", alt="", style="border-radius: 50%; border: 2px solid black")
+
+              //- card description (of hotel)
+              if hotelColor
+                p.fs-5.fw-bold.text-center.mt-4 Color Theme: 
+                  span #{hotelColor.color}
               hr
               if h.hotellocation
-                h6 Location: 
+                p.fw-bold.mt-4 Location: 
                   span #{h.hotellocation}
               if h.hotelcontact
-                h6 Contact Number: 
+                p.fw-bold Contact Number: 
                   span #{h.hotelcontact}
               if h.hotelemail
-                h6 Email: 
+                p.fw-bold Email: 
                   span #{h.hotelemail}
 
-              //- a.btn(href="/profile/editprofile") Edit
-
+        //- (RIGHT) profile edit
         .col-9.mx-auto
-            //- Edit Profile 
-            .col-12.col-md-12.mt-4
-              .card.bg-white.shadow
-                .card-body.text-dark
-                  h2.text.mb-3 Edit Profile
+          //- card start
+          .card.bg-white.shadow.px-4.py-3
+            //- card body
+            .card-body.text-dark
+              h2.text.mb-3 Edit Profile
+              form(action=`/profile/edit/${h.hotelid}`, method="POST" enctype="multipart/form-data")
 
-                  form(action=`/profile/edit/${h.hotelid}`, method="POST")
+                h2.col-form-label(for='hotelcolor') Color Theme:
+                select.form-select(id='hotelcolor', name='hotelcolor')
+                  option(value=h.hotelcolor)=h.hotelcolor
+                  each c in colorStacksArray
+                    option(value=c.color)= c.color
+                
+                hr.mt-3
+                
+                h2.col-form-label.mt-3(for="hotelname") Hotel Name:
+                input.form-control(type="text", id="hotelname", name="hotelname", value=`${h.hotelname}`, required)
 
-                    h2.col-form-label(for='hotelcolor') Color Theme
-                    select.form-select(id='hotelcolor', name='hotelcolor')
-                      option(value=h.hotelcolor)=h.hotelcolor
-                      each c in colorStacksArray
-                        option(value=c.color)= c.color
-                    hr  
-                    
-                    h2.col-form-label(for="hotelname") Hotel Name:
-                    input.form-control(type="text", id="hotelname", name="hotelname", value=`${h.hotelname ? h.hotelname : ''}`, required)
+                h2.col-form-label.mt-3(for="hotellocation") Hotel Location:
+                input.form-control(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation}` required)
 
-                    h2.col-form-label(for="hotellocation") Hotel Location:
-                    input.form-control(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation ? h.hotellocation : ''}` required)
+                h2.col-form-label.mt-3(for="hotelcontact") Hotel Contact:
+                input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact}` required)
 
-                    h2.col-form-label(for="hotelcontact") Hotel Contact:
-                    input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact ? h.hotelcontact : ''}` required)
+                h2.col-form-label.mt-3(for="hotelemail") Hotel Email:
+                input.form-control(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail}` required)
 
-                    h2.col-form-label(for="hotelemail") Hotel Email:
-                    input.form-control(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail ? h.hotelemail : ''}` required)
+                h2.col-form-label.mt-3(for="hotelimage") Hotel Image:
+                input.form-control(type="file", name="hotelimage", accept="image/*", onchange="previewImage(event)")
 
+<<<<<<< HEAD
+                img.mx-auto.my-3.d-block#imagePreview(style="max-width: 250px; max-height: 250px")
+=======
                     input.btn.mt-3.mod_btn(type="submit", value="Submit")
+>>>>>>> main
 
-                //thres an error here 
-                  a.btn(data-hotelid=h.hotelid data-hotelcolor=hotelColor data-hname=h.hotelname data-hlocation=h.hotellocation 
-                  data-hcontact=h.hotelcontact data-hemail=h.hotelemail onclick="Edit_Profile(this)" role='button') Edit
-                  include ../../mixins/modals.pug
-                  +editProfileHSA(h.hotelid, colorStacksArray)
+                div.d-grid.gap-2
+                  input.btn-block.mt-3(type="submit", value="Submit")
+
+            //thres an error here 
+              a.btn(data-hotelid=h.hotelid data-hotelcolor=hotelColor data-hname=h.hotelname data-hlocation=h.hotellocation 
+              data-hcontact=h.hotelcontact data-hemail=h.hotelemail onclick="Edit_Profile(this)" role='button') Edit
+              include ../../mixins/modals.pug
+              +editProfileHSA(h.hotelid, colorStacksArray)
 
 
               
@@ -94,5 +108,6 @@ html(lang="en")
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
 
     //- custom js
-    script(src='/js/modal.js') 
-    script(src='/js/nav-active.js')  
+    script(src='/js/nav-active.js')
+    script(src='/js/modal.js')
+    script(src='/js/imgpreview.js')
