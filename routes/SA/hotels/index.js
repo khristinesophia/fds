@@ -85,16 +85,31 @@ router.post('/edit/:id', async(req, res)=>{
         // get values from the request body
         const { hotelname, hotellocation, hotelcontact, hotelemail } = req.body
 
-        const editHotelQuery = `
-            UPDATE hotels
-            SET hotelname = $1, 
-                hotellocation = $2, 
-                hotelcontact = $3, 
-                hotelemail = $4
-            WHERE hotelid = $5
-        `
+        if(req.file){
+            const hotelimage = fs.readFileSync(req.file.path)
 
-        const editHotel = await pool.query(editHotelQuery, [hotelname, hotellocation, hotelcontact, hotelemail, id])
+            await pool.query(`
+                UPDATE hotels
+                SET hotelname = $1, 
+                    hotellocation = $2, 
+                    hotelcontact = $3, 
+                    hotelemail = $4,
+                    hotelimage = $5
+                WHERE hotelid = $6
+            `, [hotelname, hotellocation, hotelcontact, hotelemail, hotelimage,id])
+        } else{
+
+            await pool.query(`
+                UPDATE hotels
+                SET hotelname = $1, 
+                    hotellocation = $2, 
+                    hotelcontact = $3, 
+                    hotelemail = $4
+                WHERE hotelid = $5
+            `, [hotelname, hotellocation, hotelcontact, hotelemail, id])
+        }
+
+        
     
         res.redirect('/hotels')
     } catch (error) {

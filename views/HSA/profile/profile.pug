@@ -56,7 +56,7 @@ html(lang="en")
                 .card-body.text-dark
                   h2.text.mb-3 Edit Profile
 
-                  form(action=`/profile/edit/${h.hotelid}`, method="POST")
+                  form(action=`/profile/edit/${h.hotelid}`, method="POST" enctype="multipart/form-data")
 
                     h2.col-form-label(for='hotelcolor') Color Theme
                     select.form-select(id='hotelcolor', name='hotelcolor')
@@ -66,16 +66,20 @@ html(lang="en")
                     hr  
                     
                     h2.col-form-label(for="hotelname") Hotel Name:
-                    input.form-control(type="text", id="hotelname", name="hotelname", value=`${h.hotelname ? h.hotelname : ''}`, required)
+                    input.form-control(type="text", id="hotelname", name="hotelname", value=`${h.hotelname}`, required)
 
                     h2.col-form-label(for="hotellocation") Hotel Location:
-                    input.form-control(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation ? h.hotellocation : ''}` required)
+                    input.form-control(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation}` required)
 
                     h2.col-form-label(for="hotelcontact") Hotel Contact:
-                    input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact ? h.hotelcontact : ''}` required)
+                    input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact}` required)
 
                     h2.col-form-label(for="hotelemail") Hotel Email:
-                    input.form-control(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail ? h.hotelemail : ''}` required)
+                    input.form-control(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail}` required)
+
+                    label.col-form-label(for="hotelimage") Hotel Image:
+                    input.form-control(type="file", name="hotelimage", accept="image/*", onchange="previewImage(event)")
+                    img#imagePreview(style="width: 200px; height: 200px")
 
                     input.btn.mt-3(type="submit", value="Submit")
 
@@ -96,3 +100,4 @@ html(lang="en")
     //- custom js
     script(src='/js/modal.js') 
     script(src='/js/nav-active.js')  
+    script(src='/js/imgpreview.js')
