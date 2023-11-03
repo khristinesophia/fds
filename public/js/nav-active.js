@@ -10,3 +10,12 @@ document.querySelectorAll('.nav-item').forEach((item) => {
 });
 
 
+/*document.addEventListener('DOMContentLoaded', function() {
+  const navItems = document.querySelectorAll('.nav-ite');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', function() {
+      this.classList.toggle('active');
+    });
+  });
+});*/

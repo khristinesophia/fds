@@ -1,3 +1,4 @@
+//- Super Admin ADD HOTEL
 mixin addhotel 
     #modal.modal  
             .modal-content
@@ -23,6 +24,8 @@ mixin addhotel
                             button.btn.btn-secondary(type="button", onclick="closeModal()") Cancel
                             input.btn(type="submit", value="Submit")           
 
+
+//- Super Admin EDIT HOTEL
 mixin edithotel 
     #edithotel.modal  
             .modal-content
@@ -48,6 +51,8 @@ mixin edithotel
                             button.btn.btn-secondary(type="button", onclick="closeEditHotel()") Cancel
                             input.btn(type="submit", value="Submit")          
 
+
+//- Super Admin DELETE HOTEL
 mixin deletehotel(hotelId)
     #deletehotel.modal
         .modal-content
@@ -72,6 +77,7 @@ mixin deletehotel(hotelId)
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
 
+//- Super Admin ADD HOTEL ADMIN
 mixin addHSA
     #modal.modal
         .modal-content
@@ -102,6 +108,7 @@ mixin addHSA
                         input.btn(type="submit", value="Submit")
 
 
+//- Super Admin ADD SUPER ADMIN
 mixin addSA 
     #modal.modal
         .modal-content
@@ -128,6 +135,8 @@ mixin addSA
                         button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
                         input.btn(type="submit", value="Submit")
 
+
+//- SUper Admin DELETE SUPER ADMIN
 mixin deleteSA(userId)
     #deletesuper.modal
         .modal-content
@@ -151,6 +160,7 @@ mixin deleteSA(userId)
                     input.btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
+//- Super Admin DELETE SUPER ADMIN
 mixin editSA
     #editsuper.modal
         .modal-content
@@ -169,6 +179,8 @@ mixin editSA
                         button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="closeEditSAModal()") Cancel
                         input.btn(type="submit", value="Submit")
 
+
+//- Super Admin CHANGE PASSWORD SUPER ADMIN
 mixin changeSA
     #changepassword.modal
         .modal-content
@@ -206,7 +218,9 @@ mixin changeSA
                         input.btn(type="submit", value="Submit")
 
 
-//- EDIT Profile in HSA
+//- HOTEL SYSTEM ADMIN
+
+//- Hotel System Admin EDIT PROFILE HSA
 mixin editProfileHSA(hotelId, colorStacksArray)
     #editprofilehsa.modal
         .modal-content
@@ -238,7 +252,7 @@ mixin editProfileHSA(hotelId, colorStacksArray)
                         input.btn(type="submit", value="Submit") 
 
 
-//- ADD Receptionist in HSA
+//- Hotel System Admin ADD RECEPTIONIST HSA
 mixin addR 
     #modal.modal
         .modal-content
@@ -256,10 +270,10 @@ mixin addR
                     input.form-control(type="password", id="password", name="password", required)
 
                     .modal-footer
-                        button.btn.btn-secondary.closeAddModalBtn(type="button", onclick="closeModal()") Cancel
-                        input.btn(type="submit", value="Submit")  
+                        button.btn.closeAddModalBtn.mod_btn_sec(type="button", onclick="closeModal()") Cancel
+                        input.btn.mod_btn(type="submit", value="Submit")  
 
-//- EDIT Admin in HSA
+//- Hotel System Admin EDIT ADMIN HSA 
 mixin editAdminHSA
     #editadminhsa.modal
         .modal-content
@@ -272,10 +286,10 @@ mixin editAdminHSA
                     input.form-control(type="text", name="username", value=`${ha.username}`, required)
 
                     .modal-footer
-                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Admin_User()") Cancel
-                        input.btn(type="submit", value="Submit") 
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Admin_User()") Cancel
+                        input.btn.mod_btn(type="submit", value="Submit") 
 
-//- CHANGE PASSWORD Rececptionist in HSA
+//-Hotel System Admin CHANGE PASSWORD ADMIN HSA
 mixin changeAdminHSA
     #changeAdminHSA.modal
         .modal-content
@@ -309,8 +323,8 @@ mixin changeAdminHSA
                     p.mt-3.err#error-message-admin
                     
                     .modal-footer
-                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Admin_User()") Cancel
-                        input.btn(type="submit", value="Submit")
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Admin_User()") Cancel
+                        input.btn.mod_btn(type="submit", value="Submit")
 
 
 //- EDIT Receptionist in HSA
@@ -329,8 +343,8 @@ mixin editReceptionistHSA
                     input.form-control(type="text", name="username", value=`${r.username}`, required)
 
                     .modal-footer
-                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Receptionist_User()") Cancel
-                        input.btn(type="submit", value="Submit") 
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Receptionist_User()") Cancel
+                        input.btn.mod_btn(type="submit", value="Submit") 
 
 //- DELETE Receptionist in HSA
 mixin deleteReceptionistHSA(userId)
@@ -352,8 +366,8 @@ mixin deleteReceptionistHSA(userId)
                     label.form-check-label(for="confirm-checkbox") I Agree
             .modal-footer.mt-3
                 form#delete-user-form(action='', method="POST")
-                    button.btn.btn-secondary.me-3(type="button", onclick="CLose_Delete_Receptionist_User()") Cancel
-                    input.btn(type="submit" value="Delete" onclick="confirmDelete()")
+                    button.btn.mod_btn_sec.me-3(type="button", onclick="CLose_Delete_Receptionist_User()") Cancel
+                    input.btn.mod_btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
 //- CHANGE PASSWORD Rececptionist in HSA
@@ -391,8 +405,8 @@ mixin changeReceptionistHSA
                     p.mt-3.err#error-message-receptionist
                     
                     .modal-footer
-                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Receptionist_User()") Cancel
-                        input.btn(type="submit", value="Submit")
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Receptionist_User()") Cancel
+                        input.btn.mod_btn(type="submit", value="Submit")
 
 
 //- ADD Room Type
@@ -427,8 +441,8 @@ mixin addRoomType
                         
                         //- ganto talaga indentation ng .modal-footer
                         .modal-footer.mt-3
-                            a.btn.btn-secondary(href="/roomtype") Back
-                            input(type="submit" class="btn btn-primary" value="Submit")
+                            a.btn.mod_btn_sec(href="/roomtype") Back
+                            input.mod_btn(type="submit" class="btn btn-primary" value="Submit")
 
 //- DELETE Room Type
 mixin deleteRoomType(roomtype)
@@ -450,8 +464,8 @@ mixin deleteRoomType(roomtype)
                     label.form-check-label(for="confirm-checkbox") I Agree
             .modal-footer.mt-3
                 form#delete-user-form(action='', method="POST")
-                    button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteRoomType()") Cancel
-                    input.btn(type="submit" value="Delete" onclick="confirmDelete()")
+                    button.btn.mod_btn_sec.me-3(type="button", onclick="closeDeleteRoomType()") Cancel
+                    input.btn.mod_btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
 //- Edit Room Type
@@ -479,8 +493,8 @@ mixin editRoomType
                     input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
 
                     .modal-footer
-                        button.btn.btn-secondary.me-3.closeAddModalBtn(type="button", onclick="Close_Edit_RoomType()") Cancel
-                        input.btn(type="submit", value="Submit") 
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="Close_Edit_RoomType()") Cancel
+                        input.btn.mod_btn(type="submit", value="Submit") 
 
 
 
@@ -517,8 +531,8 @@ mixin addRoom
 
                         //- ganto talaga indentation ng .modal-footer
                         .modal-footer.mt-3
-                            a.btn.btn-secondary(href="/HSArooms") Back
-                            input(type="submit" class="btn btn-primary" value="Submit")
+                            a.btn.mod_btn_sec(href="/HSArooms") Back
+                            input.mod_btn(type="submit" class="btn btn-primary" value="Submit")
                     
                     //- javaScript code to automatically populate and disable price and capacity based on roomtype
                     script.
@@ -579,8 +593,8 @@ mixin deleteRoom(roomnum)
                     label.form-check-label(for="confirm-checkbox") I Agree
             .modal-footer.mt-3
                 form#delete-user-form(action='', method="POST")
-                    button.btn.btn-secondary.me-3(type="button", onclick="closeDeleteRoom()") Cancel
-                    input.btn(type="submit" value="Delete" onclick="confirmDelete()")
+                    button.btn.mod_btn_sec.me-3(type="button", onclick="closeDeleteRoom()") Cancel
+                    input.btn.mod_btn_sec(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
 
