@@ -213,7 +213,7 @@ function generateFooter(doc) {
   doc
     .fontSize(10)
     .text(
-      "Discounts and taxes are already applied during check-in.",
+      "Discounts and taxes are already applied on the room accommodation.",
       50,
       780,
       { align: "center", width: 500 }
