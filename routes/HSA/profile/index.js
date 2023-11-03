@@ -29,7 +29,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
         const hotel = await pool.query('SELECT * FROM hotels WHERE hotelid = $1', [hotelid])
         const colors = await pool.query('SELECT * FROM colorstack')
 
-        // Convert binary data to base64 string
+        //- convert binary data to base64 string
         hotel.rows.forEach(row => {
             if (row.hotelimage) {
                 row.hotelimage = 'data:' + row.imagetype + ';base64,' + row.hotelimage.toString('base64')
