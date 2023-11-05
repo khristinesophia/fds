@@ -41,24 +41,24 @@ html(lang="en")
                 .container.shadow.mt-3.p-0.bg-white
                     .px-5.py-3.mb-3.bg
                         h4.m-0 Room Status
-                    .px-5.py-2
-                        .d-flex.justify-content-center
+                    .px-5.py-2.my-4
+                        .d-flex.justify-content-center.my-4
                             .room_box
-                                p.bg(style='padding: 1rem 2rem; margin-right: 2rem;') Room #{ga.roomnum}
+                                h5.bg(style='padding: 1rem 2rem; margin-right: 2rem;') Room #{ga.roomnum}
                             .room_box 
                                 - let statusStyles = ''
                                 if ga.status === "Occupied"
-                                    - statusStyles = `background-color: #FFF2F2; color: #CC0000`
+                                    - statusStyles = `background-color: #FFDDE1; color: #CC0000`
                                 if ga.status === "To check-out"
-                                    - statusStyles = `background-color: #FFFFCC; color: #FFCC00`
+                                    - statusStyles = `background-color: #FFFDB8; color: #FFA852`
                                 if ga.status === "Inspected"
-                                    - statusStyles = `background-color: #FFF5E0; color: #FF6600`
+                                    - statusStyles = `background-color: #FFE4B9; color: #FF6600`
                                 if ga.status === "Recently checked-out"
                                     - statusStyles = `background-color: #CCEDFF; color: #336699`
                                 if ga.status === "Vacant"
-                                    - statusStyles = `background-color: #E6FFE6; color: #339933`
+                                    - statusStyles = `background-color: #CAFFDF; color: #339933`
 
-                                p(style=`${statusStyles}; padding: 1rem 2rem;`) #{ga.status}
+                                h5(style=`${statusStyles}; padding: 1rem 2rem;`) #{ga.status}
                         if ga.status === "Occupied"
                             p.text-center This room is currently occupied by the guest.<br>Alert housekeeping. Change room status when guest checks out.
                         if ga.status === "To check-out"
@@ -74,19 +74,19 @@ html(lang="en")
 
                         if ga.status === "Occupied"
                             form(action=`/ga/tco/${ga.accountid}` method="POST").text-center
-                                input.btn.mod_btn(type="submit" value="Change") 
+                                input.btn.mod_btn.mt-4(type="submit" value="Change") 
                         if ga.status === "Inspected" && ga.settled === false
                             form(action=`/ga/folio/${ga.accountid}`).text-center
-                                input.btn.mod_btn(type="submit" value="Folio")
+                                input.btn.mod_btn.mt-4(type="submit" value="Folio")
                         if ga.status === "Inspected" && ga.settled === true
                             form(action=`/ga/rco/${ga.accountid}` method="POST").text-center
-                                input.btn.mod_btn(type="submit" value="Change")
+                                input.btn.mod_btn.mt-4(type="submit" value="Change")
                         if ga.status === "Recently checked-out"
                             form(action=`/ga/folio/${ga.accountid}`).text-center
-                                input.btn.mod_btn(type="submit" value="Folio")
+                                input.btn.mod_btn.mt-4(type="submit" value="Folio")
                         if ga.status === "Vacant"
                             form(action=`/ga/archive/${ga.accountid}` method='POST').text-center 
-                                input.btn.mod_btn(type="submit" value="Archive")
+                                input.btn.mod_btn.mt-4(type="submit" value="Archive")
 
 
     //-Bootstrap Js
@@ -94,4 +94,5 @@ html(lang="en")
     //-FontAwesome
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     //-Customize JS
-    script(src='/js/nav-active.js')    
+    script(src='/js/nav-active.js')   
+    script(src='/js/room_nav.js')  
