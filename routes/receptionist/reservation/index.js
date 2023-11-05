@@ -87,6 +87,9 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
     const q1result = await pool.query(q1, [id, hotelid])
 
     q1result.rows.forEach((r)=>{
+        if(r.reservationdate){
+            r.reservationdate = formatDate(r.reservationdate)
+        }
         if(r.checkindate){
             r.checkindate = formatDate(r.checkindate)
         }

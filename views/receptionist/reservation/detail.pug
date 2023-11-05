@@ -57,6 +57,10 @@ html(lang="en")
                         h4.m-0 Stay Details
                     .px-5.py-2
                         .row
+                            p.col-md-2.fw-bold Reservation Date:
+                            if r.reservationdate
+                                span.col-md-10 #{r.reservationdate}
+                        .row
                             p.col-md-2.fw-bold Check-In Date:
                             if r.checkindate
                                 span.col-md-10 #{r.checkindate}
@@ -87,7 +91,7 @@ html(lang="en")
 
                 .container.shadow.mt-3.p-0.bg-white
                     .px-5.py-3.mb-3.bg
-                        h4.m-0 Stay Details
+                        h4.m-0 Payment Details
                     .px-5.py-2
                         .row
                             p.col-md-2.fw-bold Promo Code:
@@ -97,7 +101,7 @@ html(lang="en")
                             p.col-md-2.fw-bold Mode of Payment:
                             if r.modeofpayment
                                 span.col-md-10 #{r.modeofpayment}
-
+                a.btn(href='#') Check-in
 
     //-Bootstrap Js
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
