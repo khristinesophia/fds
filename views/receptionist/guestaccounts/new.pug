@@ -252,9 +252,10 @@ html(lang="en")
                                     if(priceInput.value != null && qtyInput.value != null){
                                         subtotal = priceInput.value * qtyInput.value
                                         const discount = calculatePercentageOfAmount(subtotal, discountInput.value)
-                                        const tax = calculatePercentageOfAmount(subtotal, 12)
+                                        //- const tax = calculatePercentageOfAmount(subtotal, 12)
 
-                                        amountInput.value = (subtotal - discount) + tax
+                                        //- amountInput.value = (subtotal - discount) + tax
+                                        amountInput.value = (subtotal - discount)
                                     }
                                 }
 
