@@ -320,7 +320,7 @@ router.get('/folio/:id', getHotelColor, async(req, res)=>{
             JOIN guestaccounts_guestdetails t2
                 ON t1.accountid = t2.accountid
             JOIN folios t3
-                ON t1.accountid = t2.accountid
+                ON t1.accountid = t3.accountid
             JOIN rooms t4
                 ON t1.roomid = t4.roomid
         WHERE t1.hotelid = $1 AND 
