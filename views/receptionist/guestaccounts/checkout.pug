@@ -43,9 +43,9 @@ html(lang="en")
                         h4.m-0 Room Status
                     .px-5.py-2
                         .d-flex.justify-content-center
-                            .row 
-                                p.bg(style='padding: 1rem 2rem; margin-right: 2rem') Room #{ga.roomnum}
-                            .row 
+                            .room_box
+                                p.bg(style='padding: 1rem 2rem; margin-right: 2rem;') Room #{ga.roomnum}
+                            .room_box 
                                 - let statusStyles = ''
                                 if ga.status === "Occupied"
                                     - statusStyles = `background-color: #FFF2F2; color: #CC0000`
@@ -58,7 +58,7 @@ html(lang="en")
                                 if ga.status === "Vacant"
                                     - statusStyles = `background-color: #E6FFE6; color: #339933`
 
-                                p(style=`${statusStyles}; padding: 1rem 2rem`) #{ga.status}
+                                p(style=`${statusStyles}; padding: 1rem 2rem;`) #{ga.status}
                         if ga.status === "Occupied"
                             p.text-center This room is currently occupied by the guest.<br>Alert housekeeping. Change room status when guest checks out.
                         if ga.status === "To check-out"
@@ -74,19 +74,19 @@ html(lang="en")
 
                         if ga.status === "Occupied"
                             form(action=`/ga/tco/${ga.accountid}` method="POST").text-center
-                                input(type="submit" value="Change") 
+                                input.btn.mod_btn(type="submit" value="Change") 
                         if ga.status === "Inspected" && ga.settled === false
                             form(action=`/ga/folio/${ga.accountid}`).text-center
-                                input(type="submit" value="Folio")
+                                input.btn.mod_btn(type="submit" value="Folio")
                         if ga.status === "Inspected" && ga.settled === true
                             form(action=`/ga/rco/${ga.accountid}` method="POST").text-center
-                                input(type="submit" value="Change")
+                                input.btn.mod_btn(type="submit" value="Change")
                         if ga.status === "Recently checked-out"
                             form(action=`/ga/folio/${ga.accountid}`).text-center
-                                input(type="submit" value="Folio")
+                                input.btn.mod_btn(type="submit" value="Folio")
                         if ga.status === "Vacant"
                             form(action=`/ga/archive/${ga.accountid}` method='POST').text-center 
-                                input(type="submit" value="Archive")
+                                input.btn.mod_btn(type="submit" value="Archive")
 
 
     //-Bootstrap Js
