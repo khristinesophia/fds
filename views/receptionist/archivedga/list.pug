@@ -22,7 +22,7 @@ html(lang="en")
         link(rel='stylesheet', href='/css/table.css')
 
         //- title
-        title Guest Accounts
+        title Archived Guest Accounts
 
         //- sa head lagi nakalagay ang color.pug
         include ../../partials/color.pug
@@ -36,9 +36,7 @@ html(lang="en")
             //- page title
             .row.mx-5
                 .col-8.d-flex.align-items-center
-                    h2.text Guest Accounts
-                .col-4.d-flex.align-items-center.justify-content-end
-                    a.btn.mod_btn(href="/ga/new") Register a Guest Account
+                    h2.text Archived Guest Accounts
             
                 .container.shadow.mt-3.pt-3.pb-3.bg-white
                     table#myTable.table.table-striped.table-hover(style='width:100%')
@@ -47,23 +45,15 @@ html(lang="en")
                             tr
                                 th Account ID
                                 th Guest Name
-                                th Room Number
-                                th Room Type
-                                th Check-In Date
-                                th Check-Out Date
                                 th Actions
                         tbody
                             each ga in guestaccounts
-                                a(href=`/ga/${ga.accountid}`) 
-                                    tr
-                                        td #{ga.accountid}
-                                        td #{ga.fullname}
-                                        td #{ga.roomnum}
-                                        td #{ga.roomtype}
-                                        td #{ga.checkindate}
-                                        td #{ga.checkoutdate}
-                                        td 
-                                            a.btn(href=`/ga/detail/${ga.accountid}`) View
+                                tr
+                                    td #{ga.accountid}
+                                    td #{ga.fullname}
+                                    td 
+                                        a.btn(href=`/archivedga/detail/${ga.accountid}`) View
+
 
     //-Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')

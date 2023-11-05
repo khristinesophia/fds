@@ -37,6 +37,10 @@
     color: #fff;
     width: 200px;
 }
+.btn-block{
+    background: #333;
+    color: #fff;
+}
 .btn:hover{
     background: #1d1d1d;
     color: #fff;

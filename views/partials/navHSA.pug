@@ -12,11 +12,27 @@
       li.nav-item
         a.nav-link(href='/profile')
           i.fas.fa-solid.fa-hotel.fa-xl
-          span Profile
+          span Profile   
       li.nav-item
         a.nav-link(href='/users')
           i.fas.fa-solid.fa-users.fa-xl
-          span User
+          span User         
+      //-
+        li.nav-ite
+          a.nav-link
+            i.fas.fa-solid.fa-users.fa-xl
+            span Rooms Accordion
+          ul.sub-menu
+            li.nav-ite 
+              a.nav-lin(href='/roomtype')
+                i.fas.fa-solid.fa-layer-group.fa-xl
+                span Room Types
+            li.nav-ite
+              a.nav-lin(href='/HSArooms')
+                i.fas.fa-solid.fa-door-open.fa-xl
+                span Rooms
+
+
       li.nav-item
         a.nav-link(href='/roomtype')
           i.fas.fa-solid.fa-layer-group.fa-xl

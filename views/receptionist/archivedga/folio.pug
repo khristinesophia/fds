@@ -36,7 +36,7 @@ html(lang="en")
                     a.btn(href="/ga/new") Register a Guest Account
 
                 //- modulenav
-                include ../../partials/navRga.pug
+                include ../../partials/navRarchivedga.pug
             
                 .container.shadow.mt-3.p-0.bg-white
                     .px-5.py-3.mb-3.bg
@@ -176,60 +176,14 @@ html(lang="en")
                             balanceTD.innerText = totalamount - paidtodate
                         })
 
-                if ga.status === "Inspected" && ga.settled === false
-                    .container.shadow.mt-3.p-0.bg-white
-                        .px-5.py-3.mb-3.bg
-                            h4.m-0 Payment
-                        .px-5.py-3
-                            .d-flex.justify-content-center 
-                                .row
-                                    a(onclick="openModal()" role='button') 
-                                        i.fa-solid.fa-credit-card
-                                        p Credit Card
-                                .row
-                                    a(onclick="openModal()" role='button') 
-                                        i.fa-regular.fa-credit-card
-                                        p Debit Card
-                                .row 
-                                    form(action=`/ga/cashpayment/${ga.accountid}` method="POST") 
-                                        i.fa-solid.fa-money-bills
-                                        
-                                        input(type="hidden" id="subtotal3" name="subtotal3")
-                                        input(type="hidden" id="totalamount3" name="totalamount3")
-                                        input(type="hidden" id="paidtodate3" name="paidtodate3")
-                                        input(type="hidden" id="balance3" name="balance3")
-                                        
-                                        script.
-                                            document.addEventListener('DOMContentLoaded', ()=>{
-                                                
-                                                const subtotal = parseInt(document.querySelector('#subtotal').innerText)
-                                                document.querySelector('#subtotal3').value = subtotal
-
-                                                const totalamount = parseInt(document.querySelector('#totalamount').innerText)
-                                                document.querySelector('#totalamount3').value = totalamount
-
-                                                const paidtodate = parseInt(document.querySelector('#paidtodate').innerText)
-                                                document.querySelector('#paidtodate3').value = paidtodate
-
-                                                const balance = parseInt(document.querySelector('#balance').innerText)
-                                                document.querySelector('#balance3').value = balance
-                                            })
-
-                                        input(type="submit" value="Cash")
-                                include ../../mixins/modals.pug
-                                +approvalcode
-                
-                if ga.settled === true
-                    .container.shadow.mt-3.p-0.bg-white
+                .container.shadow.mt-3.p-0.bg-white
                         .px-5.py-3.mb-3.bg
                             h4.m-0 Invoice
                         .px-5.py-3
                             .d-flex.justify-content-center 
                                 .row
-                                    form(action=`/ga/invoice/${ga.accountid}` method="GET") 
+                                    form(action=`/archivedga/invoice/${ga.accountid}` method="GET") 
                                         input(type="submit" value="Download")
-
-
     //-Bootstrap Js
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
     //-FontAwesome

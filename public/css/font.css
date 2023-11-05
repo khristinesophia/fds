@@ -7,3 +7,48 @@ tbody span{
     font-weight: 500;
 }
 
+/* Initial styling 
+.nav-menu {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .nav-ite {
+    margin-bottom: 5px;
+  }
+  
+  .nav-lin {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #ffffff;
+  }
+  
+  .sub-menu {
+    display: none;
+  }
+
+
+.nav-ite.active .sub-menu {
+    display: block;
+  }
+.nav-ite {
+    color: #fff;
+    align-items: center;
+    margin: 15px 0;
+}
+.nav-ite i {
+  margin-right: 10px;
+}
+.nav-ite:hover {
+    background-color: #fff;
+    border-radius: 5px;
+    color: #ffffff;
+}
+.nav-ite span{
+  font-size: 14px;
+}
+.nav-ite a {
+    color: #fff; 
+    text-decoration: none;  
+}*/
