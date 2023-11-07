@@ -15,7 +15,7 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
+        const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1 ORDER BY price ASC', [hotelid])
        
         const allRoomsQuery = `
             SELECT
