@@ -115,6 +115,8 @@ router.post('/checkin', isAuthenticated, getHotelColor, async (req, res) => {
         const reservationd = await pool.query('SELECT * FROM reservation_guestdetails WHERE reservationid = \$1', [reservationid]);
         const rd = reservationd.rows[0];
 
+        await pool.query('DELETE FROM reservations WHERE reservationid = $1', [reservationid]);
+
         //- insert to "guestaccounts" T
         const q1 = `
             INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode)
@@ -155,6 +157,7 @@ router.post('/checkin', isAuthenticated, getHotelColor, async (req, res) => {
                 ga.checkoutdate = formatDate(ga.checkoutdate)
             }
         })
+
 
         res.render('receptionist/guestaccounts/list', {
             hotelColor: req.hotelColor,
