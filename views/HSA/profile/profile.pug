@@ -87,13 +87,7 @@ html(lang="en")
                 img.mx-auto.my-3.d-block#imagePreview(style="max-width: 250px; max-height: 250px")
 
                 div.d-grid.gap-2
-                  input.btn-block.mt-3(type="submit", value="Submit")
-
-            //thres an error here 
-              a.btn(data-hotelid=h.hotelid data-hotelcolor=hotelColor data-hname=h.hotelname data-hlocation=h.hotellocation 
-              data-hcontact=h.hotelcontact data-hemail=h.hotelemail onclick="Edit_Profile(this)" role='button') Edit
-              include ../../mixins/modals.pug
-              +editProfileHSA(h.hotelid, colorStacksArray)
+                  input.btn-block.mt-3.mod_btn(type="submit", value="Submit")
 
 
               
