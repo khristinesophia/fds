@@ -18,6 +18,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
         const hotelid = req.session.hotelID
         const allRoomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1 ORDER BY price ASC' , [hotelid])
 
+        //console.log(allRoomtype.rows)
         // Convert binary data to base64 string
         allRoomtype.rows.forEach(row => {
             if (row.roomimage) {
@@ -52,19 +53,23 @@ router.post('/addRoomtype', isAuthenticated, upload.single('roomimage'), async(r
     try {
         const hotelid = req.session.hotelID
 
-        const { roomtype, description, price, capacity } = req.body;
+        const { roomtype, description, price, capacity, rate_perhour } = req.body;
+
+        // Check the value of free_breakfast input
+        // Convert to Boolean (true if checked, false if not)
+        const free_breakfast = req.body.free_breakfast === 'on';
         
         if (req.file){
             const roomimage = fs.readFileSync(req.file.path);
 
             // Insert the room type with image into the database
-            const insertQuery = 'INSERT INTO room_type (hotelid, roomtype, description, price, capacity, roomimage) VALUES ($1, $2, $3, $4, $5, $6)';
-            await pool.query(insertQuery, [hotelid, roomtype, description, price, capacity, roomimage]);
+            const insertQuery = 'INSERT INTO room_type (hotelid, roomtype, description, price, capacity, roomimage, rate_perhour, free_breakfast) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)';
+            await pool.query(insertQuery, [hotelid, roomtype, description, price, capacity, roomimage, rate_perhour, free_breakfast]);
         } else {
 
             // Insert the room type without image into the database
-            const insertQuery = 'INSERT INTO room_type (hotelid, roomtype, description, price, capacity) VALUES ($1, $2, $3, $4, $5)';
-            await pool.query(insertQuery, [hotelid, roomtype, description, price, capacity]);
+            const insertQuery = 'INSERT INTO room_type (hotelid, roomtype, description, price, capacity, rate_perhour, free_breakfast) VALUES ($1, $2, $3, $4, $5, $6, $7)';
+            await pool.query(insertQuery, [hotelid, roomtype, description, price, capacity, rate_perhour, free_breakfast]);
         }
         console.log('Room Type Successfully Added!');
         res.redirect('/roomtype'); // Redirect to the room type listing page
@@ -95,21 +100,25 @@ router.get('/edit/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 router.post('/edit/:id', isAuthenticated, upload.single('roomimage'), async(req, res)=>{
     try {
         const { id } = req.params
-        const { roomtype, description, price, capacity } = req.body;
+        const { roomtype, description, price, capacity, rate_perhour } = req.body;
         const hotelid = req.session.hotelID
+
+        // Check the value of free_breakfast input
+        // Convert to Boolean (true if checked, false if not)
+        const free_breakfast = req.body.free_breakfast === 'on';
 
         // check if a new file has been uploaded. If not, you should not update the image in the database.
         if (req.file) {
             const roomimage = fs.readFileSync(req.file.path);
 
             await pool.query(
-            'UPDATE room_type SET roomtype = $1, description = $2, price = $3, capacity = $4, roomimage = $5 WHERE typeid = $6 AND hotelid = $7',
-            [roomtype, description, price, capacity, roomimage, id, hotelid]
+            'UPDATE room_type SET roomtype = $1, description = $2, price = $3, capacity = $4, roomimage = $5, rate_perhour = $6, free_breakfast = $7 WHERE typeid = $8 AND hotelid = $9',
+            [roomtype, description, price, capacity, roomimage, rate_perhour, free_breakfast, id, hotelid]
             );
         } else {
             await pool.query(
-            'UPDATE room_type SET roomtype = $1, description = $2, price = $3, capacity = $4 WHERE typeid = $5 AND hotelid = $6',
-            [roomtype, description, price, capacity, id, hotelid]
+            'UPDATE room_type SET roomtype = $1, description = $2, price = $3, capacity = $4, rate_perhour = $5, free_breakfast = $6 WHERE typeid = $7 AND hotelid = $8',
+            [roomtype, description, price, capacity, rate_perhour, free_breakfast, id, hotelid]
             );
         }
         console.log('Room Type Successfully Updated!');

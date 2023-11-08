@@ -114,17 +114,27 @@ html(lang="en")
                         | Room Type: 
                         span #{r.roomtype}
                   if r.description      
-                    h6.hotel-number.mb-3
+                    h6.hotel-description.mb-3
                         | Description: 
                         span #{r.description}
                   if r.capacity      
-                    h6.hotel-email.mb-3
+                    h6.hotel-capacity.mb-3
                         | Capacity: 
                         span #{r.capacity}
                   if r.price      
-                    h6.hotel-email.mb-3
+                    h6.hotel-price.mb-3
                         | Price: 
                         span #{r.price}
+                  if r.rate_perhour      
+                    h6.hotel-rate_perhour.mb-3
+                        | Rate per Hour: 
+                        span #{r.rate_perhour}     
+                  h6.hotel-free_breakfast.mb-3
+                      | Free Breakfast: 
+                      if r.free_breakfast
+                          input.form-check-input(type="checkbox", name="free_breakfast", r.free_breakfast ? 'checked' : '', disabled)
+                      else
+                          input.form-check-input(type="checkbox", name="free_breakfast", r.free_breakfast ? 'undefined' : '', disabled)
                 .card-footer.pb-3.pt-3
                   .d-flex.justify-content-end
                     
@@ -132,8 +142,8 @@ html(lang="en")
                       a(href=`/roomtype/edit/${r.typeid}`) Edit
                     //- Edit
                     a.sa-icon.sa-edit(data-typeid=r.typeid data-roomtype=r.roomtype data-roomdescription=r.description data-roomprice=r.price 
-                     data-roomcapacity=r.capacity data-roomimage=r.roomimage
-                     onclick="Edit_RoomType(this)" role='button')
+                      data-roomcapacity=r.capacity data-rate_perhour=r.rate_perhour data-free_breakfast=r.free_breakfast data-roomimage=r.roomimage
+                      onclick="Edit_RoomType(this)" role='button')
                       i.fa-solid.fa-pen-to-square.fa-lg  
                     include ../../mixins/modals.pug
                     +editRoomType(r.typeid)  
