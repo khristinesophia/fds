@@ -37,12 +37,12 @@ html(lang="en")
                         a.btn.mod_btn(href='/pd/new') Add Promo
 
             each x in allPromosArray
-                .containter.mt-4.p-0.bg-white.shadow.d-flex.justify-content-start
-                    .row(style="max-width: 300px")
+                .container.bg-white.shadow.mt-4.p-0.row
+                    .row.col-3.p-0(style="max-width: 300px")
                         if x.poster
                             img(src=`${x.poster}` alt='Poster')
 
-                    .row.px-5
+                    .row.col-9.px-5
                         .d-flex.flex-column.justify-content-center
                             if x.code
                                 p.text-black-50.fw-bold #{x.code}

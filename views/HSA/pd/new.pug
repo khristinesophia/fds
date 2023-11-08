@@ -21,8 +21,8 @@ html(lang="en")
         .col-8.d-flex.align-items-center
           h2.text Add Promo
 
-        .container.shadow.mt-3.p-0.bg-white
-            .px-5.card-top-bottom.bg
+        .container.bg-white.shadow.mt-3.p-0
+            .px-5.card-top-bottom.rounded-top.bg
 
             .px-5.py-3
                 form(action=`/pd/add` method='POST' enctype='multipart/form-data') 
@@ -112,7 +112,7 @@ html(lang="en")
                             select.form-select(id='typeid', name='typeid')
                                 each x in allRoomTypeArray
                                     option(value=x.typeid)= x.roomtype
-            .px-5.py-3.card-top-bottom.bg
+            .px-5.py-3.card-top-bottom.rounded-bottom.bg
                 .d-flex.justify-content-end
                     input.btn(type="submit", value="Submit")
 
