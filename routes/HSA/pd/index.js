@@ -147,6 +147,61 @@ router.get('/active', isAuthenticated, getHotelColor, async(req,res)=>{
     })
 })
 
+//- render "edit promo" page
+//- "/pd/edit/:id"
+router.get('/edit/:id', isAuthenticated, getHotelColor, async(req,res)=>{
+    const { id } = req.params
+    const hotelID = req.session.hotelID
+
+    const q1 = `
+        SELECT * FROM room_type
+        WHERE hotelid = $1
+        ORDER BY price ASC
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+    const q2 = `
+        SELECT 
+            t1.code,
+            t1.name,
+            t1.description,
+            t1.poster,
+            t1.discount,
+            t1.startdate,
+            t1.enddate,
+            t1.isavailable_mon,
+            t1.isavailable_tues,
+            t1.isavailable_wed,
+            t1.isavailable_thurs,
+            t1.isavailable_fri,
+            t1.isavailable_sat,
+            t1.isavailable_sun,
+            t1.typeid,
+            t2.roomtype
+        FROM promos t1
+        JOIN room_type t2
+            ON t1.typeid = t2.typeid
+        WHERE t1.id = $1 AND
+        t1.hotelid = $2
+    `
+    const q2result = await pool.query(q2, [id, hotelID])
+
+    q2result.rows.forEach((row)=>{
+        if(row.startdate){
+            row.startdate = formatDate(row.startdate)
+        }
+        if(row.enddate){
+            row.enddate = formatDate(row.enddate)
+        }
+    })
+
+    res.render('HSA/pd/edit', {
+        hotelColor: req.hotelColor,
+        allRoomTypeArray: q1result.rows,
+        p: q2result.rows[0],
+    })
+})
+
 
 
 
