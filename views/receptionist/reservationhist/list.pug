@@ -1,0 +1,72 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+        //- bootstrap
+        link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+
+        //- jquery
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js' integrity='sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==' crossorigin='anonymous' referrerpolicy='no-referrer')
+        
+        //- table
+        script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
+        script(src='//code.jquery.com/jquery-1.11.1.min.js')
+        link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
+
+        //- custom css
+        link(rel='stylesheet', href='/css/font.css')
+        link(rel='stylesheet', href='/css/navigation.css')
+        link(rel='stylesheet', href='/css/modal.css')
+        link(rel='stylesheet', href='/css/table.css')
+
+        //- title
+        title Reservation History
+
+        //- sa head lagi nakalagay ang color.pug
+        include ../../partials/color.pug
+    //-body
+    body
+        //- sidenav
+        include ../../partials/navR.pug
+
+        //- main content
+        .content
+            //- page title
+            .row.mx-5
+                .col-8.d-flex.align-items-center
+                    h2.text Reservation History
+            
+                .container.shadow.mt-3.pt-3.pb-3.bg-white
+                    table#myTable.table.table-striped.table-hover(style='width:100%')
+
+                        thead
+                            tr
+                                th Reservation ID
+                                th Guest Name
+                                th Room Type
+                                th Room Number
+                                th Reservation Date
+                                th Action
+                        tbody
+                            each r in reservation
+                                tr
+                                    td #{r.reservationid}
+                                    td #{r.fullname}
+                                    td #{r.roomtype}
+                                    td #{r.roomnum}
+                                    td #{r.reservationdate}
+                                    td 
+                                        a.btn(href=`/reservationhist/detail/${r.reservationid}`) View
+
+
+    //-Table
+    script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
+    script(src='/js/table.js')
+    //-Bootstrap Js
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    //-FontAwesome
+    script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
+    //-Customize JS
+    script(src='/js/nav-active.js')    
