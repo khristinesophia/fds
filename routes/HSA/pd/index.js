@@ -14,6 +14,7 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 
 //- utils
 const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
+const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 
 //- image
 const fs = require('fs')
@@ -110,12 +111,12 @@ router.post('/add', isAuthenticated, getHotelColor, upload.single('poster'), asy
         isavailable_fri, isavailable_sat, isavailable_sun,
         typeid, userID, dateadded])
 
-
+    res.redirect('/pd/active')
 })
 
 //- render "active promo list" page
 //- "/pd/active"
-router.post('/active', isAuthenticated, getHotelColor, async(req,res)=>{
+router.get('/active', isAuthenticated, getHotelColor, async(req,res)=>{
     const hotelID = req.session.hotelID
 
     const q1 = `
@@ -125,7 +126,25 @@ router.post('/active', isAuthenticated, getHotelColor, async(req,res)=>{
     `
     const q1result = await pool.query(q1, [hotelID, 'Active'])
 
-    res.render('HSA/pd/active')
+    q1result.rows.forEach(row => {
+        if (row.poster) {
+            row.poster = 'data:' + row.imagetype + ';base64,' + row.poster.toString('base64')
+        }
+    })
+
+    q1result.rows.forEach((row)=>{
+        if(row.startdate){
+            row.startdate = formatDate(row.startdate)
+        }
+        if(row.enddate){
+            row.enddate = formatDate(row.enddate)
+        }
+    })
+
+    res.render('HSA/pd/active', {
+        hotelColor: req.hotelColor,
+        allPromosArray: q1result.rows
+    })
 })
 
 
