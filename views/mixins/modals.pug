@@ -435,6 +435,15 @@ mixin addRoomType
                             input.form-control(type="number", name="capacity", min="0", required)
 
                         .form-group
+                            label(for="rate_perhour") Rate per Hour:
+                            input.form-control(type="number", name="rate_perhour", min="0", required)
+
+                        .form-group
+                            label(for="free_breakfast") Free Breakfast:
+                            input.form-check-input(type="checkbox", name="free_breakfast")
+                            label.form-check-label(for="free_breakfast") Include Free Breakfast
+
+                        .form-group
                             label(for="roomimage") Room Image:
                             input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
                             img#imagePreview(style="width: 100%; height: 100%;")
@@ -477,6 +486,7 @@ mixin editRoomType
                 button.btn-close(type='button' onclick='Close_Edit_RoomType()' aria-label='Close')
             .modal-body.mb-3
                 form(action='', method="POST" , enctype="multipart/form-data")
+                    
                     label.col-form-label(for="type") Room Type:
                     input.form-control(type="text", name="roomtype", value=`${r.roomtype}`, required)
 
@@ -489,6 +499,16 @@ mixin editRoomType
                     label.col-form-label(for="price") Room Price:
                     input.form-control(type="text", name="price", value=`${r.price}`, required)
 
+                    label.col-form-label(for="rate_perhour") Rate per Hour:
+                    input.form-control(type="text", name="rate_perhour", value=`${r.rate_perhour}`, required)
+
+                    label.col-form-label(for="free_breakfast") Free Breakfast:
+                        if r.free_breakfast
+                            input.form-check-input(type="checkbox", name="free_breakfast", value="true", checked)
+                        else
+                            input.form-check-input(type="checkbox", name="free_breakfast")
+                        label.form-check-label(for="free_breakfast") Include Free Breakfast
+                    <br>
                     label.col-form-label(for="roomimage") Room Image:
                     input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
 
