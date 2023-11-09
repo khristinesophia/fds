@@ -1,0 +1,107 @@
+doctype html
+html(lang="en")
+    head
+        meta(charset="UTF-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+        //- bootstrap
+        link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+
+        //- jquery
+        script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js' integrity='sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==' crossorigin='anonymous' referrerpolicy='no-referrer')
+
+        //- custom css
+        link(rel='stylesheet', href='/css/font.css')
+        link(rel='stylesheet', href='/css/navigation.css')
+        link(rel='stylesheet', href='/css/modal.css')
+        link(rel='stylesheet', href='/css/table.css')
+
+        //- title
+        title Reservation History
+
+        //- sa head lagi nakalagay ang color.pug
+        include ../../partials/color.pug
+    //-body
+    body
+        //- sidenav
+        include ../../partials/navR.pug
+
+        //- main content
+        .content
+            //- page title
+            .row.mx-5
+                .col-8.d-flex.align-items-center
+                    h2.text #{r.fullname} - Reservation ID #{r.reservationid}
+            
+                .container.shadow.mt-3.p-0.bg-white
+                    .px-5.py-3.mb-3.bg
+                        h4.m-0 Guest Details
+                    .px-5.py-2
+                        .row 
+                            p.col-md-2.fw-bold Full Name: 
+                            if r.fullname
+                                span.col-md-10 #{r.fullname}
+                        .row
+                            p.col-md-2.fw-bold Home Address:
+                            if r.address
+                                span.col-md-10 #{r.address}
+                        .row
+                            p.col-md-2.fw-bold Email:
+                            if r.email
+                                span.col-md-10 #{r.email}
+                        .row
+                            p.col-md-2.fw-bold Contact Number:
+                            if r.contactno
+                                span.col-md-10 #{r.contactno}
+
+                .container.shadow.mt-3.p-0.bg-white
+                    .px-5.py-3.mb-3.bg
+                        h4.m-0 Stay Details
+                    .px-5.py-2
+                        .row
+                            p.col-md-2.fw-bold Reservation Date:
+                            if r.reservationdate
+                                span.col-md-10 #{r.reservationdate}
+                        .row
+                            p.col-md-2.fw-bold Room Types:
+                            if r.roomtype
+                                span.col-md-10 #{r.roomtype}
+                        .row
+                            p.col-md-2.fw-bold Room Number:
+                            if r.roomnum
+                                span.col-md-10 #{r.roomnum}
+                        .row
+                            p.col-md-2.fw-bold Check-In Date:
+                            if r.checkindate
+                                span.col-md-10 #{r.checkindate}
+                        .row
+                            p.col-md-2.fw-bold Check-Out Date:
+                            if r.checkoutdate
+                                span.col-md-10 #{r.checkoutdate}
+                        .row
+                            p.col-md-2.fw-bold Number of Days:
+                            if r.numofdays
+                                span.col-md-10 #{r.numofdays}
+                        .row
+                            p.col-md-2.fw-bold Number of Adults:
+                            if r.adultno
+                                span.col-md-10 #{r.adultno}
+                        .row
+                            p.col-md-2.fw-bold Number of Children:
+                            span.col-md-10 #{r.childno}
+                        .row
+                            p.col-md-2.fw-bold Promo Code:
+                            if r.promocode
+                                span.col-md-10 #{r.promocode}
+                        .row
+                            p.col-md-2.fw-bold Status:
+                            if rs.status
+                                span.col-md-10 #{rs.status}
+
+
+    //-Bootstrap Js
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    //-FontAwesome
+    script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
+    //-Customize JS
+    script(src='/js/nav-active.js')    

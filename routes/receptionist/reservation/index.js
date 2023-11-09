@@ -117,11 +117,11 @@ router.post('/checkin', isAuthenticated, getHotelColor, async (req, res) => {
 
         //- insert to "guestaccounts" T
         const q1 = `
-            INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+            INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, reservationdate, checkindate, checkoutdate, numofdays, modeofpayment, promocode)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING *
         `
-        const q1result = await pool.query(q1, [hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.checkindate, r.checkoutdate, r.numofdays, 'Card', r.promocode])
+        const q1result = await pool.query(q1, [hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, 'Card', r.promocode])
 
         //- get accountid of newly inserted record
         const accountid = q1result.rows[0].accountid
@@ -132,10 +132,30 @@ router.post('/checkin', isAuthenticated, getHotelColor, async (req, res) => {
             VALUES ($1, $2, $3, $4, $5, $6)
         `
         const q2result = await pool.query(q2, [accountid, hotelid, rd.fullname, rd.email, rd.contactno, rd.address])
+
+
+        //- insert in history
+        //- insert to "hist_reservations" T
+        const q3 = `
+            INSERT INTO hist_reservations(reservationid, hotelid, typeid, roomid, adultno, childno, reservationdate, checkindate, checkoutdate, numofdays, promocode, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            RETURNING *
+        `
+        const q3result = await pool.query(q3, [reservationid, hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, r.promocode, 'Checked-in'])
+
+        //- insert to "hist_reservation_guestdetails" T
+        const q4 = `
+            INSERT INTO hist_reservation_guestdetails(reservationid, hotelid, fullname, email, contactno, address)
+            VALUES ($1, $2, $3, $4, $5, $6)
+        `
+        const q4result = await pool.query(q4, [reservationid, hotelid, rd.fullname, rd.email, rd.contactno, rd.address])
+
+        //- delete from reservation table
+        await pool.query('DELETE FROM reservations WHERE reservationid = $1', [reservationid]);
         
         //- redirect to the guestaccounts list page
         //- select all guest accounts
-        const q3 = `
+        const q5 = `
             SELECT * FROM guestaccounts t1
             JOIN guestaccounts_guestdetails t2
                 ON t1.accountid = t2.accountid
@@ -145,7 +165,7 @@ router.post('/checkin', isAuthenticated, getHotelColor, async (req, res) => {
                 ON t1.typeid = t4.typeid
             WHERE t1.hotelid = $1
         `
-        const q3result = await pool.query(q3, [hotelid])
+        const q5result = await pool.query(q5, [hotelid])
 
         q3result.rows.forEach((ga)=>{
             if(ga.checkindate){
@@ -156,9 +176,10 @@ router.post('/checkin', isAuthenticated, getHotelColor, async (req, res) => {
             }
         })
 
+
         res.render('receptionist/guestaccounts/list', {
             hotelColor: req.hotelColor,
-            guestaccounts: q3result.rows
+            guestaccounts: q5result.rows
         })
 
     }
@@ -170,8 +191,31 @@ router.post('/checkin', isAuthenticated, getHotelColor, async (req, res) => {
 //- route that handles cancel reservation
 router.post('/cancelReservation', isAuthenticated, getHotelColor, async (req, res) => {
     try {
-        //- delete reservation based on reservationid
         const { reservationid } = req.body;
+        const reservation = await pool.query('SELECT * FROM reservations WHERE reservationid = \$1', [reservationid]);
+        const r = reservation.rows[0];
+
+        const reservationd = await pool.query('SELECT * FROM reservation_guestdetails WHERE reservationid = \$1', [reservationid]);
+        const rd = reservationd.rows[0];
+
+        //- insert in history
+        //- insert to "hist_reservations" T
+        const q3 = `
+            INSERT INTO hist_reservations(reservationid, hotelid, typeid, roomid, adultno, childno, reservationdate, checkindate, checkoutdate, numofdays, promocode, status)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            RETURNING *
+        `
+        const q3result = await pool.query(q3, [reservationid, hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, r.promocode, 'Cancelled'])
+
+        //- insert to "hist_reservation_guestdetails" T
+        const q4 = `
+            INSERT INTO hist_reservation_guestdetails(reservationid, hotelid, fullname, email, contactno, address)
+            VALUES ($1, $2, $3, $4, $5, $6)
+        `
+        const q4result = await pool.query(q4, [reservationid, hotelid, rd.fullname, rd.email, rd.contactno, rd.address])
+
+
+        //- delete reservation based on reservationid
         await pool.query('DELETE FROM reservations WHERE reservationid = $1', [reservationid]);
         
 
