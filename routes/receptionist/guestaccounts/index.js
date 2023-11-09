@@ -12,6 +12,7 @@ const pool = require(path.join(__basedir, 'config', 'db-config'))
 //- middlewares
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 //- utils
 const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
@@ -24,7 +25,7 @@ const { createInvoice } = require(path.join(__basedir, 'services', 'pdf-service'
 
 //- render "new" form/page
 //- "/ga/new"
-router.use('/new', isAuthenticated, getHotelColor, async(req, res)=>{
+router.use('/new', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelid = req.session.hotelID
 
     //- select all rooms of the hotel
@@ -57,6 +58,7 @@ router.use('/new', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('receptionist/guestaccounts/new', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         roomTypes: roomTypes.rows,
         rooms: rooms.rows
     })
@@ -126,7 +128,7 @@ router.post('/register', async(req,res)=>{
 
 //- render "list" page
 //- "/ga"
-router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelid = req.session.hotelID
 
     //- select all guest accounts
@@ -153,14 +155,15 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('receptionist/guestaccounts/list', {
         hotelColor: req.hotelColor,
-        guestaccounts: q1result.rows
+        guestaccounts: q1result.rows,
+        hotelLogo: req.hotelImage
     })
 })
 
 
 //- render "check-out" page
 //- "/ga/checkout/:id"
-router.get('/checkout/:id', isAuthenticated, getHotelColor, async(req,res)=>{
+router.get('/checkout/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
 
     const hotelid = req.session.hotelID
     const { id } = req.params
@@ -258,7 +261,7 @@ router.post('/rco/:id', isAuthenticated, async(req, res)=>{
 
 //- render "folio" page
 //- "/ga/folio/:id"
-router.get('/folio/:id', getHotelColor, async(req, res)=>{
+router.get('/folio/:id', getHotelColor, getHotelLogo, async(req, res)=>{
 
     const hotelid = req.session.hotelID
     const { id } = req.params
@@ -331,6 +334,7 @@ router.get('/folio/:id', getHotelColor, async(req, res)=>{
 
     res.render('receptionist/guestaccounts/folio', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage, 
         t1: q1result.rows,
         t2: q2result.rows,
         t3: q3result.rows,
@@ -556,7 +560,7 @@ router.get('/invoice/:id', async(req, res)=>{
 
 //- render "detail" page
 //- "/ga/detail/:id"
-router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
 
@@ -584,6 +588,7 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('receptionist/guestaccounts/detail', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         ga: q1result.rows[0]
     })
 })
