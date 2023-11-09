@@ -34,7 +34,7 @@ html(lang="en")
                     h2.text Promos
                 .col-6 
                     .d-flex.justify-content-end
-                        a.btn.mod_btn(href='/pd/new') Add Promo
+                        a.btn.mod_btn(href='/pd/add') Add Promo
 
             each x in allPromosArray
                 .container.bg-white.shadow.mt-4.p-0.row
@@ -62,6 +62,7 @@ html(lang="en")
                                 p.fw-bold End Date: <br>
                                     span.fw-normal #{x.enddate}   
                             p.fw-bold Available On: <br>
+                                p#availableon
                             
                             .d-flex
                                 a.sa-icon.sa-edit.me-2(href=`/pd/edit/${x.id}`)
@@ -69,6 +70,7 @@ html(lang="en")
                                 
                                 a.delete-icon()
                                     i.fa-solid.fa-trash-can.fa-xl
+
                         //- .card-footer.pb-3.pt-3
                         //- .d-flex.justify-content-end
                         

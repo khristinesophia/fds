@@ -23,8 +23,8 @@ const upload = multer({ dest: 'uploads/' })
 
 
 //- render "add promo" page
-//- "/pd/new"
-router.get('/new', isAuthenticated, getHotelColor, async(req, res)=>{
+//- "/pd/add"
+router.get('/add', isAuthenticated, getHotelColor, async(req, res)=>{
     const hotelID = req.session.hotelID
 
     const q1 = `
@@ -34,15 +34,15 @@ router.get('/new', isAuthenticated, getHotelColor, async(req, res)=>{
     `
     const q1result = await pool.query(q1, [hotelID])
 
-    res.render('HSA/pd/new', {
+    res.render('HSA/pd/add', {
         hotelColor: req.hotelColor,
         allRoomTypeArray: q1result.rows
     })
 })
 
-//- add promo
-//- "/pd/add"
-router.post('/add', isAuthenticated, getHotelColor, upload.single('poster'), async(req, res)=>{
+//- create promo
+//- "/pd/create"
+router.post('/create', isAuthenticated, getHotelColor, upload.single('poster'), async(req, res)=>{
     const hotelID = req.session.hotelID
     const userID = req.session.userID
 
@@ -111,18 +111,19 @@ router.post('/add', isAuthenticated, getHotelColor, upload.single('poster'), asy
         isavailable_fri, isavailable_sat, isavailable_sun,
         typeid, userID, dateadded])
 
-    res.redirect('/pd/active')
+    res.redirect('/pd')
 })
 
 //- render "active promo list" page
-//- "/pd/active"
-router.get('/active', isAuthenticated, getHotelColor, async(req,res)=>{
+//- "/pd"
+router.get('/', isAuthenticated, getHotelColor, async(req,res)=>{
     const hotelID = req.session.hotelID
 
     const q1 = `
         SELECT * FROM promos
         WHERE hotelid = $1
-        AND status = $2
+        AND status = $2 
+        ORDER BY dateadded ASC
     `
     const q1result = await pool.query(q1, [hotelID, 'Active'])
 
@@ -141,7 +142,7 @@ router.get('/active', isAuthenticated, getHotelColor, async(req,res)=>{
         }
     })
 
-    res.render('HSA/pd/active', {
+    res.render('HSA/pd/list', {
         hotelColor: req.hotelColor,
         allPromosArray: q1result.rows
     })
@@ -162,6 +163,7 @@ router.get('/edit/:id', isAuthenticated, getHotelColor, async(req,res)=>{
 
     const q2 = `
         SELECT 
+            t1.id, 
             t1.code,
             t1.name,
             t1.description,
@@ -176,13 +178,14 @@ router.get('/edit/:id', isAuthenticated, getHotelColor, async(req,res)=>{
             t1.isavailable_fri,
             t1.isavailable_sat,
             t1.isavailable_sun,
+            t1.status,
             t1.typeid,
             t2.roomtype
         FROM promos t1
         JOIN room_type t2
             ON t1.typeid = t2.typeid
         WHERE t1.id = $1 AND
-        t1.hotelid = $2
+            t1.hotelid = $2
     `
     const q2result = await pool.query(q2, [id, hotelID])
 
@@ -200,6 +203,123 @@ router.get('/edit/:id', isAuthenticated, getHotelColor, async(req,res)=>{
         allRoomTypeArray: q1result.rows,
         p: q2result.rows[0],
     })
+})
+
+//- update promo
+//- "pd/update/:id"
+router.post('/update/:id', isAuthenticated, upload.single('poster'), async(req,res)=>{
+    try {
+        const { id } = req.params
+        const hotelID = req.session.hotelID
+
+        const { code, name, discount, description, status, startdate, enddate,
+            typeid } = req.body
+        
+        let { isavailable_mon, isavailable_tues, isavailable_wed, isavailable_thurs,
+            isavailable_fri, isavailable_sat, isavailable_sun } = req.body
+        
+        //- mon
+        if(isavailable_mon === 'on'){
+            isavailable_mon = true
+        } else{
+            isavailable_mon = false
+        }
+        //- tues
+        if(isavailable_tues === 'on'){
+            isavailable_tues = true
+        } else{
+            isavailable_tues = false
+        }
+        //- wed
+        if(isavailable_wed === 'on'){
+            isavailable_wed = true
+        } else{
+            isavailable_wed = false
+        }
+        //- thurs
+        if(isavailable_thurs === 'on'){
+            isavailable_thurs = true
+        } else{
+            isavailable_thurs = false
+        }
+        //- fri
+        if(isavailable_fri === 'on'){
+            isavailable_fri = true
+        } else{
+            isavailable_fri = false
+        }
+        //- sat
+        if(isavailable_sat === 'on'){
+            isavailable_sat = true
+        } else{
+            isavailable_sat = false
+        }
+        //- sun
+        if(isavailable_sun === 'on'){
+            isavailable_sun = true
+        } else{
+            isavailable_sun = false
+        }
+        
+        if (req.file){
+            const poster = fs.readFileSync(req.file.path)
+
+            await pool.query(`
+                UPDATE promos
+                SET code = $1, 
+                    name = $2, 
+                    discount = $3, 
+                    description = $4, 
+                    poster = $5, 
+                    status = $6, 
+                    startdate = $7, 
+                    enddate = $8, 
+                    isavailable_mon = $9, 
+                    isavailable_tues = $10, 
+                    isavailable_wed = $11, 
+                    isavailable_thurs = $12, 
+                    isavailable_fri = $13, 
+                    isavailable_sat = $14, 
+                    isavailable_sun = $15,
+                    typeid = $16 
+                WHERE id = $17 AND 
+                    hotelid = $18
+            `, [code, name, discount, description, poster, status, startdate, enddate,
+                isavailable_mon, isavailable_tues, isavailable_wed, isavailable_thurs,
+                isavailable_fri, isavailable_sat, isavailable_sun,
+                typeid, id, hotelID])
+        } else{
+            await pool.query(`
+                UPDATE promos
+                SET code = $1, 
+                    name = $2, 
+                    discount = $3, 
+                    description = $4,
+                    status = $5, 
+                    startdate = $6, 
+                    enddate = $7, 
+                    isavailable_mon = $8, 
+                    isavailable_tues = $9, 
+                    isavailable_wed = $10, 
+                    isavailable_thurs = $11, 
+                    isavailable_fri = $12, 
+                    isavailable_sat = $13, 
+                    isavailable_sun = $14,
+                    typeid = $15 
+                WHERE id = $16 AND 
+                    hotelid = $17
+            `, [code, name, discount, description, status, startdate, enddate,
+                isavailable_mon, isavailable_tues, isavailable_wed, isavailable_thurs,
+                isavailable_fri, isavailable_sat, isavailable_sun,
+                typeid, id, hotelID])
+        }
+        res.redirect('/pd')
+
+    } catch (error) {
+        console.error(error.message)
+    }
+    
+    
 })
 
 

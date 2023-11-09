@@ -7,6 +7,7 @@ html(lang="en")
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
     link(rel='stylesheet', href='/css/font.css')
     link(rel='stylesheet', href='/css/modal.css')
+    link(rel='stylesheet', href='/css/card.css')
 
     include ../../partials/color.pug
 
@@ -16,99 +17,114 @@ html(lang="en")
     
     .content
       // Header Title for page
-      .row
+      .container
         .col-8.d-flex.align-items-center
           h2.text Edit Promo
 
-    .container.shadow.mt-3.p-0.bg-white
-        .px-5.py-3.mb-3.bg
+        .container.bg-white.shadow.mt-3.p-0
+            .px-5.card-top-bottom.rounded-top.bg
 
-        .px-5.py-3
-            form(action=`/pd/add` method='POST' enctype='multipart/form-data') 
-                .row.mb-3
-                    //- code
-                    label.col-md-2.form-label.fw-bold(for='code') Promo Code
-                    .col-md-10
-                        input.form-control#code(type='text' name='code' value=p.code)
-                //- name
-                .row.mb-3
-                    label.col-md-2.form-label.fw-bold(for='name') Promo Name
-                    .col-md-10
-                        input.form-control#name(type='text' name='name' value=p.name)
-                //- discount
-                .row.mb-3
-                    label.col-md-2.form-label.fw-bold(for='discount') Discount
-                    .col-md-10
-                        input.form-control#discount(type='number' name='discount' value=p.discount)
-                //- description
-                .row.mb-3
-                    label.col-md-2.form-label.fw-bold(for='description') Description
-                    .col-md-10
-                        textarea.form-control#description(name='description') #{p.description}
-                //- poster
-                .row.mb-5
-                    label.col-md-2.form-label.fw-bold(for="poster") Poster
-                    .col-md-10
-                        input.form-control#poster(type="file", name="poster", accept="image/*", onchange="previewImage(event)")
+            form(action=`/pd/update/${p.id}` method='POST' enctype='multipart/form-data') 
+                .px-5.py-3
+                    .row.mb-3
+                        //- code
+                        label.col-md-2.form-label.fw-bold(for='code') Promo Code
+                        .col-md-10
+                            input.form-control#code(type='text' name='code' value=p.code)
+                    //- name
+                    .row.mb-3
+                        label.col-md-2.form-label.fw-bold(for='name') Promo Name
+                        .col-md-10
+                            input.form-control#name(type='text' name='name' value=p.name)
+                    //- discount
+                    .row.mb-3
+                        label.col-md-2.form-label.fw-bold(for='discount') Discount
+                        .col-md-10
+                            input.form-control#discount(type='number' name='discount' value=p.discount)
+                    //- description
+                    .row.mb-3
+                        label.col-md-2.form-label.fw-bold(for='description') Description
+                        .col-md-10
+                            textarea.form-control#description(name='description') #{p.description}
+                    //- poster
+                    .row.mb-3
+                        label.col-md-2.form-label.fw-bold(for="poster") Poster
+                        .col-md-10
+                            input.form-control#poster(type="file", name="poster", accept="image/*", onchange="previewImage(event)")
+                        
+                        div.mx-auto.mt-2(style="width: 200px")
+                            img#imagePreview(style="max-width: 200px; max-height: 100%")
                     
-                    img.mx-auto.my-3.d-block#imagePreview(style="max-width: auto; max-height: 250px")
-                .row.mb-3
-                    //- startdate
-                    label.col-md-2.form-label.fw-bold(for='startdate') Start Date
-                    .col-md-10
-                        input.form-control#startdate(type='date' name='startdate' value=p.startdate)
-                .row.mb-5
-                    //- enddate
-                    label.col-md-2.form-label.fw-bold(for='enddate') End Date
-                    .col-md-10
-                        input.form-control#enddate(type='date' name='enddate' value=p.enddate)
-                
-                .row
-                    //- isavailable_mon
-                    label.col-md-2.form-label.fw-bold(for='isavailable_mon') Monday
-                    .col-md-10
-                        input.form-check-input#isavailable_mon(type='checkbox' name='isavailable_mon' checked=p.isavailable_mon)
-                .row
-                    //- isavailable_tues
-                    label.col-md-2.form-label.fw-bold(for='isavailable_tues') Tuesday
-                    .col-md-10
-                        input.form-check-input#isavailable_tues(type='checkbox' name='isavailable_tues' checked=p.isavailable_tues)
-                .row
-                    //- isavailable_wed
-                    label.col-md-2.form-label.fw-bold(for='isavailable_wed') Wednesday
-                    .col-md-10
-                        input.form-check-input#isavailable_wed(type='checkbox' name='isavailable_wed' checked=p.isavailable_wed)
-                .row
-                    //- isavailable_thurs
-                    label.col-md-2.form-label.fw-bold(for='isavailable_thurs') Thursday
-                    .col-md-10
-                        input.form-check-input#isavailable_thurs(type='checkbox' name='isavailable_thurs' checked=p.isavailable_thurs)
-                .row
-                    //- isavailable_fri
-                    label.col-md-2.form-label.fw-bold(for='isavailable_fri') Friday
-                    .col-md-10
-                        input.form-check-input#isavailable_fri(type='checkbox' name='isavailable_fri' checked=p.isavailable_fri)
-                .row
-                    //- isavailable_sat
-                    label.col-md-2.form-label.fw-bold(for='isavailable_sat') Saturday
-                    .col-md-10
-                        input.form-check-input#isavailable_sat(type='checkbox' name='isavailable_sat' checked=p.isavailable_sat)
-                .row.mb-5
-                    //- isavailable_sun
-                    label.col-md-2.form-label.fw-bold(for='isavailable_sun') Sunday
-                    .col-md-10
-                        input.form-check-input#isavailable_sun(type='checkbox' name='isavailable_sun' checked=p.isavailable_sun)
-                
-                .row.mb-3
-                    label.col-md-2.col-form-label.fw-bold(for="typeid") Room Type
-                    .col-md-10
-                        select.form-select(id='typeid', name='typeid')
-                            option(value=p.typeid)=p.roomtype
-                            each x in allRoomTypeArray
-                                option(value=x.typeid)= x.roomtype
-                
-                input.btn(type="submit", value="Submit")
-        .px-5.py-3.mb-3.bg
+                    .row.mb-5
+                        label.col-md-2.col-form-label.fw-bold(for="status") Status
+                        .col-md-10
+                            select.form-select(id='status', name='status')
+                                option(value=p.status)= p.status
+                                option(value='Active') Active
+                                option(value='Inactive') Inactive
+
+                    .row.mb-3
+                        //- startdate
+                        label.col-md-2.form-label.fw-bold(for='startdate') Start Date
+                        .col-md-10
+                            input.form-control#startdate(type='date' name='startdate' value=p.startdate)
+                    .row.mb-5
+                        //- enddate
+                        label.col-md-2.form-label.fw-bold(for='enddate') End Date
+                        .col-md-10
+                            input.form-control#enddate(type='date' name='enddate' value=p.enddate)
+                    
+                    .row.mb-5
+                        label.col-md-2.form-label.fw-bold Available On
+                        .row.col-md-5
+                            .row
+                                //- isavailable_mon
+                                .col-md-1
+                                    input.form-check-input#isavailable_mon(type='checkbox' name='isavailable_mon' checked=p.isavailable_mon)
+                                label.col-md-11.form-label.fw-bold(for='isavailable_mon') Monday
+                            .row
+                                //- isavailable_tues
+                                .col-md-1
+                                    input.form-check-input#isavailable_tues(type='checkbox' name='isavailable_tues' checked=p.isavailable_tues)
+                                label.col-md-11.form-label.fw-bold(for='isavailable_tues') Tuesday
+                            .row
+                                //- isavailable_wed
+                                .col-md-1
+                                    input.form-check-input#isavailable_wed(type='checkbox' name='isavailable_wed' checked=p.isavailable_wed)
+                                label.col-md-11.form-label.fw-bold(for='isavailable_wed') Wednesday
+                            .row
+                                //- isavailable_thurs
+                                .col-md-1
+                                    input.form-check-input#isavailable_thurs(type='checkbox' name='isavailable_thurs' checked=p.isavailable_thurs)
+                                label.col-md-11.form-label.fw-bold(for='isavailable_thurs') Thursday
+                        .row.col-md-5
+                            .row
+                                //- isavailable_fri
+                                .col-md-1
+                                    input.form-check-input#isavailable_fri(type='checkbox' name='isavailable_fri' checked=p.isavailable_fri)
+                                label.col-md-11.form-label.fw-bold(for='isavailable_fri') Friday
+                            .row
+                                //- isavailable_sat
+                                .col-md-1
+                                    input.form-check-input#isavailable_sat(type='checkbox' name='isavailable_sat' checked=p.isavailable_sat)
+                                label.col-md-11.form-label.fw-bold(for='isavailable_sat') Saturday
+                            .row
+                                //- isavailable_sun
+                                .col-md-1
+                                    input.form-check-input#isavailable_sun(type='checkbox' name='isavailable_sun' checked=p.isavailable_sun)
+                                label.col-md-11.form-label.fw-bold(for='isavailable_sun') Sunday
+                    
+                    .row.mb-3
+                        label.col-md-2.col-form-label.fw-bold(for="typeid") Room Type
+                        .col-md-10
+                            select.form-select(id='typeid', name='typeid')
+                                option(value=p.typeid)=p.roomtype
+                                each x in allRoomTypeArray
+                                    option(value=x.typeid)= x.roomtype
+                    
+                .px-5.py-3.card-top-bottom.rounded-bottom.bg
+                    .d-flex.justify-content-end
+                        input.btn(type="submit", value="Submit")
 
 
 
