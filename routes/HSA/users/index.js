@@ -1,20 +1,27 @@
+//- import path
 const path = require('path')
 
+//- express and router
 const express = require('express')
 const router = express.Router()
+
+//- pool
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
+//- bcrypt package
 const bcrypt = require('bcrypt');
 
+//- middleware
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 
 
 
-// read all (HSA and R)
-router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
+//- render "users" page
+router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
         const allHSAdmins = await pool.query('SELECT * FROM hoteladmin_login WHERE hotelid = $1', [hotelid])
@@ -23,7 +30,8 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
         res.render('HSA/users/users', {
             allHSAdminsArray: allHSAdmins.rows,
             allReceptionistsArray: allReceptionists.rows,
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage
         })
 
     } catch (error) {
@@ -32,8 +40,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 
-// HSA user management
-// add 
+//- add receptionist
 router.post('/', isAuthenticated, async(req, res)=>{
     try {
         const { fullname, username, password } = req.body
@@ -52,22 +59,7 @@ router.post('/', isAuthenticated, async(req, res)=>{
     }
 })
 
-
-// render edit form
-router.get("/edit/FDR/:id", isAuthenticated, getHotelColor, async(req, res)=>{
-    try {
-        const { id } = req.params
-        const user = await pool.query('SELECT * FROM user_login WHERE userid = $1', [id])
-
-        res.render('HSA/users/editFDR', {
-            r: user.rows[0],
-            hotelColor: req.hotelColor
-        })
-    } catch (error) {
-        console.error(error.message)
-    }
-})
-// edit one
+//- update receptionist
 router.post("/edit/receptionist/:id", isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
@@ -85,8 +77,7 @@ router.post("/edit/receptionist/:id", isAuthenticated, async(req, res)=>{
     }
 })
 
-
-// delete one
+//- delete receptionist
 router.post('/delete/:id', isAuthenticated,async(req,res)=>{
     try {
         const { id } = req.params
@@ -98,9 +89,7 @@ router.post('/delete/:id', isAuthenticated,async(req,res)=>{
     }
 })
 
-
-
-// Change Password for Receptionist
+//- change password receptionist
 router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
     const { oldPassword, newPassword, confirmPassword } = req.body
@@ -136,22 +125,9 @@ router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
 })
 
 
-// FDM user management
-// render edit form
-router.get("/edit/FDM/:id", isAuthenticated, getHotelColor, async(req, res)=>{
-    try {
-        const { id } = req.params
-        const user = await pool.query('SELECT * FROM hoteladmin_login WHERE userid = $1', [id])
 
-        res.render('HSA/users/editFDM', {
-            ha: user.rows[0],
-            hotelColor: req.hotelColor
-        })
-    } catch (error) {
-        console.error(error.message)
-    }
-})
-// edit one
+
+//- update hsa
 router.post("/edit/manager/:id", isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
@@ -168,20 +144,7 @@ router.post("/edit/manager/:id", isAuthenticated, async(req, res)=>{
     }
 })
 
-
-// render change pw form
-router.get('/changePW/FDM/:id', isAuthenticated, getHotelColor, (req, res)=>{
-    const { id } = req.params
-    res.render('HSA/users/changePWfdm', {
-        id: id,
-        hotelColor: req.hotelColor
-    })
-})
-
-
-
-
-// Change password for Admin
+//- change password hsa
 router.post('/changePW/manager/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
     const { oldPassword, newPassword, confirmPassword } = req.body
