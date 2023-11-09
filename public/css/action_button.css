@@ -64,6 +64,24 @@
     background-color: rgb(255, 179, 108);
     color: rgb(202, 92, 2);
 }
+.sa-view{
+    display: inline-block;
+    padding: 5px;
+    background-color: rgb(173, 228, 255);
+    color: rgb(31, 63, 207);
+    text-align: center;
+    width: 40px; 
+    height: 40px;
+    line-height: 30px; 
+    text-decoration: none; 
+    border-radius: 3px;
+    border-color: transparent;
+}
+
+.sa-view:hover {
+    background-color: rgb(142, 195, 255);
+    color: rgb(0, 99, 156);
+}
 
 .showpass{
     width: 466px;
