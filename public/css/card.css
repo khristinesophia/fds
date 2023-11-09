@@ -31,3 +31,7 @@ textarea.form-control {
 .border{
     border: 1px solid black;
 }
+
+.card-top-bottom{
+    min-height: 50px;
+}
