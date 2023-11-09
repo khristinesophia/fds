@@ -357,56 +357,49 @@ function ChangePass_Admin_User(clickedElement) {
   var modal = document.getElementById('changeAdminHSA');
   modal.classList.add('modal-active');
 
-  // Get the user ID and password hash from data attributes
   var userId = clickedElement.getAttribute('data-userid');
-  var passwordHash = clickedElement.getAttribute('data-password');
-
-  // Set the form action in the modal
   var changePasswordForm = document.querySelector('#changeAdminHSA form');
+  var errorElement = document.getElementById('error-message-admin');
+
+  // Reset the error message every time the modal is opened
+  if (errorElement) {
+      errorElement.textContent = '';
+      errorElement.style.display = 'none';
+  }
+
   if (changePasswordForm) {
-    changePasswordForm.action = `/users/changePW/manager/${userId}`;
-    
-    // Add a submit event listener to the form
-    changePasswordForm.addEventListener('submit', function (event) {
-      event.preventDefault(); // Prevent the default form submission
+      changePasswordForm.action = `/users/changePW/manager/${userId}`;
 
-      // Get the old password and other form data
-      var oldPassword = document.getElementById('oldpasswordAdmin').value;
-      var newPassword = document.getElementById('newpasswordAdmin').value;
-      var confirmPassword = document.getElementById('conpasswordAdmin').value;
+      changePasswordForm.addEventListener('submit', function (event) {
+          event.preventDefault(); 
 
-      // Reset any previous error messages
-      var errorElement = document.getElementById('error-message-admin');
-      if (errorElement) {
-        errorElement.textContent = '';
-      }
+          var oldPassword = document.getElementById('oldpasswordAdmin').value;
+          var newPassword = document.getElementById('newpasswordAdmin').value;
+          var confirmPassword = document.getElementById('conpasswordAdmin').value;
 
-      // Send a POST request to the server to handle password change
-      fetch(this.action, {
-        method: 'POST',
-        body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-      })
-      .then(response => response.json())
-      .then(data => {
-        if (data.error) {
-          // Show the error message in the modal
-          if (errorElement) {
-            errorElement.textContent = data.error;
-            errorElement.style.display = 'block'; // Show the error message
-          }
-        } else {
-          // Password updated successfully, close the modal or perform any other actions
-          Close_ChangePass_Admin_User();
-        }
-      })
-      .catch(error => {
-        console.error('Error:', error);
-        // Handle other error scenarios if needed
+          fetch(this.action, {
+              method: 'POST',
+              body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.error) {
+                  if (errorElement) {
+                      errorElement.textContent = data.error;
+                      errorElement.style.display = 'block';
+                  }
+              } else {
+                  Close_ChangePass_Admin_User();
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              // Handle other error scenarios if needed
+          });
       });
-    });
   }
 }
 
@@ -414,24 +407,23 @@ function Close_ChangePass_Admin_User() {
   var modal = document.getElementById('changeAdminHSA');
   modal.classList.remove('modal-active');
 
-  // Clear the input fields
   var oldPasswordInput = document.getElementById('oldpasswordAdmin');
   var newPasswordInput = document.getElementById('newpasswordAdmin');
   var confirmPasswordInput = document.getElementById('conpasswordAdmin');
+  var errorElement = document.getElementById('error-message-admin');
 
   if (oldPasswordInput && newPasswordInput && confirmPasswordInput) {
-    oldPasswordInput.value = '';
-    newPasswordInput.value = '';
-    confirmPasswordInput.value = '';
+      oldPasswordInput.value = '';
+      newPasswordInput.value = '';
+      confirmPasswordInput.value = '';
   }
 
-  // Hide the error message element
-  var errorElement = document.getElementById('error-message-admin');
   if (errorElement) {
-    errorElement.textContent = '';
-    errorElement.style.display = 'none'; // Hide the error message
+      errorElement.textContent = '';
+      errorElement.style.display = 'none';
   }
 }
+
 
 
 
@@ -498,83 +490,74 @@ function Close_ChangePass_Admin_User() {
 
 //- Change password Receptionist 
 function ChangePass_Receptionist_User(clickedElement) {
-    var modal = document.getElementById('changeReceptionistHSA');
-    modal.classList.add('modal-active');
-  
-    // Get the user ID and password hash from data attributes
-    var userId = clickedElement.getAttribute('data-userid');
-    var passwordHash = clickedElement.getAttribute('data-password');
-  
-    // Set the form action in the modal
-    var changePasswordForm = document.querySelector('#changeReceptionistHSA form');
-    if (changePasswordForm) {
+  var modal = document.getElementById('changeReceptionistHSA');
+  modal.classList.add('modal-active');
+
+  var userId = clickedElement.getAttribute('data-userid');
+  var changePasswordForm = document.querySelector('#changeReceptionistHSA form');
+  var errorElement = document.getElementById('error-message-receptionist');
+
+  // Reset the error message every time the modal is opened
+  if (errorElement) {
+      errorElement.textContent = '';
+      errorElement.style.display = 'none';
+  }
+
+  if (changePasswordForm) {
       changePasswordForm.action = `/users/changePW/receptionist/${userId}`;
-      
-      // Add a submit event listener to the form
+
       changePasswordForm.addEventListener('submit', function (event) {
-        event.preventDefault(); // Prevent the default form submission
-  
-        // Get the old password and other form data
-        var oldPassword = document.getElementById('oldpasswordReceptionist').value;
-        var newPassword = document.getElementById('newpasswordReceptionist').value;
-        var confirmPassword = document.getElementById('conpasswordReceptionist').value;
-  
-        // Reset any previous error messages
-        var errorElement = document.getElementById('error-message-receptionist');
-        if (errorElement) {
-          errorElement.textContent = '';
-        }
-  
-        // Send a POST request to the server to handle password change
-        fetch(this.action, {
-          method: 'POST',
-          body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.error) {
-            // Show the error message in the modal
-            if (errorElement) {
-              errorElement.textContent = data.error;
-              errorElement.style.display = 'block'; // Show the error message
-            }
-          } else {
-            // Password updated successfully, close the modal or perform any other actions
-            Close_ChangePass_Receptionist_User();
-          }
-        })
-        .catch(error => {
-          console.error('Error:', error);
-          // Handle other error scenarios if needed
-        });
+          event.preventDefault(); 
+
+          var oldPassword = document.getElementById('oldpasswordReceptionist').value;
+          var newPassword = document.getElementById('newpasswordReceptionist').value;
+          var confirmPassword = document.getElementById('conpasswordReceptionist').value;
+
+          fetch(this.action, {
+              method: 'POST',
+              body: JSON.stringify({ oldPassword, newPassword, confirmPassword }),
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.error) {
+                  if (errorElement) {
+                      errorElement.textContent = data.error;
+                      errorElement.style.display = 'block';
+                  }
+              } else {
+                  Close_ChangePass_Receptionist_User();
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              // Handle other error scenarios if needed
+          });
       });
-    }
+  }
 }
 
 function Close_ChangePass_Receptionist_User() {
-    var modal = document.getElementById('changeReceptionistHSA');
-    modal.classList.remove('modal-active');
-  
-    // Clear the input fields
-    var oldPasswordInput = document.getElementById('oldpasswordReceptionist');
-    var newPasswordInput = document.getElementById('newpasswordReceptionist');
-    var confirmPasswordInput = document.getElementById('conpasswordReceptionist');
-  
-    if (oldPasswordInput && newPasswordInput && confirmPasswordInput) {
+  var modal = document.getElementById('changeReceptionistHSA');
+  modal.classList.remove('modal-active');
+
+  var oldPasswordInput = document.getElementById('oldpasswordReceptionist');
+  var newPasswordInput = document.getElementById('newpasswordReceptionist');
+  var confirmPasswordInput = document.getElementById('conpasswordReceptionist');
+  var errorElement = document.getElementById('error-message-receptionist');
+
+  if (oldPasswordInput && newPasswordInput && confirmPasswordInput) {
       oldPasswordInput.value = '';
       newPasswordInput.value = '';
       confirmPasswordInput.value = '';
-    }
-  
-    // Hide the error message element
-    var errorElement = document.getElementById('error-message-receptionist');
-    if (errorElement) {
+  }
+
+  if (errorElement) {
       errorElement.textContent = '';
-      errorElement.style.display = 'none'; // Hide the error message
-    }
+      errorElement.style.display = 'none';
+  }
 }
 
 
