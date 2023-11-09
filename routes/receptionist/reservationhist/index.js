@@ -11,6 +11,7 @@ const pool = require(path.join(__basedir, 'config', 'db-config'))
 //- middlewares
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 //- utils
 const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
@@ -21,7 +22,7 @@ const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 
 //- render "list" page
 //- "/reservationhist"
-router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelid = req.session.hotelID
 
     //- select all reservationhistory
@@ -51,6 +52,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('receptionist/reservationhist/list', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         reservation: q1result.rows
     })
 })
@@ -58,7 +60,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
 //- render "detail" page
 //- "/archivedga/detail/:id"
-router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
 
@@ -90,6 +92,7 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('receptionist/reservationhist/detail', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         r: q1result.rows[0],
         rs: q2result.rows[0]
     })

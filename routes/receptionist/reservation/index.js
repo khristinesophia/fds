@@ -7,6 +7,7 @@ const pool = require(path.join(__basedir, 'config', 'db-config'))
 
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 
