@@ -65,7 +65,14 @@ html(lang="en")
                                         td #{ga.checkoutdate}
                                         td 
                                             a.sa-icon.sa-view(href=`/ga/detail/${ga.accountid}` role='button')
-                                                i.fa-solid.fa-eye.fa-lg  
+                                                i.fa-solid.fa-eye.fa-lg
+                                        td 
+                                            .card.shadow-sm(style="width: 18rem;")
+                                                .card-body
+                                                    .d-flex.flex-column.align-items-start
+                                                        span.card-title.mb-2.text-muted Active Account
+                                                        h2 #{guestaccounts.length} 
+                                  
 
     //-Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')

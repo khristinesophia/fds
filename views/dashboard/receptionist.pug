@@ -9,6 +9,7 @@ html(lang="en")
     //-Customize Css
     link(rel='stylesheet', href='/css/font.css')
     link(rel='stylesheet', href='/css/modal.css')
+    link(rel='stylesheet', href='/css/track_card.css')
     
     
     title Dashboard
@@ -19,7 +20,19 @@ html(lang="en")
       // Header Title for page
       .row
         .col-8.d-flex.align-items-center
-          h2.text Dashboard
+          h2.text.mb-3 Dashboard
+              //- Main Content 
+              //- Inside your dashboard/hsadmin.pug file
+
+              //- Tracking Card for Active Guest Accounts
+              .row.mx-5
+                  .col-md-4
+                      .card.act_card.shadow-sm(style="width: 18rem;")
+                          .card-body.act_card_body
+                              .d-flex.flex-column.align-items-start
+                                  span.card-title.mb-2.text-muted Active Account
+                                  h2 #{guestCount}
+
 
 
     //-Bootstrap Js
