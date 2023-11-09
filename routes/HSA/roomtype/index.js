@@ -1,19 +1,25 @@
+//- path import
 const path = require('path')
 
+//- express and router
 const express = require('express')
 const router = express.Router()
+
+//- pool
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
-const fs = require('fs')
-const multer = require('multer')
-
+//- middlewares
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
+//- upload image
+const fs = require('fs')
+const multer = require('multer')
 const upload = multer({ dest: 'uploads/' })
 
 //display all roomtype
-router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
         const allRoomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1 ORDER BY price ASC' , [hotelid])
@@ -28,7 +34,8 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
         res.render('HSA/roomtype/allRoomtype', {
             allRoomtypeArray: allRoomtype.rows,
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage
         })
 
     } catch (error) {
