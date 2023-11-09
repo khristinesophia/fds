@@ -68,8 +68,8 @@ html(lang="en")
                                 a.sa-icon.sa-edit.me-2(href=`/pd/edit/${x.id}`)
                                     i.fa-solid.fa-pen-to-square.fa-lg
                                 
-                                a.delete-icon()
-                                    i.fa-solid.fa-trash-can.fa-xl
+                                form(action=`/pd/delete/${x.id}` method='POST')
+                                    input(type='submit' value='Delete')
 
                         //- .card-footer.pb-3.pt-3
                         //- .d-flex.justify-content-end

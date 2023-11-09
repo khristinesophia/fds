@@ -322,6 +322,22 @@ router.post('/update/:id', isAuthenticated, upload.single('poster'), async(req,r
     
 })
 
+//- delete promo
+//- "pd/delete/:id"
+router.post('/delete/:id', isAuthenticated, async(req, res)=>{
+    const { id } = req.params
+    const hotelID = req.session.hotelID
+
+    const q1 = `
+        DELETE FROM promos
+        WHERE id = $1 AND 
+            hotelid = $2
+    `
+
+    const q1result = await pool.query(q1, [id, hotelID])
+
+    res.redirect('/pd')
+})
 
 
 
