@@ -66,12 +66,13 @@ html(lang="en")
                                         td 
                                             a.sa-icon.sa-view(href=`/ga/detail/${ga.accountid}` role='button')
                                                 i.fa-solid.fa-eye.fa-lg
-                                        td 
-                                            .card.shadow-sm(style="width: 18rem;")
-                                                .card-body
-                                                    .d-flex.flex-column.align-items-start
-                                                        span.card-title.mb-2.text-muted Active Account
-                                                        h2 #{guestaccounts.length} 
+                                        //- Trial for tracker card
+                                            td 
+                                                .card.shadow-sm(style="width: 18rem;")
+                                                    .card-body
+                                                        .d-flex.flex-column.align-items-start
+                                                            span.card-title.mb-2.text-muted Active Account
+                                                            h2 #{guestaccounts.length} 
                                   
 
     //-Table
