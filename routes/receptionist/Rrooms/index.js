@@ -6,10 +6,11 @@ const pool = require(path.join(__basedir, 'config', 'db-config'))
 
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 
 // read all rooms
-router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
         const roomtype = await pool.query('SELECT * FROM room_type WHERE hotelid = $1', [hotelid])
@@ -41,7 +42,8 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
         res.render('receptionist/Rrooms/allRooms', {
             roomTypesArray: roomtype.rows, 
             allRoomsArray: allRooms.rows,
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage
         })
 
     } catch (error) {
@@ -50,7 +52,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 //read all vacant rooms
-router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/vacantRooms', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
 
@@ -85,7 +87,8 @@ router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         res.render('receptionist/Rrooms/vacantRooms', {
             roomTypesArray: roomtype.rows, 
             vacantRoomsArray: vacantRooms.rows,
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage
         })
 
     } catch (error) {
@@ -94,7 +97,7 @@ router.get('/vacantRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 //read all reserved rooms
-router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/reservedRooms', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
 
@@ -135,7 +138,8 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         res.render('receptionist/Rrooms/reservedRooms', {
             roomTypesArray: roomtype.rows, 
             reservedRoomsArray: reservedRooms.rows,
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage
         })
 
     } catch (error) {
@@ -144,7 +148,7 @@ router.get('/reservedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 //read all occupied rooms
-router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/occupiedRooms', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
 
@@ -185,7 +189,8 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         res.render('receptionist/Rrooms/occupiedRooms', {
             roomTypesArray: roomtype.rows, 
             occupiedRoomsArray: occupiedRooms.rows,
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage
         })
 
     } catch (error) {
@@ -194,7 +199,7 @@ router.get('/occupiedRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 //read all on-change rooms
-router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/onchangeRooms', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
 
@@ -227,7 +232,8 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
         res.render('receptionist/Rrooms/onchangeRooms', {
             roomTypesArray: roomtype.rows, 
             onchangeRoomsArray: onchangeRooms.rows,
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage
         })
 
     } catch (error) {
@@ -236,7 +242,7 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, async(req, res)=>{
 })
 
 //read all out-of-order rooms
-router.get('/outoforderRooms', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/outoforderRooms', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
 
@@ -269,7 +275,8 @@ router.get('/outoforderRooms', isAuthenticated, getHotelColor, async(req, res)=>
         res.render('receptionist/Rrooms/outoforderRooms', {
             roomTypesArray: roomtype.rows, 
             outoforderRoomsArray: outoforderRooms.rows,
-            hotelColor: req.hotelColor
+            hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage
         })
 
     } catch (error) {

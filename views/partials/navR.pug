@@ -2,7 +2,10 @@
   // Sidebar
   .sidebar
     .sidebar-logo
-      img(src='/images/logo-white.png' alt='Logo')
+      if(hotelLogo)
+        img(src=`${hotelLogo}` alt='Logo' style='border: 2px solid white; border-radius: 50%')
+      else
+        img(src='/images/logo-white.png' alt='Logo')
     .separator
     ul.nav.flex-column
       li.nav-item

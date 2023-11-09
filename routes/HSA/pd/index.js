@@ -11,6 +11,7 @@ const pool = require(path.join(__basedir, 'config', 'db-config'))
 //- middleware import
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 //- utils
 const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
@@ -24,7 +25,7 @@ const upload = multer({ dest: 'uploads/' })
 
 //- render "add promo" page
 //- "/pd/add"
-router.get('/add', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/add', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelID = req.session.hotelID
 
     const q1 = `
@@ -36,6 +37,7 @@ router.get('/add', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('HSA/pd/add', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         allRoomTypeArray: q1result.rows
     })
 })
@@ -116,7 +118,7 @@ router.post('/create', isAuthenticated, getHotelColor, upload.single('poster'), 
 
 //- render "active promo list" page
 //- "/pd"
-router.get('/', isAuthenticated, getHotelColor, async(req,res)=>{
+router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
     const hotelID = req.session.hotelID
 
     const q1 = `
@@ -144,13 +146,14 @@ router.get('/', isAuthenticated, getHotelColor, async(req,res)=>{
 
     res.render('HSA/pd/list', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         allPromosArray: q1result.rows
     })
 })
 
 //- render "edit promo" page
 //- "/pd/edit/:id"
-router.get('/edit/:id', isAuthenticated, getHotelColor, async(req,res)=>{
+router.get('/edit/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
     const { id } = req.params
     const hotelID = req.session.hotelID
 
@@ -200,6 +203,7 @@ router.get('/edit/:id', isAuthenticated, getHotelColor, async(req,res)=>{
 
     res.render('HSA/pd/edit', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         allRoomTypeArray: q1result.rows,
         p: q2result.rows[0],
     })
@@ -322,6 +326,22 @@ router.post('/update/:id', isAuthenticated, upload.single('poster'), async(req,r
     
 })
 
+//- delete promo
+//- "pd/delete/:id"
+router.post('/delete/:id', isAuthenticated, async(req, res)=>{
+    const { id } = req.params
+    const hotelID = req.session.hotelID
+
+    const q1 = `
+        DELETE FROM promos
+        WHERE id = $1 AND 
+            hotelid = $2
+    `
+
+    const q1result = await pool.query(q1, [id, hotelID])
+
+    res.redirect('/pd')
+})
 
 
 

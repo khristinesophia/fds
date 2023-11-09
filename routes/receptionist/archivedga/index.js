@@ -12,6 +12,7 @@ const pool = require(path.join(__basedir, 'config', 'db-config'))
 //- middlewares
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 //- utils
 const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
@@ -27,7 +28,7 @@ const { createInvoice } = require(path.join(__basedir, 'services', 'pdf-service'
 
 //- render "list" page
 //- "/archivedga"
-router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelid = req.session.hotelID
 
     //- select all archived guest accounts
@@ -54,6 +55,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('receptionist/archivedga/list', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         guestaccounts: q1result.rows
     })
 })
@@ -61,7 +63,7 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
 
 //- render "folio" page
 //- "/ga/folio/:id"
-router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/folio/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
 
     const hotelid = req.session.hotelID
     const { id } = req.params
@@ -132,6 +134,7 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('receptionist/archivedga/folio', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         t1: q1result.rows,
         t2: q2result.rows,
         t3: q3result.rows,
@@ -143,7 +146,7 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
 //- render "detail" page
 //- "/archivedga/detail/:id"
-router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelid = req.session.hotelID
     const { id } = req.params
 
@@ -171,6 +174,7 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, async(req, res)=>{
 
     res.render('receptionist/archivedga/detail', {
         hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
         ga: q1result.rows[0]
     })
 })

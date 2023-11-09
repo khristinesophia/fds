@@ -2,7 +2,10 @@
   // Sidebar
   .sidebar
     .sidebar-logo
-      img(src='/images/logo-white.png' alt='Logo')
+      if(hotelLogo)
+        img(src=`${hotelLogo}` alt='Logo' style='border: 2px solid white; border-radius: 50%')
+      else
+        img(src='/images/logo-white.png' alt='Logo')
     .separator
     ul.nav.flex-column
       li.nav-item
@@ -16,7 +19,7 @@
       li.nav-item
         a.nav-link(href='/users')
           i.fas.fa-solid.fa-users.fa-xl
-          span User         
+          span Users         
       //-
         li.nav-ite
           a.nav-link

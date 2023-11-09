@@ -11,6 +11,7 @@ const pool = require(path.join(__basedir, 'config', 'db-config'))
 //- middleware
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
+const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 //- fs and multer import
 //- for uploading image
@@ -21,9 +22,9 @@ const upload = multer({ dest: 'uploads/' })
 
 
 
-//- read hotel profile
+//- render hotel profile
 //- "/profile"
-router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
+router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
         const hotel = await pool.query('SELECT * FROM hotels WHERE hotelid = $1', [hotelid])
@@ -37,8 +38,9 @@ router.get('/', isAuthenticated, getHotelColor, async(req, res)=>{
         })
 
         res.render('HSA/profile/profile', {
-            h: hotel.rows[0],
             hotelColor: req.hotelColor,
+            hotelLogo: req.hotelImage,
+            h: hotel.rows[0],
             colorStacksArray: colors.rows
         })
 
