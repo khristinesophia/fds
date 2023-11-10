@@ -18,6 +18,7 @@ html(lang="en")
         //- custom css
         link(rel='stylesheet', href='/css/font.css')
         link(rel='stylesheet', href='/css/navigation.css')
+        link(rel='stylesheet', href='/css/action_button.css')
         link(rel='stylesheet', href='/css/modal.css')
         link(rel='stylesheet', href='/css/table.css')
 
@@ -63,7 +64,16 @@ html(lang="en")
                                         td #{ga.checkindate}
                                         td #{ga.checkoutdate}
                                         td 
-                                            a.btn.mod_btn(href=`/ga/detail/${ga.accountid}`) View
+                                            a.sa-icon.sa-view(href=`/ga/detail/${ga.accountid}` role='button')
+                                                i.fa-solid.fa-eye.fa-lg
+                                        //- Trial for tracker card
+                                            td 
+                                                .card.shadow-sm(style="width: 18rem;")
+                                                    .card-body
+                                                        .d-flex.flex-column.align-items-start
+                                                            span.card-title.mb-2.text-muted Active Account
+                                                            h2 #{guestaccounts.length} 
+                                  
 
     //-Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')

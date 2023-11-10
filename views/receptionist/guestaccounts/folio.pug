@@ -33,7 +33,7 @@ html(lang="en")
                 .col-8.d-flex.align-items-center
                     h2.text #{ga.fullname} - Room #{ga.roomnum}
                 .col-4.d-flex.align-items-center.justify-content-end
-                    a.btn(href="/ga/new") Register a Guest Account
+                    a.btn.mod_btn(href="/ga/new") Register a Guest Account
 
                 //- modulenav
                 include ../../partials/navRga.pug
@@ -235,5 +235,6 @@ html(lang="en")
     //-FontAwesome
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     //-Customize JS
-    script(src='/js/nav-active.js')    
+    script(src='/js/nav-active.js') 
+    script(src='/js/room_nav.js')      
     script(src='/js/modal.js') 

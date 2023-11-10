@@ -56,16 +56,15 @@
 }
 
 .err{
+    display: none;
     border: 1px solid rgb(240, 61, 61);
     background-color: rgb(255, 211, 211);
     color: red; 
     padding: 5px; 
     border-radius: 5px; 
     text-align: center; 
-    display: none;
+    
 }
-
-
 
 #error-message {
     display: none; /* Initially hide the error message */
