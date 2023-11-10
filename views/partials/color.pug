@@ -52,7 +52,7 @@ style.
     color: #fff;
     display: flex;
     align-items: center;
-    margin: 15px 0;
+    margin: 8px 0;
     }
 
     .nav-item i {
@@ -60,7 +60,6 @@ style.
     }
 
     .nav-item:hover {
-    background-color: #fff;
     border-radius: 5px;
     color: #{hotelColor.accent};
     }
@@ -76,6 +75,10 @@ style.
 
     .nav-item:hover a {
     color: #{hotelColor.accent};
+    }
+    
+    .nav.flex-column .nav-link {
+    padding-left: 5px;
     }
 
     .fas {
@@ -184,3 +187,26 @@ style.
         border-radius:10px;
     }
 
+    
+
+    .accordion-item {
+        display: block;
+        background-color: transparent;
+    }
+    
+    .accordion-collapse {
+        display: none; /* Hide the accordion content initially */
+    }
+    
+    .accordion-collapse.show {
+        display: block; /* Show the accordion content when toggled */
+    }
+    
+    /* Style for the nested links to make them appear indented and below the accordion header */
+    .nav.flex-column .nav-item, .accordion-item .nav-link {
+        display: block; /* Override any flex styling that might be affecting the layout */
+    }
+    .accordion-toggle.accordion-active {
+        color: #{hotelColor.accent};
+
+    }
