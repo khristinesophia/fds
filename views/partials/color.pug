@@ -189,10 +189,6 @@ style.
 
     
 
-    .accordion-item {
-        display: block;
-        background-color: transparent;
-    }
     
     .accordion-collapse {
         display: none; /* Hide the accordion content initially */
@@ -203,10 +199,17 @@ style.
     }
     
     /* Style for the nested links to make them appear indented and below the accordion header */
-    .nav.flex-column .nav-item, .accordion-item .nav-link {
+    .nav.flex-column .nav-item {
         display: block; /* Override any flex styling that might be affecting the layout */
     }
     .accordion-toggle.accordion-active {
         color: #{hotelColor.accent};
-
+    }
+    .pull-right {
+        margin-left: auto;
+    }
+    .fa-caret-down {
+        position: absolute;
+        right: 0;
+        transform: translateY(30%);
     }
