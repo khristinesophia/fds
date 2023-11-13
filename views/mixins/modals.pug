@@ -614,7 +614,7 @@ mixin deleteRoom(roomnum)
             .modal-footer.mt-3
                 form#delete-user-form(action='', method="POST")
                     button.btn.mod_btn_sec.me-3(type="button", onclick="closeDeleteRoom()") Cancel
-                    input.btn.mod_btn_sec(type="submit" value="Delete" onclick="confirmDelete()")
+                    input.btn.mod_btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
 
