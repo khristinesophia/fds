@@ -20,22 +20,6 @@
         a.nav-link(href='/users')
           i.fas.fa-solid.fa-users.fa-xl
           span Users         
-      //-
-        li.nav-ite
-          a.nav-link
-            i.fas.fa-solid.fa-users.fa-xl
-            span Rooms Accordion
-          ul.sub-menu
-            li.nav-ite 
-              a.nav-lin(href='/roomtype')
-                i.fas.fa-solid.fa-layer-group.fa-xl
-                span Room Types
-            li.nav-ite
-              a.nav-lin(href='/HSArooms')
-                i.fas.fa-solid.fa-door-open.fa-xl
-                span Rooms
-
-
       li.nav-item
         a.nav-link(href='/roomtype')
           i.fas.fa-solid.fa-layer-group.fa-xl
@@ -51,7 +35,25 @@
       li.nav-item
         a.nav-link(href='/pd')
           i.fas.fa-solid.fa-tag.fa-xl
-          span Promos           
+          span Promos
+      li
+        a.nav-link.accordion-toggle.nav-item(href='#accordionContent', data-bs-toggle='collapse', role='button', aria-expanded='false', aria-controls='accordionContent')
+          i.fas.fa-solid.fa-bars.fa-xl
+          span Accordion
+          i.fas.fa-solid.fa-caret-down.pull-right
+        div#accordionContent.collapse.accordion-collapse
+          ul.nav.flex-column
+            li.nav-item
+              a.nav-link(href='/link1') Link 1
+            li.nav-item
+              a.nav-link(href='/link2') Link 2
+            li.nav-item
+              a.nav-link(href='/link3') Link 3
+            li.nav-item
+              a.nav-link(href='/link4') Link 4
+
+
+
 
 
     // Sign out
@@ -61,12 +63,7 @@
           button.nav-link(type="submit") 
             i.fas.fa-solid.fa-right-from-bracket.fa-xl
             span Sign Out
-        //-a.nav-link(href='login.html')
-          i.fas.fa-solid.fa-right-from-bracket.fa-xl
-          span Sign Out
 
-          ul.nav.flex-column
-  
       
   // Head Navigation
   nav.navbar.navbar-expand-lg.navbar-light.upper.shadow
