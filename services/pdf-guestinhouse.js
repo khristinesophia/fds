@@ -7,7 +7,7 @@ const PDFDocument = require(path.join(__basedir, 'services', 'pdfkit-table'));
 // Load the patients 
 // const patients = require("./patients.json");
 
-function createGuestInHouse(dataCallback, endCallback, data){
+function createGuestInHouse(dataCallback, endCallback, data, summary, hotel){
     // Create The PDF document
     const doc = new PDFDocument();
 
@@ -18,15 +18,29 @@ function createGuestInHouse(dataCallback, endCallback, data){
     doc.pipe(fs.createWriteStream(`patients.pdf`));
 
     // Add the header - https://pspdfkit.com/blog/2019/generate-invoices-pdfkit-node/
+    // doc
+    //     // .image("logo.png", 50, 45, { width: 50 })
+    //     .fillColor("#444444")
+    //     .fontSize(20)
+    //     .text("Guests Currently In-House.", 110, 57)
+    //     .fontSize(10)
+    //     .text("725 Fowler Avenue", 200, 65, { align: "right" })
+    //     .text("Chamblee, GA 30341", 200, 80, { align: "right" })
+    //     .moveDown();
+
+    const hotellocationParts = hotel.hotellocation.split('City,')
+    const hotellocation1 = hotellocationParts[0] + 'City,' 
+    const hotellocation2 = hotellocationParts[1]
+
     doc
         // .image("logo.png", 50, 45, { width: 50 })
         .fillColor("#444444")
         .fontSize(20)
-        .text("Patient Information.", 110, 57)
+        .text('Guests In-House', 50, 45)
         .fontSize(10)
-        .text("725 Fowler Avenue", 200, 65, { align: "right" })
-        .text("Chamblee, GA 30341", 200, 80, { align: "right" })
-        .moveDown();
+        .text(hotel.hotelname, 200, 50, { align: "right" })
+        .text(hotellocation1, 200, 65, { align: "right" })
+        .text(hotellocation2, 200, 80, { align: "right" })
 
     // Create the table - https://www.andronio.me/2017/09/02/pdfkit-tables/
     const table = {
@@ -38,6 +52,12 @@ function createGuestInHouse(dataCallback, endCallback, data){
     for (const x of data) {
         table.rows.push([x.roomnum, x.fullname, x.adultno, x.childno, x.checkindate, x.checkoutdate])
     }
+
+    table.rows.push(['Total In-House Guest', summary.inHouse, '', '', '', '',])
+    table.rows.push(['Total Rooms Occupied', summary.occupiedRooms, '', '', '', '',])
+    table.rows.push(['Total Available Rooms', summary.availableRooms, '', '', '', '',])
+
+
 
     // Draw the table
     doc.moveDown().table(table, 10, 125, { width: 590 });

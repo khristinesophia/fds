@@ -33,7 +33,7 @@ html(lang="en")
                     //- card
                     .card.bg-success.shadow.text-white.text-center 
                         .card-body
-                            p.display-6.fw-normal 750
+                            p.display-6.fw-normal #{inHouse}
                             p.lead Total In-House Guests
 
                 //- column
@@ -41,7 +41,7 @@ html(lang="en")
                     //- card
                     .card.bg-warning.shadow.text-center 
                         .card-body
-                            p.display-6.fw-normal 380
+                            p.display-6.fw-normal #{occupiedRooms}
                             p.lead Total Rooms Occupied
 
                 //- column
@@ -49,7 +49,7 @@ html(lang="en")
                     //- card
                     .card.bg-danger.shadow.text-white.text-center 
                         .card-body
-                            p.display-6.fw-normal 120
+                            p.display-6.fw-normal #{availableRooms}
                             p.lead Total Available Rooms
             
             .d-flex.justify-content-between.align-items-center.mt-5
