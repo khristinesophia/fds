@@ -103,6 +103,14 @@ router.get('/dlGuestInHouse', isAuthenticated, async(req, res)=>{
     )
 })
 
+router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
+
+    res.render('HSA/reports/revenue', {
+        hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage
+    })
+})
+
 
 
 
