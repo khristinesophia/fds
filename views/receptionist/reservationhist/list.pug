@@ -48,6 +48,7 @@ html(lang="en")
                                 th Room Type
                                 th Room Number
                                 th Reservation Date
+                                th Status
                                 th Action
                         tbody
                             each r in reservation
@@ -57,6 +58,7 @@ html(lang="en")
                                     td #{r.roomtype}
                                     td #{r.roomnum}
                                     td #{r.reservationdate}
+                                    td #{r.status}
                                     td 
                                         a.btn(href=`/reservationhist/detail/${r.reservationid}`) View
 
