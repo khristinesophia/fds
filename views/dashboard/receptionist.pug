@@ -32,6 +32,20 @@ html(lang="en")
                               .d-flex.flex-column.align-items-start
                                   span.card-title.mb-2.text-muted Active Account
                                   h2 #{guestCount}
+              .row.mx-5
+                  .col-md-4
+                      .card.act_card.shadow-sm(style="width: 18rem;")
+                          .card-body.act_card_body
+                              .d-flex.flex-column.align-items-start
+                                  span.card-title.mb-2.text-muted Occupied Rooms
+                                  h2 #{guestCount}   
+              .row.mx-5
+                  .col-md-4        
+                      .card.act_card.shadow-sm(style="width: 18rem;")
+                        .card-body.act_card_body
+                          .d-flex.flex-column.align-items-start
+                            span.card-title.mb-2.text-muted Vacant Rooms
+                            h2 #{vacantRoomsArray.length}                       
 
 
 
