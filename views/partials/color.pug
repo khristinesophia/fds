@@ -27,8 +27,6 @@ style.
     .sidebar {
     background-color: #{hotelColor.main};
     padding-top: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
     height: 100%;
     width: 250px;
     position: fixed;
@@ -75,9 +73,6 @@ style.
     color: #{hotelColor.accent};
     }
     
-    .nav.flex-column .nav-link {
-    padding-left: 5px;
-    }
 
     .fas {
     margin-left: 10px;
@@ -100,8 +95,8 @@ style.
     border-color: transparent;
     color: white;
     background: none;
-    width: 210px;
     text-align: left;
+    padding-left: 25px;
     }
 
     .sidebar .nav-link:hover {
@@ -123,7 +118,10 @@ style.
     background-color: #fff;
     color: #{hotelColor.accent};
     font-weight: 600;
+    margin-left:15px;
+    margin-right:15px;
     border-radius: 5px;
+
     }
 
     .active .nav-link {
@@ -206,14 +204,16 @@ style.
     }
 
     .nav-scroll{
-    height: calc(850px - 160px); 
-    overflow-y: auto; 
+        height: calc(850px - 160px); 
+        overflow-y: auto; 
+        
 
     }
     .nav-scroll::-webkit-scrollbar {
-    width: 3px; /* Set the width of the scrollbar */
-  }
+        width: 5px; /* Set the width of the scrollbar */
+        
+    }
 
-  .nav-scroll::-webkit-scrollbar-thumb {
-    background-color: #{hotelColor.accent}; /* Set the color of the thumb */
-  }
+    .nav-scroll::-webkit-scrollbar-thumb {
+        background-color: #{hotelColor.accent}; /* Set the color of the thumb */
+    }
