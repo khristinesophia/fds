@@ -50,7 +50,7 @@ style.
     color: #fff;
     display: flex;
     align-items: center;
-    margin: 8px 0;
+    margin: 15px 0;
     }
 
 
@@ -60,7 +60,7 @@ style.
     }
 
     .nav-item span {
-    font-size: 12px;
+    font-size: 14px;
     padding-left:20px;
     }
 
@@ -198,13 +198,19 @@ style.
     .accordion-toggle.accordion-active {
         color: #{hotelColor.accent};
     }
-
+    .accordion .nav-link{
+        font-size:14px;
+    }
+    .accordion .nav-item{
+        margin-top:0;
+        padding-left: 30px;
+    }
     .fa-caret-down {
         transform: translateY(-100%);
     }
 
     .nav-scroll{
-        height: calc(850px - 160px); 
+        height: calc(850px - 90px); 
         overflow-y: auto; 
     }
     .nav-scroll::-webkit-scrollbar {
@@ -218,7 +224,7 @@ style.
 
     @media (max-height: 1024px) {
     .nav-scroll{
-        height: calc(850px - 160px); 
+        height: calc(900px - 90px); 
         overflow-y: auto; 
     }
     }
