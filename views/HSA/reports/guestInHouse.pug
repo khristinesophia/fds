@@ -1,0 +1,89 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    
+    script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
+    script(src='//code.jquery.com/jquery-1.11.1.min.js')
+    link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
+
+    link(rel='stylesheet', href='/css/font.css')
+    link(rel='stylesheet', href='/css/navigation.css')
+    link(rel='stylesheet', href='/css/action_button.css')
+    link(rel='stylesheet', href='/css/table.css')
+    link(rel='stylesheet', href='/css/card.css')
+
+    title Guest In-House Report
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
+  
+  body
+    include ../../partials/navHSA.pug
+
+    .content
+        .container
+            h2 Report Overview
+            .row.mt-4
+                //- column
+                .col 
+                    //- card
+                    .card.bg-success.shadow.text-white.text-center 
+                        .card-body
+                            p.display-6.fw-normal 750
+                            p.lead Total In-House Guests
+
+                //- column
+                .col 
+                    //- card
+                    .card.bg-warning.shadow.text-center 
+                        .card-body
+                            p.display-6.fw-normal 380
+                            p.lead Total Rooms Occupied
+
+                //- column
+                .col 
+                    //- card
+                    .card.bg-danger.shadow.text-white.text-center 
+                        .card-body
+                            p.display-6.fw-normal 120
+                            p.lead Total Available Rooms
+            
+            .d-flex.justify-content-between.align-items-center.mt-5
+                .col 
+                    h2 Guests Currently In-House 
+                .col.text-end 
+                    a(href="#") 
+                        h2.fa-solid.fa-print.me-3
+                    a(href="#") 
+                        h2.fa-solid.fa-download
+            .row.mt-4.p-3.bg-white.shadow
+                table.table
+                    //- thead
+                    thead 
+                        //- trow
+                        tr 
+                            th Room Number
+                            th Guest Name
+                            th No. of Adult
+                            th No. of Child
+                            th Check-In Date
+                            th Check-Out Date
+                    tbody
+                        each data in dataArray
+                            tr 
+                                td #{data.roomnum}
+                                td #{data.fullname}
+                                td #{data.adultno}
+                                td #{data.childno}
+                                td #{data.checkindate}
+                                td #{data.checkoutdate}
+            
+
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
+    script(src='/js/nav-active.js')
+      

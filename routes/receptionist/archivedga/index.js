@@ -19,7 +19,7 @@ const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 
 //- services
-const { createInvoice } = require(path.join(__basedir, 'services', 'pdf-service'))
+const { createInvoice } = require(path.join(__basedir, 'services', 'pdf-invoice'))
 
 
 
