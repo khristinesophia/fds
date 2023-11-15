@@ -110,6 +110,73 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         })
 
 
+        //- q7
+        //- get reservation per roomtype and count
+        const q7 = `
+            SELECT DISTINCT rt.roomtype, COUNT(rt.roomtype) AS roomtype_count 
+            FROM room_type rt
+            JOIN reservations r
+            ON rt.typeid = r.typeid
+            WHERE r.hotelid = $1
+            GROUP BY rt.roomtype;
+        `
+        const q7result = await pool.query(q7, [hotelid])
+
+        //- q8
+        //- overall count of reservations
+        const q8 = `
+            SELECT COUNT(*)
+            FROM reservations
+            WHERE hotelid = $1;
+        `
+        const q8result = await pool.query(q8, [hotelid])
+        const reservationAllCount = q8result.rows[0].count
+
+        //- q9
+        //- get rooms count per roomtype and status
+        const q9 = `
+        SELECT
+            rt.roomtype,
+            COUNT(*) FILTER (WHERE r.status = 'Vacant') AS vacantcount,
+            COUNT(*) FILTER (WHERE r.status = 'Occupied') AS occupiedcount,
+            COUNT(*) FILTER (WHERE r.status = 'On-Change') AS onchangecount,
+            COUNT(*) FILTER (WHERE r.status = 'Out-of-Order') AS outofordercount,
+            (COUNT(*) FILTER (WHERE r.status = 'Vacant') +
+            COUNT(*) FILTER (WHERE r.status = 'Occupied') +
+            COUNT(*) FILTER (WHERE r.status = 'On-Change') +
+            COUNT(*) FILTER (WHERE r.status = 'Out-of-Order') +
+            COUNT(CASE WHEN r.status NOT IN ('Reserved', '', NULL) THEN 1 END)) AS totalcount
+        FROM rooms r
+        JOIN room_type rt ON rt.typeid = r.typeid
+        WHERE r.hotelid = $1
+        GROUP BY rt.roomtype
+        ORDER BY rt.roomtype;
+        `
+        const q9result = await pool.query(q9, [hotelid])
+
+
+        //- q6
+        //- get first 3 arrival
+        const q10 = `
+            SELECT 
+                t1.reservationid,
+                t2.fullname,
+                t1.checkindate
+            FROM reservations t1
+            JOIN reservation_guestdetails t2
+                ON t1.reservationid = t2.reservationid
+            WHERE t1.hotelid = $1
+            ORDER BY checkindate ASC
+            LIMIT 3
+        `
+        const q10result = await pool.query(q10, [hotelid])
+        q10result.rows.forEach(row=>{
+            if(row.checkindate){
+                row.checkindate = formatDateWithTime(row.checkindate)
+            }
+        })
+
+
         res.render('dashboard/hsadmin', {
             hotelColor: req.hotelColor,
             hotelLogo: req.hotelImage,
@@ -118,7 +185,11 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             occupiedRoomCount: occupiedRoomCount,
             adultNoCount: adultNoCount,
             childNoCount: childNoCount,
-            departuresArray: q6result.rows
+            departuresArray: q6result.rows,
+            reservations: q7result.rows,
+            reservationAllCount: reservationAllCount,
+            rooms: q9result.rows,
+            arrivalArray: q10result.rows
         })
     } catch (error) {
         console.error("Error fetching data for the receptionist dashboard", error)
