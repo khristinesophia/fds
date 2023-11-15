@@ -70,11 +70,44 @@ html(lang="en")
                                     //- check-in date
                                     .mb-3.col-md-6
                                         label.form-label.fw-bold(for='checkindate') Check-In Date
-                                        input#checkindate.form-control(type='date' name='checkindate')
+                                        input#checkindate.form-control(type='datetime-local' name='checkindate')
                                     //- check-out date
                                     .mb-3.col-md-6
                                         label.form-label.fw-bold(for='checkoutdate') Check-Out Date
-                                        input#checkoutdate.form-control(type='date' name='checkoutdate')
+                                        input#checkoutdate.form-control(type='datetime-local' name='checkoutdate')
+                                    
+                                    script.
+                                        function getCurrentDate() {
+                                            const now = new Date()
+
+                                            const year = now.getFullYear()
+                                            const month = String(now.getMonth() + 1).padStart(2, '0')
+                                            const day = String(now.getDate()).padStart(2, '0')
+
+                                            return `${year}-${month}-${day}`
+                                        }
+
+                                        function getNextDay() {
+                                            const now = new Date()
+                                            now.setDate(now.getDate() + 1)
+
+                                            const year = now.getFullYear()
+                                            const month = String(now.getMonth() + 1).padStart(2, '0')
+                                            const day = String(now.getDate()).padStart(2, '0')
+
+                                            return `${year}-${month}-${day}`
+                                        }
+
+                                        function getCheckInTime() {
+                                            return 'T12:00';
+                                        }
+                                        function getCheckOutTime() {
+                                            return 'T10:00';
+                                        }
+
+                                        document.getElementById('checkindate').value = getCurrentDate() + getCheckInTime()
+                                        document.getElementById('checkoutdate').value = getNextDay() + getCheckOutTime()
+
                                 //- number of days
                                 .mb-3
                                     label.form-label.fw-bold(for='numofdays') Number of Days
@@ -173,7 +206,7 @@ html(lang="en")
                                     const checkInDate = new Date(checkInDateInput.value)
                                     const checkOutDate = new Date(checkOutDateInput.value)
                                     const difference = checkOutDate - checkInDate
-                                    const numDays = Math.floor(difference / (1000 * 60 * 60 * 24))
+                                    const numDays = Math.floor(difference / (1000 * 60 * 60 * 22))
 
                                     numOfDaysInput.value = numDays
                                     qtyInput.value = numDays
@@ -262,6 +295,7 @@ html(lang="en")
                                 //- calculateNumDays is called
                                 checkInDateInput.addEventListener('change', calculateNumDays)
                                 checkOutDateInput.addEventListener('change', calculateNumDays)
+                                document.addEventListener('DOMContentLoaded', calculateNumDays)
                                 
                                 //- roomtype, checkin date, and checkout date is changed
                                 //- updateRoomNumbers is called
