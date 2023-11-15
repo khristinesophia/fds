@@ -81,7 +81,19 @@ html(lang="en")
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
                     .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Departure         
+                      span.card-title.mb-2.text-muted Departure
+                      table 
+                        thead 
+                          th Room Number 
+                          th Guest Name 
+                          th Checkout Date
+                        tbody
+                          each x in departuresArray
+                            tr
+                              td #{x.roomnum}
+                              td #{x.fullname}
+                              td #{x.checkoutdate}
+
 
 
                           

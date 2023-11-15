@@ -14,6 +14,9 @@ const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthentica
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
 const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
+//- utils
+const formatDateWithTime = require(path.join(__basedir, 'utils', 'formatDateWithTime'))
+
 
 
 // render HA dashboard
@@ -93,6 +96,28 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
             childNoCount += row.childno
         })
 
+        //- q6
+        //- get first 3 departures
+        const q6 = `
+            SELECT 
+                t3.roomnum,
+                t2.fullname,
+                t1.checkoutdate
+            FROM guestaccounts t1
+            JOIN guestaccounts_guestdetails t2
+                ON t1.accountid = t2.accountid
+            JOIN rooms t3
+                ON t1.roomid = t3.roomid
+            WHERE t1.hotelid = $1
+            ORDER BY checkoutdate ASC
+            LIMIT 3
+        `
+        const q6result = await pool.query(q6, [hotelid])
+        q6result.rows.forEach(row=>{
+            if(row.checkoutdate){
+                row.checkoutdate = formatDateWithTime(row.checkoutdate)
+            }
+        })
 
 
         res.render('dashboard/receptionist', {
@@ -102,7 +127,8 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
             vacantRoomCount: vacantRoomCount, 
             occupiedRoomCount: occupiedRoomCount,
             adultNoCount: adultNoCount,
-            childNoCount: childNoCount 
+            childNoCount: childNoCount,
+            departuresArray: q6result.rows
         })
     } catch (error) {
         console.error("Error fetching data for the receptionist dashboard", error)
