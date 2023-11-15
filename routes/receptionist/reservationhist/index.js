@@ -27,14 +27,15 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
 
     //- select all reservationhistory
     const q1 = `
-        SELECT * FROM hist_reservations t1
-        JOIN hist_reservation_guestdetails t2
+        SELECT *, t1.status FROM hist_reservations t1
+        LEFT JOIN hist_reservation_guestdetails t2
             ON t1.reservationid = t2.reservationid
-        JOIN rooms t3
+        LEFT JOIN rooms t3
             ON t1.roomid = t3.roomid
-        JOIN room_type t4
+        LEFT JOIN room_type t4
             ON t1.typeid = t4.typeid
         WHERE t1.hotelid = $1
+        ORDER BY t1.checkindate DESC
     `
     const q1result = await pool.query(q1, [hotelid])
 

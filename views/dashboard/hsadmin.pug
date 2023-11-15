@@ -54,6 +54,16 @@ html(lang="en")
                   .card-body
                     .d-flex.flex-column.align-items-start
                       span.card-title.mb-2.text-muted Reservation
+                      h2 #{reservationAllCount}
+                      table 
+                        thead 
+                          th 
+                          th 
+                        tbody
+                          each r in reservations
+                            tr
+                              td #{r.roomtype}
+                              td #{r.roomtype_count}
 
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
@@ -70,6 +80,23 @@ html(lang="en")
                   .card-body
                     .d-flex.flex-column.align-items-start
                       span.card-title.mb-2.text-muted Rooms
+                      table
+                        thead 
+                          th Room Type
+                          th Vacant
+                          th Occupied
+                          th On-Change 
+                          th Out-of-Order
+                          th Total
+                        tbody
+                          each x in rooms
+                            tr
+                              td #{x.roomtype}
+                              td #{x.vacantcount}
+                              td #{x.occupiedcount}
+                              td #{x.onchangecount}
+                              td #{x.outofordercount}
+                              td #{x.totalcount}
 
             //-Fourth Row
             .row.mx-5
@@ -78,6 +105,17 @@ html(lang="en")
                   .card-body
                     .d-flex.flex-column.align-items-start
                       span.card-title.mb-2.text-muted Arrival
+                      table 
+                        thead 
+                          th Reservation ID
+                          th Guest Name 
+                          th Checkin Date
+                        tbody
+                          each x in arrivalArray
+                            tr
+                              td #{x.reservationid}
+                              td #{x.fullname}
+                              td #{x.checkindate}
 
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")

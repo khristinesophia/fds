@@ -217,10 +217,10 @@ router.get('/onchangeRooms', isAuthenticated, getHotelColor, getHotelLogo, async
             INNER JOIN
                 room_type rt ON r.typeid = rt.typeid
             WHERE
-                r.hotelid = $1 AND status = $2 ORDER BY roomnum ASC;
+            r.hotelid = $1 AND status = $2 AND status = $3 AND status = $4 AND status = $5 ORDER BY roomnum ASC;
         `;
 
-        const onchangeRooms = await pool.query(onchangeRoomsQuery, [hotelid, 'On-Change'])
+        const onchangeRooms = await pool.query(onchangeRoomsQuery, [hotelid, 'On-Change', 'To check-out', 'Inspected', 'Recently checked-out'])
 
         // Convert binary data to base64 string
         onchangeRooms.rows.forEach(row => {
