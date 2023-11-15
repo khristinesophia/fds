@@ -60,7 +60,9 @@ html(lang="en")
                                 p.fw-bold End Date: <br>
                                     span.fw-normal #{x.enddate}   
                             p.fw-bold Available On: <br>
-                                p#availableon
+                                p#availableon      
+                            p.fw-bold Times Availed: <br>
+                                span.fw-normal #{x.timesavailed}
                             
                             .d-flex
                                 a.sa-icon.sa-edit.me-2(href=`/pd/edit/${x.id}`)

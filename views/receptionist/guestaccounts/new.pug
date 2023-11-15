@@ -105,8 +105,10 @@ html(lang="en")
                                             return 'T10:00';
                                         }
 
-                                        document.getElementById('checkindate').value = getCurrentDate() + getCheckInTime()
-                                        document.getElementById('checkoutdate').value = getNextDay() + getCheckOutTime()
+                                        document.addEventListener('DOMContentLoaded', ()=>{
+                                            document.getElementById('checkindate').value = getCurrentDate() + getCheckInTime()
+                                            document.getElementById('checkoutdate').value = getNextDay() + getCheckOutTime()
+                                        })
 
                                 //- number of days
                                 .mb-3
@@ -145,30 +147,32 @@ html(lang="en")
                                     label.form-label.fw-bold(for='approvalcode') Approval Code
                                     input.form-control(type='text' id='approvalcode' name='approvalcode' placeholder='')
                                 
-                                script.
-                                    const mopSelect = document.querySelector('#modeofpayment')
-                                    const approvalCodeInput = document.querySelector('#approvalcodesection')
+                                    script.
+                                        const mopSelect = document.querySelector('#modeofpayment')
+                                        const approvalCodeInput = document.querySelector('#approvalcodesection')
 
-                                    function toggleApprovalCode(){
-                                        const selectedOption = mopSelect.options[mopSelect.selectedIndex]
-                                        const selectedValue = selectedOption.value
+                                        function toggleApprovalCode(){
+                                            const selectedOption = mopSelect.options[mopSelect.selectedIndex]
+                                            const selectedValue = selectedOption.value
 
-                                        if(selectedValue === 'Credit Card' || selectedValue === 'Debit Card'){
-                                            approvalCodeInput.style.display = 'block'
+                                            if(selectedValue === 'Credit Card' || selectedValue === 'Debit Card'){
+                                                approvalCodeInput.style.display = 'block'
+                                            }
+                                            if(selectedValue === 'Cash'){
+                                                approvalCodeInput.style.display = 'none'
+                                            }
                                         }
-                                        if(selectedValue === 'Cash'){
-                                            approvalCodeInput.style.display = 'none'
-                                        }
-                                    }
-                                    document.querySelector('#modeofpayment').addEventListener('change', toggleApprovalCode)
+                                        document.querySelector('#modeofpayment').addEventListener('change', toggleApprovalCode)
                                 //- promo code
                                 .mt-5
                                     label.form-label.fw-bold(for='promocode') Promo Code 
-                                    input#promocode.form-control(type='text' name='promocode' placeholder='')
+                                    select.form-select(id='promocode', name='promocode') Promo Code
+                                        //- each p in promos
+                                        //-     option(value=p.id data-discount=p.discount)= p.name
                                 //- discount
                                 .mb-5
                                     label.form-label.fw-bold(for='discount') Discount 
-                                    input#discount.form-control(type='number' name='discount' placeholder='' value=0)
+                                    input#discount.form-control(type='number' name='discount' placeholder='' readonly)
                                 .row
                                     input(type='hidden' name='description' value='Room Accommodation')
                                     //- price
@@ -183,8 +187,10 @@ html(lang="en")
                                 .mb-3
                                     label.form-label.fw-bold(for='amount') Amount
                                     input#amount.form-control(type='number' name='amount' placeholder='' readonly)
+
                             script.
                                 const rooms = !{JSON.stringify(rooms)}
+                                const promos = !{JSON.stringify(promos)}
 
                                 //- checkin date and checkout date is changed
                                 const checkInDateInput = document.querySelector('#checkindate')
@@ -196,10 +202,16 @@ html(lang="en")
                                 const roomNumSelect = document.querySelector('select[name="roomid"]')
                                 const roomNumOptions = document.querySelectorAll('select[name="roomid"] option')
 
-                                const discountInput = document.querySelector('#discount')
+                                //- const discountInput = document.querySelector('#discount')
                                 const priceInput = document.querySelector('#price')
                                 const qtyInput = document.querySelector('#qty')
                                 const amountInput = document.querySelector('#amount')
+
+                                //- promos and discount
+                                const promoSelect = document.querySelector('select[name="promocode"]')
+                                const promoOptions = document.querySelectorAll('select[name="promocode"] option')
+                                const discountInput = document.querySelector('input[name="discount"]')
+
 
                                 //- calculateNumDays
                                 function calculateNumDays() {
@@ -282,7 +294,7 @@ html(lang="en")
 
                                 function updateAmount(){
                                     if(priceInput.value != null && qtyInput.value != null){
-                                        subtotal = priceInput.value * qtyInput.value
+                                        const subtotal = priceInput.value * qtyInput.value
                                         const discount = calculatePercentageOfAmount(subtotal, discountInput.value)
                                         //- const tax = calculatePercentageOfAmount(subtotal, 12)
 
@@ -291,26 +303,75 @@ html(lang="en")
                                     }
                                 }
 
+                                function filterPromos(){
+                                    console.log(promoSelect)
+
+                                    //- promo options is cleared
+
+                                    promoSelect.innerHTML = ''
+
+                                    promoOptions.forEach((option)=>{
+                                        option.value = ''
+                                        option.innerHTML = ''
+                                    })
+
+                                    console.log(promoSelect)
+
+                                    promos.forEach(promo => {
+                                        if(promo.typeid == roomTypeSelect.value){
+                                            const newOption = document.createElement('option')
+                                            newOption.value = promo.id
+                                            newOption.innerText = promo.code
+                                            newOption.setAttribute('data-discount', promo.discount)
+                                            promoSelect.appendChild(newOption)
+                                        }
+                                    })
+                                }
+
+                                //- function updateDiscount(){
+                                //-     const selectedOption = promoSelect.options[promoSelect.selectedIndex]
+                                //-     const selectedDiscount = selectedOption.getAttribute('data-discount')
+
+                                //-     discountInput.value = selectedDiscount
+                                //- }
+
+                                
                                 //- checkin date and checkout date is changed
                                 //- calculateNumDays is called
+                                window.addEventListener('load', calculateNumDays)
+                                document.addEventListener('DOMContentLoaded', calculateNumDays)
                                 checkInDateInput.addEventListener('change', calculateNumDays)
                                 checkOutDateInput.addEventListener('change', calculateNumDays)
-                                document.addEventListener('DOMContentLoaded', calculateNumDays)
                                 
                                 //- roomtype, checkin date, and checkout date is changed
                                 //- updateRoomNumbers is called
+                                window.addEventListener('load', updateRoomNumbers)
                                 document.addEventListener('DOMContentLoaded', updateRoomNumbers)
                                 roomTypeSelect.addEventListener('change', updateRoomNumbers)
                                 checkInDateInput.addEventListener('change', updateRoomNumbers)
                                 checkOutDateInput.addEventListener('change', updateRoomNumbers)
 
                                 //- 
+                                window.addEventListener('load', updateAmount)
                                 document.addEventListener('DOMContentLoaded', updateAmount)
                                 checkInDateInput.addEventListener('change', updateAmount)
                                 checkOutDateInput.addEventListener('change', updateAmount)
                                 roomTypeSelect.addEventListener('change', updateAmount)
                                 roomNumSelect.addEventListener('change', updateAmount)
-                                discountInput.addEventListener('change', updateAmount)
+                                promoSelect.addEventListener('change', updateAmount)
+
+                                //- filter promo
+                                window.addEventListener('load', filterPromos)
+                                document.addEventListener('DOMContentLoaded', filterPromos)
+                                roomTypeSelect.addEventListener('change', filterPromos)
+                                roomNumSelect.addEventListener('change', filterPromos)
+                                //- promoSelect.addEventListener('change', filterPromos)
+
+                                //- update discount
+                                //- window.addEventListener('load', updateDiscount)
+                                //- document.addEventListener('DOMContentLoaded', updateDiscount)
+                                //- promoSelect.addEventListener('change', updateDiscount)
+                                
                             // Finish tab
                             .tab.d-none
                                 p All Set! Click submit to register this guest account.

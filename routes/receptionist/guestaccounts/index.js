@@ -49,19 +49,19 @@ router.use('/new', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)
     `
     const roomTypes = await pool.query(getRoomTypesQuery, [hotelid])
 
-    // //- select ancillary services
-    // const getAncillariesQuery = `
-    //     SELECT * FROM ancillaries
-    //     WHERE ancillary_status = $1
-    // `
-
-    // const ancillaries = await pool.query(getAncillariesQuery, ['Available'])
+    //- select promos of the hotel
+    const getPromosQuery = `
+        SELECT * FROM promos
+        WHERE hotelid = $1
+    `
+    const promos = await pool.query(getPromosQuery, [hotelid])
 
     res.render('receptionist/guestaccounts/new', {
         hotelColor: req.hotelColor,
         hotelLogo: req.hotelImage,
         roomTypes: roomTypes.rows,
-        rooms: rooms.rows
+        rooms: rooms.rows,
+        promos: promos.rows
     })
 })
 
