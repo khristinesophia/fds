@@ -18,20 +18,71 @@ html(lang="en")
     include ../partials/navR.pug
     .content
       // Header Title for page
-      .row
-        .col-8.d-flex.align-items-center
-          h2.text.mb-3 Dashboard
-              //- Main Content 
-              //- Inside your dashboard/hsadmin.pug file
+      .row.mx-5  
+        .col-12
+          h2.text Dashboard
 
-              //- Tracking Card for Active Guest Accounts
-              .row.mx-5
-                  .col-md-4
-                      .card.act_card.shadow-sm(style="width: 18rem;")
-                          .card-body.act_card_body
-                              .d-flex.flex-column.align-items-start
-                                  span.card-title.mb-2.text-muted Active Account
-                                  h2 #{guestCount}
+            //- First Row (Checked In, Overall Stayed, Checked Out)
+            .row.mx-5
+              //-Checked In
+              .col-4.col-md-4.mt-4.d-flex.justify-content-start  
+                .card.act_card.shadow-sm(style="width: 350px;")
+                  .card-body.act_card_body
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2.text-muted Active Account
+                      h2 #{guestCount}
+              //-Overall Stayed
+              .col-4.col-md-4.mt-4.d-flex.justify-content-center
+                .card.act_card.shadow-sm(style="width: 350px;")
+                  .card-body.act_card_body
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2.text-muted Occupied Rooms
+                      h2 #{guestCount}   
+              //-Checked Out              
+              .col-4.col-md-4.mt-4.d-flex.justify-content-end
+                .card.act_card.shadow-sm(style="width: 350px;")
+                  .card-body.act_card_body
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2.text-muted Vacant Rooms
+                      h2 #{vacantRoomsArray.length}
+            //-Second Row
+            .row.mx-5
+              .col-6.col-md-6.mt-4  
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2.text-muted Reservation
+
+              .col-6.col-md-6.mt-4  
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2.text-muted Guest In House
+
+            //-Third Row
+            .row.mx-5
+              .col-12.col-md-12.mt-4            
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2.text-muted Rooms
+
+            //-Fourth Row
+            .row.mx-5
+              .col-6.col-md-6.mt-4  
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2.text-muted Arrival
+
+              .col-6.col-md-6.mt-4  
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2.text-muted Departure         
+
+
+                          
 
 
 

@@ -27,8 +27,6 @@ style.
     .sidebar {
     background-color: #{hotelColor.main};
     padding-top: 20px;
-    padding-left: 20px;
-    padding-right: 20px;
     height: 100%;
     width: 250px;
     position: fixed;
@@ -52,12 +50,9 @@ style.
     color: #fff;
     display: flex;
     align-items: center;
-    margin: 8px 0;
+    margin: 15px 0;
     }
 
-    .nav-item i {
-    margin-right: 20px;
-    }
 
     .nav-item:hover {
     border-radius: 5px;
@@ -65,7 +60,8 @@ style.
     }
 
     .nav-item span {
-    font-size: 12px;
+    font-size: 14px;
+    padding-left:20px;
     }
 
     .nav-item a {
@@ -77,9 +73,6 @@ style.
     color: #{hotelColor.accent};
     }
     
-    .nav.flex-column .nav-link {
-    padding-left: 5px;
-    }
 
     .fas {
     margin-left: 10px;
@@ -102,8 +95,8 @@ style.
     border-color: transparent;
     color: white;
     background: none;
-    width: 210px;
     text-align: left;
+    padding-left: 25px;
     }
 
     .sidebar .nav-link:hover {
@@ -125,7 +118,10 @@ style.
     background-color: #fff;
     color: #{hotelColor.accent};
     font-weight: 600;
+    margin-left:15px;
+    margin-right:15px;
     border-radius: 5px;
+
     }
 
     .active .nav-link {
@@ -187,9 +183,6 @@ style.
         border-radius:10px;
     }
 
-    
-
-    
     .accordion-collapse {
         display: none; /* Hide the accordion content initially */
     }
@@ -205,11 +198,39 @@ style.
     .accordion-toggle.accordion-active {
         color: #{hotelColor.accent};
     }
-    .pull-right {
-        margin-left: auto;
+    .accordion .nav-link{
+        font-size:14px;
+    }
+    .accordion .nav-item{
+        margin-top:0;
+        padding-left: 30px;
     }
     .fa-caret-down {
-        position: absolute;
-        right: 0;
-        transform: translateY(30%);
+        transform: translateY(-100%);
+    }
+
+    .nav-scroll{
+        height: calc(850px - 90px); 
+        overflow-y: auto; 
+    }
+    .nav-scroll::-webkit-scrollbar {
+        width: 5px; /* Set the width of the scrollbar */
+        
+    }
+
+    .nav-scroll::-webkit-scrollbar-thumb {
+        background-color: #{hotelColor.accent}; /* Set the color of the thumb */
+    }
+
+    @media (max-height: 1024px) {
+    .nav-scroll{
+        height: calc(900px - 90px); 
+        overflow-y: auto; 
+    }
+    }
+    @media (max-height: 800px) {
+    .nav-scroll{
+        height: calc(700px - 160px); 
+        overflow-y: auto; 
+    }
     }

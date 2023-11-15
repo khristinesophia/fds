@@ -627,3 +627,27 @@ function Close_ChangePass_Receptionist_User() {
     var modal = document.getElementById('deleteroomtype');
     modal.classList.remove('modal-active');
   }
+
+
+  function openDeletePromo(clickedElement) {
+    var modal = document.getElementById('deletepromo');
+    modal.classList.add('modal-active');
+  
+    // Get the hotel ID and hotel name from data attributes
+    var pid = clickedElement.getAttribute('data-pid');
+    var pcode = clickedElement.getAttribute('data-pcode');
+    var pname = clickedElement.getAttribute('data-pname');
+  
+    // Set the hotel name in the modal
+    var pNameElement = document.getElementById('promo-name-in-modal');
+    pNameElement.value = pname; // Set the value, not textContent
+  
+    // Set the form action in the modal
+    var deleteForm = document.getElementById('delete-user-form');
+    deleteForm.action = `/pd/delete/${pid}`;
+  }
+  function closeDeletePromo() {
+    var modal = document.getElementById('deletepromo');
+    modal.classList.remove('modal-active');
+  }
+  

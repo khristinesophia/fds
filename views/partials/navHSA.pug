@@ -6,55 +6,61 @@
         img(src=`${hotelLogo}` alt='Logo' style='border: 2px solid white; border-radius: 50%')
       else
         img(src='/images/logo-white.png' alt='Logo')
+    
     .separator
-    ul.nav.flex-column
-      li.nav-item
-        a.nav-link(href="/dashboard/hsadmin")
-          i.fas.fa-solid.fa-chart-simple.fa-xl
-          span Dashboard
-      li.nav-item
-        a.nav-link(href='/profile')
-          i.fas.fa-solid.fa-hotel.fa-xl
-          span Profile   
-      li.nav-item
-        a.nav-link(href='/users')
-          i.fas.fa-solid.fa-users.fa-xl
-          span Users         
-      li.nav-item
-        a.nav-link(href='/roomtype')
-          i.fas.fa-solid.fa-layer-group.fa-xl
-          span Room Types
-      li.nav-item
-        a.nav-link(href='/HSArooms')
-          i.fas.fa-solid.fa-door-open.fa-xl
-          span Rooms
-      li.nav-item
-        a.nav-link(href='#')
-          i.fas.fa-solid.fa-chart-line.fa-xl
-          span Occupancy Demand
-      li.nav-item
-        a.nav-link(href='/pd')
-          i.fas.fa-solid.fa-tag.fa-xl
-          span Promos
-      li
-        a.nav-link.accordion-toggle.nav-item(href='#accordionContent', data-bs-toggle='collapse', role='button', aria-expanded='false', aria-controls='accordionContent')
-          i.fas.fa-solid.fa-bars.fa-xl
-          span Accordion
-          i.fas.fa-solid.fa-caret-down.pull-right
-        div#accordionContent.collapse.accordion-collapse
-          ul.nav.flex-column
-            li.nav-item
-              a.nav-link(href='/link1') Link 1
-            li.nav-item
-              a.nav-link(href='/link2') Link 2
-            li.nav-item
-              a.nav-link(href='/link3') Link 3
-            li.nav-item
-              a.nav-link(href='/link4') Link 4
 
-
-
-
+    // Wrap the sidebar content in a scrollable div
+    .sidebar-content.nav-scroll
+      ul.nav.flex-column
+        li.nav-item
+          a.nav-link(href="/dashboard/hsadmin")
+            i.fas.fa-solid.fa-chart-simple.fa-xl
+            span Dashboard
+        li.nav-item
+          a.nav-link(href='/profile')
+            i.fas.fa-solid.fa-hotel.fa-xl
+            span Profile   
+        li.nav-item
+          a.nav-link(href='/users')
+            i.fas.fa-solid.fa-users.fa-xl
+            span Users         
+        li.nav-item
+          a.nav-link(href='/roomtype')
+            i.fas.fa-solid.fa-layer-group.fa-xl
+            span Room Types
+        li.nav-item
+          a.nav-link(href='/HSArooms')
+            i.fas.fa-solid.fa-door-open.fa-xl
+            span Rooms
+        li.nav-item
+          a.nav-link(href='#')
+            i.fas.fa-solid.fa-chart-line.fa-xl
+            span Occupancy Demand
+        li.nav-item
+          a.nav-link(href='/pd')
+            i.fas.fa-solid.fa-tag.fa-xl
+            span Promos
+        li
+          a.nav-link.accordion-toggle.nav-item(href='#accordionContent', data-bs-toggle='collapse', role='button', aria-expanded='false', aria-controls='accordionContent')
+            i.fas.fa-solid.fa-bars.fa-xl
+            span.names Reports
+            i.fa-solid.fa-caret-down.d-flex.justify-content-end
+          #accordionContent.collapse.accordion-collapse
+            ul.nav.flex-column.accordion
+              li.nav-item
+                a.nav-link(href='/link1') - Occupancy Reports
+              li.nav-item
+                a.nav-link(href='/link2') - Status Report
+              li.nav-item
+                a.nav-link(href='/link3') - Reservation Summary
+              li.nav-item
+                a.nav-link(href='/link4') - House Report
+              li.nav-item
+                a.nav-link(href='/link2') - Revenue Report
+              li.nav-item
+                a.nav-link(href='/link3') - Promos Summary
+              li.nav-item
+                a.nav-link(href='/link4') - Occupancy Demand  
 
     // Sign out
     ul.nav.flex-column.sign-out-sticky
@@ -64,7 +70,6 @@
             i.fas.fa-solid.fa-right-from-bracket.fa-xl
             span Sign Out
 
-      
   // Head Navigation
   nav.navbar.navbar-expand-lg.navbar-light.upper.shadow
     .container-fluid
