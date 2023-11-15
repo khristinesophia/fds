@@ -29,22 +29,22 @@ html(lang="en")
                 .card.act_card.shadow-sm(style="width: 350px;")
                   .card-body.act_card_body
                     .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Active Account
-                      h2 #{guestCount}
+                      span.card-title.mb-2.text-muted Checked-In
+                      h2 #{guestAccountCount}
               //-Overall Stayed
               .col-4.col-md-4.mt-4.d-flex.justify-content-center
                 .card.act_card.shadow-sm(style="width: 350px;")
                   .card-body.act_card_body
                     .d-flex.flex-column.align-items-start
                       span.card-title.mb-2.text-muted Occupied Rooms
-                      h2 #{guestCount}   
+                      h2 #{occupiedRoomCount}   
               //-Checked Out              
               .col-4.col-md-4.mt-4.d-flex.justify-content-end
                 .card.act_card.shadow-sm(style="width: 350px;")
                   .card-body.act_card_body
                     .d-flex.flex-column.align-items-start
                       span.card-title.mb-2.text-muted Vacant Rooms
-                      h2 #{vacantRoomsArray.length}
+                      h2 #{vacantRoomCount}
             //-Second Row
             .row.mx-5
               .col-6.col-md-6.mt-4  
@@ -57,7 +57,9 @@ html(lang="en")
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
                     .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Guest In House
+                      span.card-title.mb-2.text-muted Guest In-House
+                      h2 Adult: #{adultNoCount}
+                      h2 Children: #{childNoCount}
 
             //-Third Row
             .row.mx-5
@@ -79,7 +81,19 @@ html(lang="en")
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
                     .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Departure         
+                      span.card-title.mb-2.text-muted Departure
+                      table 
+                        thead 
+                          th Room Number 
+                          th Guest Name 
+                          th Checkout Date
+                        tbody
+                          each x in departuresArray
+                            tr
+                              td #{x.roomnum}
+                              td #{x.fullname}
+                              td #{x.checkoutdate}
+
 
 
                           
