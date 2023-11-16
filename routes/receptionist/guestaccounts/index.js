@@ -72,7 +72,7 @@ router.post('/register', async(req,res)=>{
         const hotelid = req.session.hotelID
 
         const { checkindate, checkoutdate, numofdays, adultno, childno,
-            roomtype, roomid, promocode, discount,
+            roomtype, roomid, promoid, discount,
             fullname, address, email, contactno,
             modeofpayment, approvalcode, description, price, qty, amount
         } = req.body
@@ -81,15 +81,33 @@ router.post('/register', async(req,res)=>{
     
         //- insert to "guestaccounts" T
         const q1 = `
-            INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode)
+            INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promoid)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING *
         `
-        const q1result = await pool.query(q1, [hotelid, roomtype, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode])
+        const q1result = await pool.query(q1, [hotelid, roomtype, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promoid])
     
         //- get accountid of newly inserted record
         const accountid = q1result.rows[0].accountid
-    
+
+        if(promoid !== 0){
+            const result = await pool.query(`
+                SELECT * FROM promos
+                WHERE id = $1 AND
+                    hotelid = $2
+            `, [promoid, hotelid])
+            
+            let timesavailed = result.rows[0].timesavailed
+            timesavailed += 1
+
+            await pool.query(`
+                UPDATE promos
+                SET timesavailed = $1
+                WHERE id = $2 AND
+                    hotelid = $3
+            `, [timesavailed, promoid, hotelid])
+        }
+
         //- insert to "guestaccount_guestdetails" T
         const q2 = `
             INSERT INTO guestaccounts_guestdetails(accountid, hotelid, fullname, email, contactno, address)
