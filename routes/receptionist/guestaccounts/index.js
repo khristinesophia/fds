@@ -72,7 +72,7 @@ router.post('/register', async(req,res)=>{
         const hotelid = req.session.hotelID
 
         const { checkindate, checkoutdate, numofdays, adultno, childno,
-            roomtype, roomid, promocode, discount,
+            roomtype, roomid, promoid, discount,
             fullname, address, email, contactno,
             modeofpayment, approvalcode, description, price, qty, amount
         } = req.body
@@ -81,15 +81,33 @@ router.post('/register', async(req,res)=>{
     
         //- insert to "guestaccounts" T
         const q1 = `
-            INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode)
+            INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promoid)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
             RETURNING *
         `
-        const q1result = await pool.query(q1, [hotelid, roomtype, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promocode])
+        const q1result = await pool.query(q1, [hotelid, roomtype, roomid, adultno, childno, checkindate, checkoutdate, numofdays, modeofpayment, promoid])
     
         //- get accountid of newly inserted record
         const accountid = q1result.rows[0].accountid
-    
+
+        if(promoid !== 0){
+            const result = await pool.query(`
+                SELECT * FROM promos
+                WHERE id = $1 AND
+                    hotelid = $2
+            `, [promoid, hotelid])
+            
+            let timesavailed = result.rows[0].timesavailed
+            timesavailed += 1
+
+            await pool.query(`
+                UPDATE promos
+                SET timesavailed = $1
+                WHERE id = $2 AND
+                    hotelid = $3
+            `, [timesavailed, promoid, hotelid])
+        }
+
         //- insert to "guestaccount_guestdetails" T
         const q2 = `
             INSERT INTO guestaccounts_guestdetails(accountid, hotelid, fullname, email, contactno, address)
@@ -142,10 +160,12 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
         SELECT * FROM guestaccounts t1
         JOIN guestaccounts_guestdetails t2
             ON t1.accountid = t2.accountid
-        JOIN rooms t3
-            ON t1.roomid = t3.roomid
-        JOIN room_type t4
-            ON t1.typeid = t4.typeid
+        JOIN folios t3
+            ON t1.accountid = t3.accountid
+        JOIN rooms t4
+            ON t1.roomid = t4.roomid
+        JOIN room_type t5
+            ON t1.typeid = t5.typeid
         WHERE t1.hotelid = $1
     `
     const q1result = await pool.query(q1, [hotelid])
@@ -598,6 +618,30 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(re
         ga: q1result.rows[0]
     })
 })
+
+
+
+
+//- extend
+router.post('/extend/:id', isAuthenticated, async(req, res)=>{
+    const hotelID = req.session.hotelID
+    const { id } = req.params
+
+    const { roomid, folioid,
+        rate_perhour, hoursno, cost } = req.body
+
+    const description = 'Extension'
+    const date = getCurrentDate()
+
+    const q1 = `
+        INSERT INTO transactions(hotelid, accountid, roomid, description, price, qty, amount, date, folioid)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `
+    const q1result = await pool.query(q1, [hotelID, id, roomid, description, rate_perhour, hoursno, cost, date, folioid])
+
+    res.redirect(`/ga/folio/${id}`)
+})
+
 
 
 

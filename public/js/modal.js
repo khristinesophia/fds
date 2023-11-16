@@ -639,7 +639,7 @@ function Close_ChangePass_Receptionist_User() {
     var pname = clickedElement.getAttribute('data-pname');
   
     // Set the hotel name in the modal
-    var pNameElement = document.getElementById('promo-name-in-modal');
+    var pNameElement = C;
     pNameElement.value = pname; // Set the value, not textContent
   
     // Set the form action in the modal
@@ -650,4 +650,52 @@ function Close_ChangePass_Receptionist_User() {
     var modal = document.getElementById('deletepromo');
     modal.classList.remove('modal-active');
   }
+
+
+
+
+
+
+
+
+function openExtendStay(clickedElement) {
+  var modal = document.getElementById('extendStay')
+  modal.classList.add('modal-active')
+
+  //- get data from clicked element
+  var accountid = clickedElement.getAttribute('data-accountid')
+  var fullname = clickedElement.getAttribute('data-fullname')
+  var roomnum = clickedElement.getAttribute('data-roomnum')
+  var roomtype = clickedElement.getAttribute('data-roomtype')
+  var rate_perhour = clickedElement.getAttribute('data-rate_perhour')
+  var roomid = clickedElement.getAttribute('data-roomid')
+  var folioid = clickedElement.getAttribute('data-folioid')
+
+  //- set data inside modal
+  document.getElementById('accountidSpan').innerText = accountid
+  document.getElementById('fullnameSpan').innerText = fullname
+  document.getElementById('roomnumSpan').innerText = roomnum
+  document.getElementById('roomtypeSpan').innerText = roomtype
+  document.getElementById('rate_perhourSpan').innerText = rate_perhour
+
+  document.getElementById('hoursno').setAttribute('data-rate_perhour', rate_perhour)
+
+  //- set hidden data
+  document.getElementById('rate_perhour').value = rate_perhour
+  document.getElementById('roomid').value = roomid
+  document.getElementById('folioid').value = folioid
+
+  //- set form action in modal
+  var form = document.getElementById('extendStayForm')
+  form.action = `/ga/extend/${accountid}`;
+}
+function closeExtendStay() {
+  //- clear fields
+  document.getElementById('hoursno').value = ''
+  document.getElementById('cost').value = ''
+
+  //- remove 'modal-active' class
+  var modal = document.getElementById('extendStay')
+  modal.classList.remove('modal-active')
+}
   
