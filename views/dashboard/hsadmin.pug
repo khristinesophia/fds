@@ -8,6 +8,7 @@ html(lang="en")
     link(rel='stylesheet', href='/css/font.css')
     link(rel='stylesheet', href='/css/modal.css')
     link(rel='stylesheet', href='/css/nav-scroll.css')
+    link(rel='stylesheet', href='/css/dashboard.css')
 
 
     title Dashboard
@@ -24,28 +25,28 @@ html(lang="en")
             //- First Row (Checked In, Overall Stayed, Checked Out)
             .row.mx-5
               //-Checked In
-              .col-4.col-md-4.mt-4.d-flex.justify-content-start  
-                .card.act_card.shadow-sm(style="width: 350px;")
+              .col-4.col-md-4.mt-4.d-flex.justify-content-start
+                .card.act_card.shadow-sm.card1
                   .card-body.act_card_body
                     .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Active Account
+                      span.card-title.mb-2 Checked In
                       h2 #{guestAccountCount}
+
 
               //-Overall Stayed
               .col-4.col-md-4.mt-4.d-flex.justify-content-center
-                .card.act_card.shadow-sm(style="width: 350px;")
+                .card.act_card.shadow-sm.card2
                   .card-body.act_card_body
                     .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Occupied Rooms
-                      h2 #{occupiedRoomCount}
-   
+                      span.card-title.mb-2 Overall Stayed Guest
+                      
               //-Checked Out              
               .col-4.col-md-4.mt-4.d-flex.justify-content-end
-                .card.act_card.shadow-sm(style="width: 350px;")
+                .card.act_card.shadow-sm.card3
                   .card-body.act_card_body
                     .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Vacant Rooms
-                      h2 #{vacantRoomCount}
+                      span.card-title.mb-2 Checked Out
+                      
 
             //-Second Row
             .row.mx-5
