@@ -678,3 +678,63 @@ mixin deletePromo(roomnum)
                     button.btn.mod_btn_sec.me-3(type="button", onclick="closeDeletePromo()") Cancel
                     input.btn.mod_btn(type="submit" value="Delete" onclick="confirmDelete()")
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
+
+
+
+
+//- extendStay
+mixin extendStay(ga) 
+    #extendStay.modal 
+        .modal-content.text-dark
+            form(action='' method='POST' id='extendStayForm') 
+                .modal-header
+                    h5.text-center Extend Stay
+                    button.btn-close(type='button' onclick='closeExtendStay()' aria-label='Close')
+                .modal-body
+                    .row
+                        .col-4 
+                            p.fw-bold Account ID
+                            p.fw-bold Account Name
+                            p.fw-bold Room Number
+                            p.fw-bold Room Type
+                            p.fw-bold Extension Rate
+                        .col-8
+                            p.fw-normal#accountidSpan
+                            p.fw-normal#fullnameSpan
+                            p.fw-normal#roomnumSpan
+                            p.fw-normal#roomtypeSpan
+                            p.fw-normal#rate_perhourSpan
+                    .mt-4
+                        input(type="hidden" id="rate_perhour" name="rate_perhour")
+                        input(type="hidden" id="roomid" name="roomid")
+                        input(type="hidden" id="folioid" name="folioid")
+                        label.form-label.fw-bold Number of Hours 
+                        input.form-control(
+                            type="number" 
+                            id="hoursno" 
+                            name="hoursno" 
+                            onkeyup="updateCost(this)"
+                        )
+                    .mt-2
+                        label.form-label.fw-bold Cost
+                        input.form-control(
+                            type="number" 
+                            id="cost" 
+                            name="cost"
+                        )
+                    script.
+                        function updateCost(clickedElement){
+                            //- get rate_perhour and hoursno
+                            const rate_perhour = clickedElement.getAttribute('data-rate_perhour')
+                            const hoursno = clickedElement.value
+
+                            //- calculation
+                            const cost = rate_perhour * hoursno
+                            const costFinal = cost.toFixed(2)
+
+                            //- assign cost
+                            document.getElementById('cost').value = costFinal
+                        }
+                .modal-footer
+                    button.btn(type='button' onclick='closeExtendStay()') Cancel
+                    input.btn(type='submit' value='Submit')

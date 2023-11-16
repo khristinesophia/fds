@@ -160,10 +160,12 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
         SELECT * FROM guestaccounts t1
         JOIN guestaccounts_guestdetails t2
             ON t1.accountid = t2.accountid
-        JOIN rooms t3
-            ON t1.roomid = t3.roomid
-        JOIN room_type t4
-            ON t1.typeid = t4.typeid
+        JOIN folios t3
+            ON t1.accountid = t3.accountid
+        JOIN rooms t4
+            ON t1.roomid = t4.roomid
+        JOIN room_type t5
+            ON t1.typeid = t5.typeid
         WHERE t1.hotelid = $1
     `
     const q1result = await pool.query(q1, [hotelid])
@@ -616,6 +618,30 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(re
         ga: q1result.rows[0]
     })
 })
+
+
+
+
+//- extend
+router.post('/extend/:id', isAuthenticated, async(req, res)=>{
+    const hotelID = req.session.hotelID
+    const { id } = req.params
+
+    const { roomid, folioid,
+        rate_perhour, hoursno, cost } = req.body
+
+    const description = 'Extension'
+    const date = getCurrentDate()
+
+    const q1 = `
+        INSERT INTO transactions(hotelid, accountid, roomid, description, price, qty, amount, date, folioid)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `
+    const q1result = await pool.query(q1, [hotelID, id, roomid, description, rate_perhour, hoursno, cost, date, folioid])
+
+    res.redirect(`/ga/folio/${id}`)
+})
+
 
 
 
