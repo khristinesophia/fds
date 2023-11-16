@@ -151,6 +151,41 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
     })
 })
 
+//- render "inactive promo list" page
+//- "/pd"
+router.get('/inactive', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
+    const hotelID = req.session.hotelID
+
+    const q1 = `
+        SELECT * FROM promos
+        WHERE hotelid = $1
+        AND status = $2 
+        ORDER BY dateadded ASC
+    `
+    const q1result = await pool.query(q1, [hotelID, 'Inactive'])
+
+    q1result.rows.forEach(row => {
+        if (row.poster) {
+            row.poster = 'data:' + row.imagetype + ';base64,' + row.poster.toString('base64')
+        }
+    })
+
+    q1result.rows.forEach((row)=>{
+        if(row.startdate){
+            row.startdate = formatDate(row.startdate)
+        }
+        if(row.enddate){
+            row.enddate = formatDate(row.enddate)
+        }
+    })
+
+    res.render('HSA/pd/inactive', {
+        hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
+        allPromosArray: q1result.rows
+    })
+})
+
 //- render "edit promo" page
 //- "/pd/edit/:id"
 router.get('/edit/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
