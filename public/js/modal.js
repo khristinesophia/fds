@@ -563,42 +563,59 @@ function Close_ChangePass_Receptionist_User() {
 
 //- Room Type
 
-    //- Open Edit for Room Type
-    function Edit_RoomType(clickedElement) {
-      var modal = document.getElementById('editroomtype');
-      modal.classList.add('modal-active');
-  
-      // Get the super admin data from data attributes
-      var typeId = clickedElement.getAttribute('data-typeid');
-      var roomType = clickedElement.getAttribute('data-roomtype');
-      var roomDescription = clickedElement.getAttribute('data-roomdescription');
-      var roomCapacity = clickedElement.getAttribute('data-roomcapacity');
-      var roomPrice = clickedElement.getAttribute('data-roomprice');
-  
-      // Populate the form fields with the data from data attributes
-      var typeInput = document.querySelector('#editroomtype input[name="roomtype"]');
-      var descriptionInput = document.querySelector('#editroomtype textarea[name="description"]');
-      var capacityInput = document.querySelector('#editroomtype input[name="capacity"]');
-      var priceInput = document.querySelector('#editroomtype input[name="price"]');
-  
-      if (typeInput) {
-        typeInput.value = roomType || '';
-      }
-      if (descriptionInput) {
-        descriptionInput.value = roomDescription || '';
-      }
-      if (capacityInput) {
-        capacityInput.value = roomCapacity || '';
-      }
-      if (priceInput) {
-        priceInput.value = roomPrice || '';
-      }
-      // Set the form action in the modal
-      var editForm = document.querySelector('#editroomtype form');
-      if (editForm) {
-        editForm.action = `/roomtype/edit/${typeId}`;
-      }
-    }
+function Edit_RoomType(clickedElement) {
+  var modal = document.getElementById('editroomtype');
+  modal.classList.add('modal-active');
+
+  // Get the room type data from data attributes
+  var typeId = clickedElement.getAttribute('data-typeid');
+  var roomType = clickedElement.getAttribute('data-roomtype');
+  var roomDescription = clickedElement.getAttribute('data-roomdescription');
+  var roomCapacity = clickedElement.getAttribute('data-roomcapacity');
+  var roomPrice = clickedElement.getAttribute('data-roomprice');
+  var roomRate = clickedElement.getAttribute('data-rateperhour');
+  var roomFreeBreakfast = clickedElement.getAttribute('data-free_breakfast');
+
+  // Populate the form fields with the data from data attributes
+  var typeInput = document.querySelector('#editroomtype input[name="roomtype"]');
+  var descriptionInput = document.querySelector('#editroomtype textarea[name="description"]');
+  var capacityInput = document.querySelector('#editroomtype input[name="capacity"]');
+  var priceInput = document.querySelector('#editroomtype input[name="price"]');
+  var rateInput = document.querySelector('#editroomtype input[name="rate_perhour"]');
+  var freeBreakfastInput = document.querySelector('#editroomtype input[name="free_breakfast"]');
+
+  if (typeInput) {
+    typeInput.value = roomType || '';
+  }
+  if (descriptionInput) {
+    descriptionInput.value = roomDescription || '';
+  }
+  if (capacityInput) {
+    capacityInput.value = roomCapacity || '';
+  }
+  if (priceInput) {
+    priceInput.value = roomPrice || '';
+  }
+  if (rateInput) {
+    rateInput.value = roomRate || '';
+  }
+
+  // Set the form action in the modal
+  var editForm = document.querySelector('#editroomtype form');
+  if (editForm) {
+    editForm.action = `/roomtype/edit/${typeId}`;
+  }
+
+// Set the checkbox state after a short delay
+setTimeout(function () {
+  if (freeBreakfastInput) {
+    freeBreakfastInput.checked = roomFreeBreakfast;
+  }
+}, 0);
+
+}
+
+    
     //- Close Edit Modal for Receptionist
     function Close_Edit_RoomType() {
       var modal = document.getElementById('editroomtype');
