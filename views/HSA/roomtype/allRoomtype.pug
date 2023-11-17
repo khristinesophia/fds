@@ -68,18 +68,26 @@ html(lang="en")
                   h6.hotel-free_breakfast.mb-3
                       | Free Breakfast: 
                       if r.free_breakfast
-                          input.form-check-input(type="checkbox", name="free_breakfast", r.free_breakfast ? 'checked' : '', disabled)
+                          input.form-check-input(type="checkbox", name="free_breakfast", checked=!!r.free_breakfast, disabled)
                       else
-                          input.form-check-input(type="checkbox", name="free_breakfast", r.free_breakfast ? 'undefined' : '', disabled)
-                .card-footer.pb-3.pt-3
+                          input.form-check-input(type="checkbox", name="free_breakfast", disabled)
+
                   .d-flex.justify-content-end
                     
                     //button
                       a(href=`/roomtype/edit/${r.typeid}`) Edit
                     //- Edit
-                    a.sa-icon.sa-edit(data-typeid=r.typeid data-roomtype=r.roomtype data-roomdescription=r.description data-roomprice=r.price 
-                      data-roomcapacity=r.capacity data-rate_perhour=r.rate_perhour data-free_breakfast=r.free_breakfast data-roomimage=r.roomimage
-                      onclick="Edit_RoomType(this)" role='button')
+                    a.sa-icon.sa-edit(
+                      data-typeid=r.typeid
+                      data-roomtype=r.roomtype
+                      data-roomdescription=r.description
+                      data-roomprice=r.price 
+                      data-roomcapacity=r.capacity
+                      data-rateperhour=r.rate_perhour
+                      data-free_breakfast=Boolean(r.free_breakfast)
+                      data-roomimage=r.roomimage
+                      onclick="Edit_RoomType(this)"
+                      role='button')
                       i.fa-solid.fa-pen-to-square.fa-lg  
                     include ../../mixins/modals.pug
                     +editRoomType(r.typeid)  

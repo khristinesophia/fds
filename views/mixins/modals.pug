@@ -478,43 +478,43 @@ mixin deleteRoomType(roomtype)
                     p.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before deleting.
 
 //- Edit Room Type
-mixin editRoomType
-    #editroomtype.modal
-        .modal-content
-            .modal-header
-                h5.modal-title(id='') Edit
-                button.btn-close(type='button' onclick='Close_Edit_RoomType()' aria-label='Close')
-            .modal-body.mb-3
-                form(action='', method="POST" , enctype="multipart/form-data")
-                    
-                    label.col-form-label(for="type") Room Type:
-                    input.form-control(type="text", name="roomtype", value=`${r.roomtype}`, required)
+//- Edit Room Type
+mixin editRoomType(typeid, roomtype, roomdescription, roomprice, roomcapacity, rateperhour, free_breakfast, roomimage)
+  #editroomtype.modal
+    .modal-content
+      .modal-header
+        h5.modal-title(id='') Edit
+        button.btn-close(type='button' onclick='Close_Edit_RoomType()' aria-label='Close')
+      .modal-body.mb-3
+        form(action=`/roomtype/edit/${typeid}`, method="POST" , enctype="multipart/form-data")
+                
+            label.col-form-label(for="type") Room Type:
+            input.form-control(type="text", name="roomtype", value=roomtype, required)
 
-                    label.col-form-label(for="description") Room Description:
-                    textarea.form-control(name="description", value=`${r.description}`, required)
+            label.col-form-label(for="description") Room Description:
+            textarea.form-control(name="description", value=roomdescription, required)
 
-                    label.col-form-label(for="capacity") Room Capacity:
-                    input.form-control(type="text", name="capacity", value=`${r.capacity}`, required)
+            label.col-form-label(for="capacity") Room Capacity:
+            input.form-control(type="text", name="capacity", value=roomcapacity, required)
 
-                    label.col-form-label(for="price") Room Price:
-                    input.form-control(type="text", name="price", value=`${r.price}`, required)
+            label.col-form-label(for="price") Room Price:
+            input.form-control(type="text", name="price", value=roomprice, required)
 
-                    label.col-form-label(for="rate_perhour") Rate per Hour:
-                    input.form-control(type="text", name="rate_perhour", value=`${r.rate_perhour}`, required)
+            label.col-form-label(for="rateperhour") Rate per Hour:
+            input.form-control(type="text", name="rate_perhour", value=rateperhour, required)
 
-                    label.col-form-label(for="free_breakfast") Free Breakfast:
-                        if r.free_breakfast
-                            input.form-check-input(type="checkbox", name="free_breakfast", value="true", checked)
-                        else
-                            input.form-check-input(type="checkbox", name="free_breakfast")
-                        label.form-check-label(for="free_breakfast") Include Free Breakfast
-                    <br>
-                    label.col-form-label(for="roomimage") Room Image:
-                    input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
+            label.col-form-label(for="free_breakfast") Free Breakfast:
+            input.form-check-input(type="checkbox", name="free_breakfast", checked=free_breakfast)
+            label.form-check-label(for="free_breakfast") Include Free Breakfast
 
-                    .modal-footer
-                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="Close_Edit_RoomType()") Cancel
-                        input.btn.mod_btn(type="submit", value="Submit") 
+            br
+            label.col-form-label(for="roomimage") Room Image:
+            input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
+
+            .modal-footer
+                button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="Close_Edit_RoomType()") Cancel
+                input.btn.mod_btn(type="submit", value="Submit")
+
 
 
 
