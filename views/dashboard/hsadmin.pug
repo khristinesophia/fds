@@ -7,8 +7,10 @@ html(lang="en")
     link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
     link(rel='stylesheet', href='/css/font.css')
     link(rel='stylesheet', href='/css/modal.css')
-    link(rel='stylesheet', href='/css/nav-scroll.css')
-    link(rel='stylesheet', href='/css/dashboard.css')
+    //- Donut Graph
+    script(src="https://cdn.jsdelivr.net/npm/chart.js")
+    script(src="https://cdn.jsdelivr.net/npm/chartjs-plugin-doughnutlabel")
+
 
 
     title Dashboard
@@ -21,31 +23,59 @@ html(lang="en")
       .row.mx-5  
         .col-12
           h2.text Dashboard
-
             //- First Row (Checked In, Overall Stayed, Checked Out)
             .row.mx-5
-              //-Checked In
-              .col-4.col-md-4.mt-4.d-flex.justify-content-start
-                .card.act_card.shadow-sm.card1
+              //- Checked In
+              .col-3.col-md-3.mt-4.d-flex.justify-content-start
+                .card.act_card.card1.custom-hover-shadow
                   .card-body.act_card_body
-                    .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2 Checked In
-                      h2 #{guestAccountCount}
+                    .d-flex.flex-row.align-items-center
+                      //- Container for the icon with a background box
+                      .icon-container.d-flex.align-items-center
+                        i.fas.fa-thumbtack.icon
+                      //- Right column for span and h1
+                      .d-flex.flex-column.align-items-start.body-info
+                        h2 #{guestAccountCount}
+                        span.card-titles.text-muted Checked In
 
-
+              //- New Book
+              .col-3.col-md-3.mt-4.d-flex.justify-content-start
+                .card.act_card.card1.custom-hover-shadow
+                  .card-body.act_card_body
+                    .d-flex.flex-row.align-items-center
+                      //- Container for the icon with a background box
+                      .icon-container.d-flex.align-items-center
+                        i.fas.fa-bookmark.icon
+                      //- Right column for span and h1
+                      .d-flex.flex-column.align-items-start.body-info
+                        h2 Count here
+                        span.card-titles.text-muted New Book
+                        
               //-Overall Stayed
-              .col-4.col-md-4.mt-4.d-flex.justify-content-center
-                .card.act_card.shadow-sm.card2
+              .col-3.col-md-3.mt-4.d-flex.justify-content-start
+                .card.act_card.card1.custom-hover-shadow
                   .card-body.act_card_body
-                    .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2 Overall Stayed Guest
+                    .d-flex.flex-row.align-items-center
+                      //- Container for the icon with a background box
+                      .icon-container.d-flex.align-items-center
+                        i.fas.fa-arrow-right-to-bracket.icon
+                      //- Right column for span and h1
+                      .d-flex.flex-column.align-items-start.body-info
+                        h2 Count Here
+                        span.card-titles.text-muted Overall Stayed Guest
                       
               //-Checked Out              
-              .col-4.col-md-4.mt-4.d-flex.justify-content-end
-                .card.act_card.shadow-sm.card3
+              .col-3.col-md-3.mt-4.d-flex.justify-content-start
+                .card.act_card.card1.custom-hover-shadow
                   .card-body.act_card_body
-                    .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2 Checked Out
+                    .d-flex.flex-row.align-items-center
+                      //- Container for the icon with a background box
+                      .icon-container.d-flex.align-items-center
+                        i.fas.fa-arrow-right-from-bracket.icon
+                      //- Right column for span and h1
+                      .d-flex.flex-column.align-items-start.body-info
+                        h2 Count HEre
+                        span.card-titles.text-muted Checked out
                       
 
             //-Second Row
@@ -53,8 +83,8 @@ html(lang="en")
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Reservation
+                    .d-flex.flex-column.align-items-start.text-muted
+                      h4.card-title.mb-2.text-muted Reservation
                       h2 #{reservationAllCount}
                       table 
                         thead 
@@ -66,45 +96,55 @@ html(lang="en")
                               td #{r.roomtype}
                               td #{r.roomtype_count}
 
-              .col-6.col-md-6.mt-4  
+              script.
+                var adultNoCount = #{adultNoCount};
+                var childNoCount = #{childNoCount};
+                
+              .col-6.col-md-6.mt-4
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Guest In-House
-                      h2 Adult: #{adultNoCount}
-                      h2 Children: #{childNoCount}
-
+                    .row
+                      .col-6
+                        h4.card-title.mb-2 Guest In-House 
+                        .canvas-container
+                          canvas#donutChart(style="height: 230px;")
+                      .col-6
+                        .d-flex.flex-column.align-items-start
+                          h2 Adult: #{adultNoCount}
+                          h2#childrenCount Children: #{childNoCount}
+                          h2#totalCount Total: 
             //-Third Row
             .row.mx-5
               .col-12.col-md-12.mt-4            
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Rooms
-                      table
-                        thead 
-                          th Room Type
-                          th Vacant
-                          th Occupied
-                          th On-Change 
-                          th Out-of-Order
-                          th Total
-                        tbody
-                          each x in rooms
-                            tr
-                              td #{x.roomtype}
-                              td #{x.vacantcount}
-                              td #{x.occupiedcount}
-                              td #{x.onchangecount}
-                              td #{x.outofordercount}
-                              td #{x.totalcount}
+                    h4.card-title.mb-3 Rooms
+                        .d-flex.flex-column.align-items-start
+                          .table-scroll
+                            table.table.table-striped.table-hover
+                              thead 
+                                th Room Type
+                                th Vacant
+                                th Occupied
+                                th On-Change 
+                                th Out-of-Order
+                                th Total
+                              tbody(style="height: 100%;")
+                                each x in rooms
+                                  tr
+                                    td #{x.roomtype}
+                                    td #{x.vacantcount}
+                                    td #{x.occupiedcount}
+                                    td #{x.onchangecount}
+                                    td #{x.outofordercount}
+                                    td #{x.totalcount}
 
             //-Fourth Row
             .row.mx-5
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start
+                    .d-flex.flex-column.align-items-start.text-muted
                       span.card-title.mb-2.text-muted Arrival
                       table 
                         thead 
@@ -121,8 +161,8 @@ html(lang="en")
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start
-                      span.card-title.mb-2.text-muted Departure 
+                    .d-flex.flex-column.align-items-start.text-muted
+                      span.card-title.mb-2.text-muted Departure
                       table 
                         thead 
                           th Room Number 
@@ -139,5 +179,5 @@ html(lang="en")
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     script(src='/js/modal.js') 
-    script(src='/js/nav-active.js') 
-    script(src='/js/acc.js')
+    script(src='/js/nav-active.js')
+    script(src='/js/chartScript.js')  
