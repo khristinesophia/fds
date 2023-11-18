@@ -90,7 +90,7 @@ router.post('/register', async(req,res)=>{
         //- get accountid of newly inserted record
         const accountid = q1result.rows[0].accountid
 
-        if(promoid !== 0){
+        if(promoid != 0){
             const result = await pool.query(`
                 SELECT * FROM promos
                 WHERE id = $1 AND
