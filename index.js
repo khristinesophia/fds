@@ -70,7 +70,7 @@ app.use('/Rrooms', Rrooms)
 app.use('/reservation', reservation)
 app.use('/ga', guestaccounts)
 app.use('/archivedga', archivedga)
-app.use('/reservationhist', reservationhist)
+app.use('/rhist', reservationhist)
 
 
 // app.get('/', (req, res) => {
