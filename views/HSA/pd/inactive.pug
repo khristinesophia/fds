@@ -16,7 +16,7 @@ html(lang="en")
     link(rel='stylesheet', href='/css/table.css')
     link(rel='stylesheet', href='/css/card.css')
 
-    title Active Promos
+    title Inactive Promos
 
     //- sa head lagi nakalagay ang color.pug
     include ../../partials/color.pug
@@ -29,11 +29,7 @@ html(lang="en")
         //- Header Title for page
         .container
             .row
-                .col-6
-                    h2.text Active Promos
-                .col-6 
-                    .d-flex.justify-content-end
-                        a.btn.mod_btn(href='/pd/add') Add Promo
+                h2.text Inactive Promos
             
             include ../../partials/navHSApd.pug
 

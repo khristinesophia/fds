@@ -165,10 +165,8 @@ html(lang="en")
                                         document.querySelector('#modeofpayment').addEventListener('change', toggleApprovalCode)
                                 //- promo code
                                 .mt-5
-                                    label.form-label.fw-bold(for='promocode') Promo Code 
-                                    select.form-select(id='promocode', name='promocode') Promo Code
-                                        //- each p in promos
-                                        //-     option(value=p.id data-discount=p.discount)= p.name
+                                    label.form-label.fw-bold(for='promoid') Promo Code 
+                                    select.form-select(id='promoid', name='promoid') Promo Code
                                 //- discount
                                 .mb-5
                                     label.form-label.fw-bold(for='discount') Discount 
@@ -208,8 +206,8 @@ html(lang="en")
                                 const amountInput = document.querySelector('#amount')
 
                                 //- promos and discount
-                                const promoSelect = document.querySelector('select[name="promocode"]')
-                                const promoOptions = document.querySelectorAll('select[name="promocode"] option')
+                                const promoSelect = document.querySelector('select[name="promoid"]')
+                                const promoOptions = document.querySelectorAll('select[name="promoid"] option')
                                 const discountInput = document.querySelector('input[name="discount"]')
 
 
@@ -294,11 +292,12 @@ html(lang="en")
 
                                 function updateAmount(){
                                     if(priceInput.value != null && qtyInput.value != null){
-                                        const subtotal = priceInput.value * qtyInput.value
-                                        const discount = calculatePercentageOfAmount(subtotal, discountInput.value)
-                                        //- const tax = calculatePercentageOfAmount(subtotal, 12)
+                                        const selectedOption = promoSelect.options[promoSelect.selectedIndex]
+                                        const selectedDiscount = selectedOption.getAttribute('data-discount')
 
-                                        //- amountInput.value = (subtotal - discount) + tax
+                                        const subtotal = priceInput.value * qtyInput.value
+                                        const discount = calculatePercentageOfAmount(subtotal, selectedDiscount)
+
                                         amountInput.value = (subtotal - discount)
                                     }
                                 }
@@ -312,13 +311,18 @@ html(lang="en")
                                         option.innerHTML = ''
                                     })
 
+                                    const newOption = document.createElement('option')
+                                    newOption.value = 0
+                                    newOption.innerText = 'None'
+                                    newOption.setAttribute('data-discount', 0)
+                                    promoSelect.appendChild(newOption)
+
                                     promos.forEach(promo => {
                                         if(promo.typeid == roomTypeSelect.value){
                                             const newOption = document.createElement('option')
                                             newOption.value = promo.id
                                             newOption.innerText = promo.code
                                             newOption.setAttribute('data-discount', promo.discount)
-                                            console.log(newOption.getAttribute('data-discount'))
                                             promoSelect.appendChild(newOption)
                                         }
                                     })
@@ -355,13 +359,13 @@ html(lang="en")
                                 roomTypeSelect.addEventListener('change', updateAmount)
                                 roomNumSelect.addEventListener('change', updateAmount)
                                 promoSelect.addEventListener('change', updateAmount)
+                                discountInput.addEventListener('onChange', updateAmount)
 
                                 //- filter promo
                                 window.addEventListener('load', filterPromos)
                                 document.addEventListener('DOMContentLoaded', filterPromos)
                                 roomTypeSelect.addEventListener('change', filterPromos)
                                 roomNumSelect.addEventListener('change', filterPromos)
-                                //- promoSelect.addEventListener('change', filterPromos)
 
                                 //- update discount
                                 window.addEventListener('load', updateDiscount)
@@ -370,10 +374,9 @@ html(lang="en")
                                 roomNumSelect.addEventListener('change', updateDiscount)
                                 promoSelect.addEventListener('change', updateDiscount)
                                 
-                            // Finish tab
+                            //- Finish tab
                             .tab.d-none
                                 p All Set! Click submit to register this guest account.
-                                input.btn.btn-primary(type="submit" value="Submit") 
                         .card-footer.text-end
                             .d-flex
                                 button#back_button.btn.btn-link.mod_btn(type='button' onclick='back()') Back
