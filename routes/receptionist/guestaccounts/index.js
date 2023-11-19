@@ -90,7 +90,7 @@ router.post('/register', async(req,res)=>{
         //- get accountid of newly inserted record
         const accountid = q1result.rows[0].accountid
 
-        if(promoid !== 0){
+        if(promoid != 0){
             const result = await pool.query(`
                 SELECT * FROM promos
                 WHERE id = $1 AND
@@ -598,6 +598,8 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(re
             ON t1.typeid = t3.typeid
         JOIN rooms t4 
             ON t1.roomid = t4.roomid 
+        JOIN promos t5
+            ON t1.promoid = t5.id
         WHERE t1.accountid = $1 AND
             t1.hotelid = $2
     `

@@ -318,7 +318,7 @@ html(lang="en")
                                     promoSelect.appendChild(newOption)
 
                                     promos.forEach(promo => {
-                                        if(promo.typeid == roomTypeSelect.value){
+                                        if(promo.typeid == roomTypeSelect.value && promo.status === 'Active'){
                                             const newOption = document.createElement('option')
                                             newOption.value = promo.id
                                             newOption.innerText = promo.code
