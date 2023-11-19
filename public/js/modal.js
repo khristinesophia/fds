@@ -656,7 +656,7 @@ setTimeout(function () {
     var pname = clickedElement.getAttribute('data-pname');
   
     // Set the hotel name in the modal
-    var pNameElement = C;
+    var pNameElement = document.getElementById('promo-name-in-modal');
     pNameElement.value = pname; // Set the value, not textContent
   
     // Set the form action in the modal
