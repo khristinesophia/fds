@@ -315,21 +315,23 @@ router.post('/addRooms', isAuthenticated, async(req, res)=>{
         if (existingRoom.rows.length > 0) {
             res.status(401).send('The Room Number already exists. Please select different Room Number');
         }
+        else {
+            //get the typeid of the roomtype
+            const typeidResult = await pool.query('SELECT typeid FROM room_type WHERE hotelid = $1 AND roomtype = $2', [hotelid, roomtype]);
 
-        //get the typeid of the roomtype
-        const typeidResult = await pool.query('SELECT typeid FROM room_type WHERE hotelid = $1 AND roomtype = $2', [hotelid, roomtype]);
-
-        if (typeidResult.rows.length > 0) {
-            const typeid = typeidResult.rows[0].typeid;
-        
-            const addRooms = await pool.query(
-                'INSERT INTO rooms (hotelid, roomnum, typeid, roomfloor, status) VALUES ($1, $2, $3, $4, $5)',
-                [hotelid, roomnum, typeid, roomfloor, status]
-            );
-          console.log("Room Successfully Added!");
-          res.redirect('/HSArooms');
-        }else {
-            res.status(400).send('The selected room type does not exist.');
+            if (typeidResult.rows.length > 0) {
+                const typeid = typeidResult.rows[0].typeid;
+            
+                const addRooms = await pool.query(
+                    'INSERT INTO rooms (hotelid, roomnum, typeid, roomfloor, status) VALUES ($1, $2, $3, $4, $5)',
+                    [hotelid, roomnum, typeid, roomfloor, status]
+                );
+            console.log("Room Successfully Added!");
+            res.redirect('/HSArooms');
+            }
+            else {
+                res.status(400).send('The selected room type does not exist.');
+            }
         }
 
     } catch (error) {

@@ -131,7 +131,7 @@ router.post('/checkin', isAuthenticated, getHotelLogo, getHotelColor, async (req
             RETURNING *
         `
         const q1result = await pool.query(q1, [hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, 'Card', r.promocode])
-
+        console.log("Reservation has been successfully moved to guest account");
         //- get accountid of newly inserted record
         const accountid = q1result.rows[0].accountid
 
@@ -141,6 +141,7 @@ router.post('/checkin', isAuthenticated, getHotelLogo, getHotelColor, async (req
             VALUES ($1, $2, $3, $4, $5, $6)
         `
         const q2result = await pool.query(q2, [accountid, hotelid, rd.fullname, rd.email, rd.contactno, rd.address])
+        console.log("Reservation has been successfully moved to guest account");
 
 
         //- insert in history
