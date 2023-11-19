@@ -53,45 +53,68 @@ router.get('/guestInHouse', isAuthenticated, getHotelColor, getHotelLogo, async(
         }
     })
 
+    //- q2
+    //- get adult no (hist)
     const q2 = `
-        SELECT *
+        SELECT adultno
         FROM guestaccounts
         WHERE hotelid = $1
     `
     const q2result = await pool.query(q2, [hotelID])
-    //- total in-house guest
-    //- q2result.rowCount
+    let adultNoCount = 0
+    q2result.rows.forEach(row => {
+        adultNoCount += row.adultno
+    })
 
+    //- q3
+    //- get child no (hist)
     const q3 = `
-        SELECT *
-        FROM rooms
-        WHERE hotelid = $1 AND
-            status = $2 OR
-            status = $3 OR
-            status = $4 OR
-            status = $5
+        SELECT childno
+        FROM guestaccounts
+        WHERE hotelid = $1
     `
-    const q3result = await pool.query(q3, [hotelID, 'Occupied', 'To check-out', 'Inspected', 'Recently checked-out'])
-    //- total ocuppied rooms
-    //- q3result.rowCount
+    const q3result = await pool.query(q3, [hotelID])
+    let childNoCount = 0
+    q3result.rows.forEach(row => {
+        childNoCount += row.childno
+    })
+    
+    //- total in-house guests
+    const totalInHouseGuests = adultNoCount + childNoCount
 
+    //- q4
+    //- get adult no
     const q4 = `
-        SELECT *
-        FROM rooms
-        WHERE hotelid = $1 AND
-            status = $2 
+        SELECT adultno
+        FROM guestaccounts
+        WHERE hotelid = $1
     `
-    const q4result = await pool.query(q4, [hotelID, 'Vacant'])
-    //- total available rooms
-    //- q4result.rowCount
+    const q4result = await pool.query(q4, [hotelID])
+    let total_adultNoCount = 0
+    q4result.rows.forEach(row => {
+        total_adultNoCount += row.adultno
+    })
+
+    //- q5
+    //- get child no
+    const q5 = `
+        SELECT childno
+        FROM guestaccounts
+        WHERE hotelid = $1
+    `
+    const q5result = await pool.query(q5, [hotelID])
+    let total_childNoCount = 0
+    q5result.rows.forEach(row => {
+        total_childNoCount += row.childno
+    })
 
     res.render('HSA/reports/guestInHouse', {
         hotelColor: req.hotelColor,
         hotelLogo: req.hotelImage,
         dataArray: q1result.rows,
-        inHouse: q2result.rowCount,
-        occupiedRooms: q3result.rowCount,
-        availableRooms: q4result.rowCount
+        totalInHouseGuests: totalInHouseGuests,
+        total_adultNoCount: total_adultNoCount,
+        total_childNoCount: total_childNoCount
     })
 })
 
@@ -126,49 +149,72 @@ router.get('/dlGuestInHouse', isAuthenticated, async(req, res)=>{
 
     const data = q1result.rows
 
+    //- q2
+    //- get adult no (hist)
     const q2 = `
-        SELECT *
+        SELECT adultno
         FROM guestaccounts
         WHERE hotelid = $1
     `
     const q2result = await pool.query(q2, [hotelID])
-    //- total in-house guest
-    //- q2result.rowCount
+    let adultNoCount = 0
+    q2result.rows.forEach(row => {
+        adultNoCount += row.adultno
+    })
 
+    //- q3
+    //- get child no (hist)
     const q3 = `
-        SELECT *
-        FROM rooms
-        WHERE hotelid = $1 AND
-            status = $2 OR
-            status = $3 OR
-            status = $4 OR
-            status = $5
+        SELECT childno
+        FROM guestaccounts
+        WHERE hotelid = $1
     `
-    const q3result = await pool.query(q3, [hotelID, 'Occupied', 'To check-out', 'Inspected', 'Recently checked-out'])
-    //- total ocuppied rooms
-    //- q3result.rowCount
+    const q3result = await pool.query(q3, [hotelID])
+    let childNoCount = 0
+    q3result.rows.forEach(row => {
+        childNoCount += row.childno
+    })
+    
+    //- total in-house guests
+    const totalInHouseGuests = adultNoCount + childNoCount
 
+    //- q4
+    //- get adult no
     const q4 = `
-        SELECT *
-        FROM rooms
-        WHERE hotelid = $1 AND
-            status = $2 
+        SELECT adultno
+        FROM guestaccounts
+        WHERE hotelid = $1
     `
-    const q4result = await pool.query(q4, [hotelID, 'Vacant'])
-    //- total available rooms
-    //- q4result.rowCount
+    const q4result = await pool.query(q4, [hotelID])
+    let total_adultNoCount = 0
+    q4result.rows.forEach(row => {
+        total_adultNoCount += row.adultno
+    })
 
-    const summary = {
-        inHouse: q2result.rowCount,
-        occupiedRooms: q3result.rowCount,
-        availableRooms: q4result.rowCount
-    }
-
+    //- q5
+    //- get child no
     const q5 = `
-        SELECT * FROM hotels
+        SELECT childno
+        FROM guestaccounts
         WHERE hotelid = $1
     `
     const q5result = await pool.query(q5, [hotelID])
+    let total_childNoCount = 0
+    q5result.rows.forEach(row => {
+        total_childNoCount += row.childno
+    })
+
+    const summary = {
+        inHouse: totalInHouseGuests,
+        total_adultNoCount: total_adultNoCount,
+        total_childNoCount: total_childNoCount
+    }
+
+    const q6 = `
+        SELECT * FROM hotels
+        WHERE hotelid = $1
+    `
+    const q6result = await pool.query(q6, [hotelID])
 
     const stream = res.writeHead(200, {
         'Content-Type': 'application/pdf',
@@ -180,7 +226,7 @@ router.get('/dlGuestInHouse', isAuthenticated, async(req, res)=>{
         () => stream.end(),
         data,
         summary,
-        q5result.rows[0]
+        q6result.rows[0]
     )
 })
 
