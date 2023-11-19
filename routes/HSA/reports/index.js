@@ -16,6 +16,7 @@ const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 //- utils
 const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
+const capitalizeFirstLetter = require(path.join(__basedir, 'utils', 'capitalizeFirstLetter'))
 
 //- image
 const fs = require('fs')
@@ -230,11 +231,130 @@ router.get('/dlGuestInHouse', isAuthenticated, async(req, res)=>{
     )
 })
 
+//- /promosSummary/:status/:typeid
 router.get('/promosSummary', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
+    const hotelID = req.session.hotelID
+    const { status, typeid } = req.query
+ 
+    const q1 = `
+        SELECT * FROM room_type
+        WHERE hotelid = $1
+        ORDER BY price ASC
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+    const q2 = `
+        SELECT * FROM promos
+        WHERE hotelid = $1
+    `
+    const q2result = await pool.query(q2, [hotelID])
+
+    q2result.rows.forEach(row=>{
+        if(row.startdate){
+            row.startdate = formatDate(row.startdate)
+        }
+        if(row.enddate){
+            row.enddate = formatDate(row.enddate)
+        }
+    })
+
+    let data = {}
+
+    //- there is a STATUS and TYPEID filter
+    if(status && typeid){
+        const filteredData = q2result.rows.filter(row => {
+            return row.status == capitalizeFirstLetter(status) && row.typeid == typeid
+        })
+        data = filteredData
+    } 
+
+    //- there is a STATUS filter
+    else if(status && !typeid){
+        const filteredData = q2result.rows.filter(row => {
+            return row.status == capitalizeFirstLetter(status)
+        })
+        data = filteredData
+    }
+
+    //- there is a TYPEID filter
+    else if(!status && typeid){
+        const filteredData = q2result.rows.filter(row => {
+            return row.typeid == typeid
+        })
+        data = filteredData
+    }
+
+    //- there is NO filter
+    else{
+        data = q2result.rows
+    }
+
+    // //- if promo filter is SPECIFIED STATUS and ALL ROOM TYPE
+    // if(status !== 'All' && typeid == 'All'){
+    //     result = await pool.query(`
+    //         SELECT * FROM promos
+    //         WHERE hotelid = $1 AND
+    //             status = $2
+    //     `, [hotelID, status])
+
+    //     result.rows.forEach(row=>{
+    //         if(row.startdate){
+    //             row.startdate = formatDate(row.startdate)
+    //         }
+    //         if(row.enddate){
+    //             row.enddate = formatDate(row.enddate)
+    //         }
+    //     })
+
+    //     data = result.rows
+    // }
+
+    // //- if promo filter is ALL STATUS and SPECIFIED ROOM TYPE
+    // if(status == 'All' && typeid !== 'All'){
+    //     result = await pool.query(`
+    //         SELECT * FROM promos
+    //         WHERE hotelid = $1 AND
+    //             typeid = $2
+    //     `, [hotelID, typeid])
+
+    //     result.rows.forEach(row=>{
+    //         if(row.startdate){
+    //             row.startdate = formatDate(row.startdate)
+    //         }
+    //         if(row.enddate){
+    //             row.enddate = formatDate(row.enddate)
+    //         }
+    //     })
+
+    //     data = result.rows
+    // }
+
+    // //- if promo filter is SPECIFIED STATUS and SPECIFIED ROOM TYPE
+    // if(status !== 'All' && typeid !== 'All'){
+    //     result = await pool.query(`
+    //         SELECT * FROM promos
+    //         WHERE hotelid = $1 AND
+    //             status = $2 AND
+    //             typeid = $3
+    //     `, [hotelID, status, typeid])
+
+    //     result.rows.forEach(row=>{
+    //         if(row.startdate){
+    //             row.startdate = formatDate(row.startdate)
+    //         }
+    //         if(row.enddate){
+    //             row.enddate = formatDate(row.enddate)
+    //         }
+    //     })
+
+    //     data = result.rows
+    // }
 
     res.render('HSA/reports/promosSummary', {
         hotelColor: req.hotelColor,
-        hotelLogo: req.hotelImage
+        hotelLogo: req.hotelImage,
+        allRoomTypeArray: q1result.rows,
+        dataArray: data
     })
 })
 
