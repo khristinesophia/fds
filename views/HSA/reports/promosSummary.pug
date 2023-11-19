@@ -16,7 +16,7 @@ html(lang="en")
     link(rel='stylesheet', href='/css/table.css')
     link(rel='stylesheet', href='/css/card.css')
 
-    title Guest In-House Report
+    title Promos Summary
 
     //- sa head lagi nakalagay ang color.pug
     include ../../partials/color.pug
@@ -33,32 +33,32 @@ html(lang="en")
                     //- card
                     .card.bg-success.shadow.text-white.text-center 
                         .card-body
-                            p.display-6.fw-normal #{inHouse}
-                            p.lead Total In-House Guests
+                            p.display-6.fw-normal 
+                            p.lead Lorem
 
                 //- column
                 .col 
                     //- card
                     .card.bg-warning.shadow.text-center 
                         .card-body
-                            p.display-6.fw-normal #{occupiedRooms}
-                            p.lead Total Rooms Occupied
+                            p.display-6.fw-normal 
+                            p.lead Lorem
 
                 //- column
                 .col 
                     //- card
                     .card.bg-danger.shadow.text-white.text-center 
                         .card-body
-                            p.display-6.fw-normal #{availableRooms}
-                            p.lead Total Available Rooms
+                            p.display-6.fw-normal 
+                            p.lead Lorem
             
             .d-flex.justify-content-between.align-items-center.mt-5
                 .col 
-                    h2 Guests Currently In-House 
+                    h2 Promos Summary
                 .col.text-end 
                     a(href="#") 
                         h2.fa-solid.fa-print.me-3
-                    a(href="/reports/dlGuestInHouse") 
+                    a(href="#") 
                         h2.fa-solid.fa-download
             .row.mt-4.p-3.bg-white.shadow
                 table.table
@@ -66,21 +66,21 @@ html(lang="en")
                     thead 
                         //- trow
                         tr 
-                            th Room Number
-                            th Guest Name
-                            th No. of Adult
-                            th No. of Child
-                            th Check-In Date
-                            th Check-Out Date
+                            //- th Room Number
+                            //- th Guest Name
+                            //- th No. of Adult
+                            //- th No. of Child
+                            //- th Check-In Date
+                            //- th Check-Out Date
                     tbody
-                        each data in dataArray
-                            tr 
-                                td #{data.roomnum}
-                                td #{data.fullname}
-                                td #{data.adultno}
-                                td #{data.childno}
-                                td #{data.checkindate}
-                                td #{data.checkoutdate}
+                        //- each data in dataArray
+                        //-     tr 
+                        //-         td #{data.roomnum}
+                        //-         td #{data.fullname}
+                        //-         td #{data.adultno}
+                        //-         td #{data.childno}
+                        //-         td #{data.checkindate}
+                        //-         td #{data.checkoutdate}
             
 
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
