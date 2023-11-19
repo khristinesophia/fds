@@ -54,8 +54,8 @@ function createGuestInHouse(dataCallback, endCallback, data, summary, hotel){
     }
 
     table.rows.push(['Total In-House Guest', summary.inHouse, '', '', '', '',])
-    table.rows.push(['Total Rooms Occupied', summary.occupiedRooms, '', '', '', '',])
-    table.rows.push(['Total Available Rooms', summary.availableRooms, '', '', '', '',])
+    table.rows.push(['Total Number of Adults', summary.total_adultNoCount, '', '', '', '',])
+    table.rows.push(['Total Number of Children', summary.total_childNoCount, '', '', '', '',])
 
 
 

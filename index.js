@@ -40,7 +40,11 @@ const HSArooms = require('./routes/HSA/HSArooms')
 const roomtype = require('./routes/HSA/roomtype')
 const pd = require('./routes/HSA/pd')
 const reports = require('./routes/HSA/reports')
+
 const forofor = require('./routes/HSA/404')
+
+const od = require('./routes/HSA/od')
+
     // receptionist user routes
 const Rrooms = require('./routes/receptionist/Rrooms')
 const reservation = require('./routes/receptionist/reservation')
@@ -66,6 +70,7 @@ app.use('/HSArooms', HSArooms)
 app.use('/roomtype', roomtype)
 app.use('/pd', pd)
 app.use('/reports', reports)
+app.use('/od', pd)
     // receptionist user routes
 app.use('/Rrooms', Rrooms)
 app.use('/reservation', reservation)
