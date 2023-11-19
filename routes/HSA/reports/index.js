@@ -289,67 +289,6 @@ router.get('/promosSummary', isAuthenticated, getHotelColor, getHotelLogo, async
         data = q2result.rows
     }
 
-    // //- if promo filter is SPECIFIED STATUS and ALL ROOM TYPE
-    // if(status !== 'All' && typeid == 'All'){
-    //     result = await pool.query(`
-    //         SELECT * FROM promos
-    //         WHERE hotelid = $1 AND
-    //             status = $2
-    //     `, [hotelID, status])
-
-    //     result.rows.forEach(row=>{
-    //         if(row.startdate){
-    //             row.startdate = formatDate(row.startdate)
-    //         }
-    //         if(row.enddate){
-    //             row.enddate = formatDate(row.enddate)
-    //         }
-    //     })
-
-    //     data = result.rows
-    // }
-
-    // //- if promo filter is ALL STATUS and SPECIFIED ROOM TYPE
-    // if(status == 'All' && typeid !== 'All'){
-    //     result = await pool.query(`
-    //         SELECT * FROM promos
-    //         WHERE hotelid = $1 AND
-    //             typeid = $2
-    //     `, [hotelID, typeid])
-
-    //     result.rows.forEach(row=>{
-    //         if(row.startdate){
-    //             row.startdate = formatDate(row.startdate)
-    //         }
-    //         if(row.enddate){
-    //             row.enddate = formatDate(row.enddate)
-    //         }
-    //     })
-
-    //     data = result.rows
-    // }
-
-    // //- if promo filter is SPECIFIED STATUS and SPECIFIED ROOM TYPE
-    // if(status !== 'All' && typeid !== 'All'){
-    //     result = await pool.query(`
-    //         SELECT * FROM promos
-    //         WHERE hotelid = $1 AND
-    //             status = $2 AND
-    //             typeid = $3
-    //     `, [hotelID, status, typeid])
-
-    //     result.rows.forEach(row=>{
-    //         if(row.startdate){
-    //             row.startdate = formatDate(row.startdate)
-    //         }
-    //         if(row.enddate){
-    //             row.enddate = formatDate(row.enddate)
-    //         }
-    //     })
-
-    //     data = result.rows
-    // }
-
     res.render('HSA/reports/promosSummary', {
         hotelColor: req.hotelColor,
         hotelLogo: req.hotelImage,
