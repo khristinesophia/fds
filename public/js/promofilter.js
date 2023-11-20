@@ -85,3 +85,25 @@ document.getElementById('typeid').addEventListener('change', (event)=>{
     
     window.location.reload()
 })
+
+
+// ----------------------------------------------------------------------------------------------------
+
+
+document.getElementById('downloadAnchor').addEventListener('click', (event) => {
+    event.preventDefault()
+
+    const urlString = window.location.search
+
+    if(urlString.includes('?')){
+        const arr = urlString.split('?')
+        const queryString = arr[1]
+
+        this.href = 'http://localhost:5000/reports/dlPromosSummary?' + queryString
+        window.location.href = this.href
+    } else{
+        this.href = 'http://localhost:5000/reports/dlPromosSummary?'
+        window.location.href = this.href
+    }
+    
+})
