@@ -598,7 +598,7 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(re
             ON t1.typeid = t3.typeid
         JOIN rooms t4 
             ON t1.roomid = t4.roomid 
-        JOIN promos t5
+        LEFT JOIN promos t5
             ON t1.promoid = t5.id
         WHERE t1.accountid = $1 AND
             t1.hotelid = $2
