@@ -123,6 +123,7 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
 
     const q1 = `
         SELECT 
+            t1.id,
             t1.code,
             t1.name,
             t1.description,
