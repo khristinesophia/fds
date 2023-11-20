@@ -289,11 +289,87 @@ router.get('/promosSummary', isAuthenticated, getHotelColor, getHotelLogo, async
         data = q2result.rows
     }
 
+    let activeCount
+    let inactiveCount
+    let timesAvailed = 0
+
+    // console.log(typeid)
+    if(typeid){
+        const result1 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2 AND
+                typeid = $3
+        `, [hotelID, 'Active', typeid])
+
+        //- result.rows.count
+        activeCount = result1.rows[0].count
+
+
+        const result2 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2 AND
+                typeid = $3
+        `, [hotelID, 'Inactive', typeid])
+
+        //- result.rows.count
+        inactiveCount = result2.rows[0].count
+
+        const result3 = await pool.query(`
+            SELECT timesavailed
+            FROM promos
+            WHERE hotelid = $1 AND
+                typeid = $2
+        `, [hotelID, typeid])
+
+        result3.rows.forEach((row)=>{
+            timesAvailed += row.timesavailed
+        })
+    }
+    else{
+        const result1 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2
+        `, [hotelID, 'Active'])
+
+        //- result.rows.count
+        activeCount = result1.rows[0].count
+
+
+        const result2 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2
+        `, [hotelID, 'Inactive'])
+
+        //- result.rows.count
+        inactiveCount = result2.rows[0].count
+
+        const result3 = await pool.query(`
+            SELECT timesavailed
+            FROM promos
+            WHERE hotelid = $1
+        `, [hotelID])
+
+        result3.rows.forEach((row)=>{
+            timesAvailed += row.timesavailed
+        })
+    }
+
     res.render('HSA/reports/promosSummary', {
         hotelColor: req.hotelColor,
         hotelLogo: req.hotelImage,
         allRoomTypeArray: q1result.rows,
-        dataArray: data
+        dataArray: data,
+        activeCount: activeCount,
+        inactiveCount: inactiveCount,
+        timesAvailed: timesAvailed
     })
 })
 
