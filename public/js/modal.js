@@ -758,7 +758,7 @@ function openroomModal() {
 }
 
 function closeroomModal() {
-  var modal = document.getElementById('Add');
+  var modal = document.getElementById('addRoom');
   modal.classList.remove('modal-active');
 
 }
