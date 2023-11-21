@@ -114,11 +114,9 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         //- q7
         //- get reservation per roomtype and count
         const q7 = `
-            SELECT DISTINCT rt.roomtype, COUNT(rt.roomtype) AS roomtype_count 
+            SELECT rt.roomtype, COUNT(r.typeid) AS roomtype_count 
             FROM room_type rt
-            JOIN reservations r
-            ON rt.typeid = r.typeid
-            WHERE r.hotelid = $1
+            LEFT JOIN reservations r ON rt.typeid = r.typeid AND r.hotelid = $1
             GROUP BY rt.roomtype;
         `
         const q7result = await pool.query(q7, [hotelid])
@@ -156,7 +154,7 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         const q9result = await pool.query(q9, [hotelid])
 
 
-        //- q6
+        //- q10
         //- get first 3 arrival
         const q10 = `
             SELECT 
@@ -217,6 +215,16 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         //- overall stayed guests count
         const overallStayedGuestsCount = hist_adultNoCount + hist_childNoCount
 
+        //- q14
+        //- get new book count today
+        const q14 = `
+            SELECT COUNT(*) AS new_book_count 
+            FROM reservations
+            WHERE DATE(reservationdate) = CURRENT_DATE AND hotelid = $1;
+        `;
+        const q14result = await pool.query(q14, [hotelid]);
+        const newBookCount = q14result.rows[0].new_book_count;
+
 
         res.render('dashboard/hsadmin', {
             hotelColor: req.hotelColor,
@@ -232,7 +240,8 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             reservations: q7result.rows,
             reservationAllCount: reservationAllCount,
             rooms: q9result.rows,
-            arrivalArray: q10result.rows
+            arrivalArray: q10result.rows,
+            newBookCount: newBookCount
         })
     } catch (error) {
         console.error("Error fetching data for the receptionist dashboard", error)
@@ -333,12 +342,10 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
         //- q7
         //- get reservation per roomtype and count
         const q7 = `
-            SELECT DISTINCT rt.roomtype, COUNT(rt.roomtype) AS roomtype_count 
+            SELECT rt.roomtype, COUNT(r.typeid) AS roomtype_count 
             FROM room_type rt
-            JOIN reservations r
-            ON rt.typeid = r.typeid
-            WHERE r.hotelid = $1
-            GROUP BY rt.roomtype;
+            LEFT JOIN reservations r ON rt.typeid = r.typeid AND r.hotelid = $1
+            GROUP BY rt.roomtype
         `
         const q7result = await pool.query(q7, [hotelid])
 
@@ -436,6 +443,16 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
         //- overall stayed guests count
         const overallStayedGuestsCount = hist_adultNoCount + hist_childNoCount
 
+        //- q11
+        //- get new book count today
+        const q14 = `
+            SELECT COUNT(*) AS new_book_count 
+            FROM reservations
+            WHERE DATE(reservationdate) = CURRENT_DATE AND hotelid = $1;
+        `;
+        const q14result = await pool.query(q14, [hotelid]);
+        const newBookCount = q14result.rows[0].new_book_count;
+
 
 
         res.render('dashboard/receptionist', {
@@ -452,7 +469,8 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
             reservations: q7result.rows,
             reservationAllCount: reservationAllCount,
             rooms: q9result.rows,
-            arrivalArray: q10result.rows
+            arrivalArray: q10result.rows,
+            newBookCount: newBookCount
         })
     } catch (error) {
         console.error("Error fetching data for the receptionist dashboard", error)

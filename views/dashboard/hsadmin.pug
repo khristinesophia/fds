@@ -48,7 +48,7 @@ html(lang="en")
                         i.fas.fa-bookmark.icon
                       //- Right column for span and h1
                       .d-flex.flex-column.align-items-start.body-info
-                        h2 Count Here
+                        h2 #{newBookCount}
                         span.card-titles.text-muted New Book
                         
               //-Overall Stayed
@@ -74,7 +74,9 @@ html(lang="en")
                         i.fas.fa-arrow-right-from-bracket.icon
                       //- Right column for span and h1
                       .d-flex.flex-column.align-items-start.body-info
+
                         h2 #{archivedGuestAccountCount}
+
                         span.card-titles.text-muted Checked out
                       
 
@@ -93,8 +95,8 @@ html(lang="en")
                         tbody
                           each r in reservations
                             tr
-                              td #{r.roomtype}
-                              td #{r.roomtype_count}
+                              td= r.roomtype
+                              td= r.roomtype_count
 
               script.
                 var adultNoCount = #{adultNoCount};

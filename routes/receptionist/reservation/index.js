@@ -131,7 +131,6 @@ router.post('/checkin', isAuthenticated, getHotelLogo, getHotelColor, async (req
             RETURNING *
         `
         const q1result = await pool.query(q1, [hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, 'Card', r.promocode])
-
         //- get accountid of newly inserted record
         const accountid = q1result.rows[0].accountid
 

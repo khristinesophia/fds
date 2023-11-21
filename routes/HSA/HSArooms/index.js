@@ -303,7 +303,7 @@ router.get('/addRooms', isAuthenticated, getHotelColor, async(req, res) => {
 });
 
 //add rooms
-router.post('/addRooms', isAuthenticated, async(req, res)=>{
+router.post('/', isAuthenticated, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID;
         const { roomnum, roomtype, roomprice, roomfloor, capacity } = req.body;
@@ -313,23 +313,27 @@ router.post('/addRooms', isAuthenticated, async(req, res)=>{
         const existingRoom = await pool.query('SELECT roomnum FROM rooms WHERE hotelid = $1 AND roomnum = $2', [hotelid, roomnum]);
 
         if (existingRoom.rows.length > 0) {
-            res.status(401).send('The Room Number already exists. Please select different Room Number');
-        }
+            console.log('RM Exist')
+            // Send an error response with the message
+            return res.status(400).json({ error: 'RM Exixst Try again' });
+               }
+        else {
+            //get the typeid of the roomtype
+            const typeidResult = await pool.query('SELECT typeid FROM room_type WHERE hotelid = $1 AND roomtype = $2', [hotelid, roomtype]);
 
-        //get the typeid of the roomtype
-        const typeidResult = await pool.query('SELECT typeid FROM room_type WHERE hotelid = $1 AND roomtype = $2', [hotelid, roomtype]);
-
-        if (typeidResult.rows.length > 0) {
-            const typeid = typeidResult.rows[0].typeid;
-        
-            const addRooms = await pool.query(
-                'INSERT INTO rooms (hotelid, roomnum, typeid, roomfloor, status) VALUES ($1, $2, $3, $4, $5)',
-                [hotelid, roomnum, typeid, roomfloor, status]
-            );
-          console.log("Room Successfully Added!");
-          res.redirect('/HSArooms');
-        }else {
-            res.status(400).send('The selected room type does not exist.');
+            if (typeidResult.rows.length > 0) {
+                const typeid = typeidResult.rows[0].typeid;
+            
+                const addRooms = await pool.query(
+                    'INSERT INTO rooms (hotelid, roomnum, typeid, roomfloor, status) VALUES ($1, $2, $3, $4, $5)',
+                    [hotelid, roomnum, typeid, roomfloor, status]
+                );
+            console.log("Room Successfully Added!");
+            res.redirect('/HSArooms');
+            }
+            else {
+                res.status(400).send('The selected room type does not exist.');
+            }
         }
 
     } catch (error) {
