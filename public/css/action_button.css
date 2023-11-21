@@ -78,15 +78,106 @@
     border-color: transparent;
 }
 
-.sa-view:hover {
-    background-color: rgb(142, 195, 255);
-    color: rgb(0, 99, 156);
-}
 
-.showpass{
-    width: 466px;
-}
-.showpassicon{
-    height: 38px;
-    background-color: white;
-}
+
+.sa-debit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-decoration: none;
+    background-color: #3498db;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .sa-debit i.fa-solid.fa-credit-card {
+    margin-bottom: 5px;
+  }
+  .sa-debit h6.text {
+    margin: 0;
+    font-size: 16px; 
+  }
+  
+
+.sa-credit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-decoration: none;
+    background-color: #3498db;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .sa-credit i.fa-solid.fa-credit-card {
+    margin-bottom: 5px;
+  }
+  .sa-credit h6 {
+    margin: 0;
+    font-size: 16px; 
+  }
+
+a.sa-debit {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-decoration: none;
+    background-color: #27ae60;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  a.sa-debit i.fa-solid.fa-credit-card {
+    margin-bottom: 5px;
+  }
+  a.sa-debit h6 {
+    margin: 0; 
+    font-size: 16px; 
+  }
+
+a.sa-cash {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    text-decoration: none;
+    background-color: #f39c12;
+    color: #ffffff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  a.sa-cash i.fa-solid.fa-money-bills {
+    margin-bottom: 5px;
+  }
+  a.sa-cash h6 {
+    margin: 0; 
+    font-size: 16px; 
+  }
+  .cash{
+    padding-left: 0;
+  }  
+
+/* Center the error message */
+/* Center the error message */
+.modalcash {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Adjust the buttons to align to the left */
+  .ms {
+    margin-left: auto;
+    flex-direction: none;
+  }
+
+  
+  
+

@@ -6,9 +6,17 @@ function openModal() {
 function closeModal() {
     var modal = document.getElementById('modal');
     modal.classList.remove('modal-active');
-
 }
 
+function openModalcash() {
+  var modal = document.getElementById('modalcash');
+  modal.classList.add('modal-active');
+}
+
+function closeModalcash() {
+  var modal = document.getElementById('modalcash');
+  modal.classList.remove('modal-active');
+}
 
 function openDeleteHotelModal(clickedElement) {
   var modal = document.getElementById('deletehotel');
