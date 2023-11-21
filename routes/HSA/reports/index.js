@@ -259,7 +259,7 @@ router.get('/promosSummary', getHotelColor, getHotelLogo, async(req, res)=>{
         }
     })
 
-    let data = {}
+    let data = []
 
     //- there is a STATUS and TYPEID filter
     if(status && typeid){
@@ -381,7 +381,14 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
     //- q1
     //- select all promos
     const q1result = await pool.query(`
-        SELECT * FROM promos
+        SELECT 
+            code,
+            name,
+            discount,
+            startdate,
+            enddate,
+            timesavailed
+        FROM promos
         WHERE hotelid = $1
     `, [hotelID])
 
@@ -395,7 +402,7 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
         }
     })
 
-    let data
+    let data = []
 
     //- there is a STATUS and TYPEID filter
     if(status && typeid){

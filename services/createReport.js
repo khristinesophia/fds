@@ -72,27 +72,72 @@ function generateOverview(doc, overviewTitles, overview) {
 }
 
 
+// function generateTable(doc, data, headers) {
+//   let i
+//   let j = 0 //- variable to keep track of the total number of rows
+//   const tableTop = 220
+  
+//   //- headers
+//   doc.font("Helvetica-Bold")
+//   generateTableRow(doc, tableTop, headers)
+
+
+//   //- hr
+//   generateHr(doc, tableTop + 20)
+  
+
+//   //- data
+//   doc.font("Helvetica")
+//   data.forEach(row=>{
+//     const position = tableTop + (j + 1) * 30
+//     generateTableRow(doc, position, Object.values(row))
+//     generateHr(doc, position + 20)
+//     j++
+//   })
+
+// }
+ 
 function generateTable(doc, data, headers) {
   let i
   let j = 0 //- variable to keep track of the total number of rows
   const tableTop = 220
-  
+  const pageHeight = doc.page.height - doc.page.margins.bottom
+
   //- headers
   doc.font("Helvetica-Bold")
   generateTableRow(doc, tableTop, headers)
 
-
   //- hr
   generateHr(doc, tableTop + 20)
-  
 
   //- data
   doc.font("Helvetica")
-  data.forEach(row=>{
+
+  data.forEach((row, index) => {
     const position = tableTop + (j + 1) * 30
-    generateTableRow(doc, position, Object.values(row))
-    generateHr(doc, position + 20)
-    j++
+    
+    if (position < pageHeight) {
+      generateTableRow(doc, position, Object.values(row))
+      generateHr(doc, position + 20)
+      j++
+    } 
+
+    else {
+      doc.addPage()
+      j = 0
+      //- headers for new page
+      doc.font("Helvetica-Bold")
+      generateTableRow(doc, tableTop, headers)
+      
+      //- hr for new page
+      generateHr(doc, tableTop + 20)
+      
+      //- data on new page
+      doc.font("Helvetica")
+      generateTableRow(doc, tableTop + 30, Object.values(row))
+      generateHr(doc, tableTop + 50)
+      j++
+    }
   })
 
 }
@@ -116,14 +161,14 @@ function generateTableRow(doc, y, values) {
     doc.fontSize(10).text(value, x, y)
     x += columnWidth //- increment x by the column width for each value
   })
- }
+}
 
 function generateHr(doc, y) {
   doc
     .strokeColor('#aaaaaa')
     .lineWidth(1)
     .moveTo(50, y)
-    .lineTo(842, y)
+    .lineTo(792, y)
     .stroke()
 }
 
