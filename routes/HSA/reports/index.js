@@ -245,8 +245,11 @@ router.get('/promosSummary', getHotelColor, getHotelLogo, async(req, res)=>{
     const q1result = await pool.query(q1, [hotelID])
 
     const q2 = `
-        SELECT * FROM promos
-        WHERE hotelid = $1
+        SELECT * 
+        FROM promos t1
+        JOIN room_type t2
+            ON t1.typeid = t2.typeid
+        WHERE t1.hotelid = $1
     `
     const q2result = await pool.query(q2, [hotelID])
 
@@ -383,16 +386,19 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
     //- select all promos
     const q1result = await pool.query(`
         SELECT 
-            code,
-            name,
-            discount,
-            startdate,
-            enddate,
-            timesavailed,
-            status,
-            typeid
-        FROM promos
-        WHERE hotelid = $1
+            t1.code,
+            t1.name,
+            t1.discount,
+            t1.startdate,
+            t1.enddate,
+            t1.timesavailed,
+            t1.status,
+            t1.typeid,
+            t2.roomtype
+        FROM promos t1
+        JOIN room_type t2
+            ON t1.typeid = t2.typeid
+        WHERE t1.hotelid = $1
     `, [hotelID])
 
     //- format start and end date
@@ -417,6 +423,7 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
                 code: row.code,
                 name: row.name,
                 discount: row.discount,
+                roomtype: row.roomtype,
                 startdate: row.startdate,
                 enddate: row.enddate,
                 timesavailed: row.timesavailed
@@ -434,6 +441,7 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
                 code: row.code,
                 name: row.name,
                 discount: row.discount,
+                roomtype: row.roomtype,
                 startdate: row.startdate,
                 enddate: row.enddate,
                 timesavailed: row.timesavailed
@@ -451,6 +459,7 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
                 code: row.code,
                 name: row.name,
                 discount: row.discount,
+                roomtype: row.roomtype,
                 startdate: row.startdate,
                 enddate: row.enddate,
                 timesavailed: row.timesavailed
@@ -465,6 +474,7 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
                 code: row.code,
                 name: row.name,
                 discount: row.discount,
+                roomtype: row.roomtype,
                 startdate: row.startdate,
                 enddate: row.enddate,
                 timesavailed: row.timesavailed
@@ -569,7 +579,7 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
             overview2: inactiveCount,
             overview3: timesAvailed
         },
-        headers: ["Promo Code", "Promo Name", "Discount", "Start Date", "End Date", "Times Availed"],
+        headers: ["Promo Code", "Promo Name", "Discount", "Room Type", "Start Date", "End Date", "Times Availed"],
         data: data
     }
 
