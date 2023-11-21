@@ -2,8 +2,7 @@ const PDFDocument = require("pdfkit")
 
 function createReport(dataCallback, endCallback, pass) {
   let doc = new PDFDocument({ 
-    size: "A4", 
-    layout: 'landscape', 
+    size: [1008, 612], //- long bond paper, 8.5 x 13, landscape
     margin: 50 
   })
 
@@ -154,7 +153,7 @@ function generateFooter(doc) {
 }
 
 function generateTableRow(doc, y, values) {
-  const columnWidth = 742 / values.length //- calculate the width of each column
+  const columnWidth = 960 / values.length //- calculate the width of each column
   let x = 50 //- initialize x to the margin
    
   values.forEach((value) => {
@@ -168,7 +167,7 @@ function generateHr(doc, y) {
     .strokeColor('#aaaaaa')
     .lineWidth(1)
     .moveTo(50, y)
-    .lineTo(792, y)
+    .lineTo(960, y)
     .stroke()
 }
 
