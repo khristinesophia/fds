@@ -223,7 +223,7 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             WHERE DATE(reservationdate) = CURRENT_DATE AND hotelid = $1;
         `;
         const q14result = await pool.query(q14, [hotelid]);
-        const newBookCount = q11result.rows[0].new_book_count;
+        const newBookCount = q14result.rows[0].new_book_count;
 
 
         res.render('dashboard/hsadmin', {
@@ -451,7 +451,7 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
             WHERE DATE(reservationdate) = CURRENT_DATE AND hotelid = $1;
         `;
         const q14result = await pool.query(q14, [hotelid]);
-        const newBookCount = q11result.rows[0].new_book_count;
+        const newBookCount = q14result.rows[0].new_book_count;
 
 
 
