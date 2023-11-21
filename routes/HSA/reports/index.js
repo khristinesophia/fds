@@ -266,6 +266,7 @@ router.get('/promosSummary', getHotelColor, getHotelLogo, async(req, res)=>{
         const filteredData = q2result.rows.filter(row => {
             return row.status == capitalizeFirstLetter(status) && row.typeid == typeid
         })
+        // console.log(filteredData)
         data = filteredData
     } 
 
@@ -387,7 +388,9 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
             discount,
             startdate,
             enddate,
-            timesavailed
+            timesavailed,
+            status,
+            typeid
         FROM promos
         WHERE hotelid = $1
     `, [hotelID])
@@ -409,7 +412,16 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
         const filteredData = q1result.rows.filter(row => {
             return row.status == capitalizeFirstLetter(status) && row.typeid == typeid
         })
-        data = filteredData
+        data = filteredData.map(row => {
+            return {
+                code: row.code,
+                name: row.name,
+                discount: row.discount,
+                startdate: row.startdate,
+                enddate: row.enddate,
+                timesavailed: row.timesavailed
+            }
+        })
     } 
 
     //- there is a STATUS filter
@@ -417,7 +429,16 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
         const filteredData = q1result.rows.filter(row => {
             return row.status == capitalizeFirstLetter(status)
         })
-        data = filteredData
+        data = filteredData.map(row => {
+            return {
+                code: row.code,
+                name: row.name,
+                discount: row.discount,
+                startdate: row.startdate,
+                enddate: row.enddate,
+                timesavailed: row.timesavailed
+            }
+        })
     }
 
     //- there is a TYPEID filter
@@ -425,12 +446,30 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
         const filteredData = q1result.rows.filter(row => {
             return row.typeid == typeid
         })
-        data = filteredData
+        data = filteredData.map(row => {
+            return {
+                code: row.code,
+                name: row.name,
+                discount: row.discount,
+                startdate: row.startdate,
+                enddate: row.enddate,
+                timesavailed: row.timesavailed
+            }
+        })
     }
 
     //- there is NO filter
     else{
-        data = q1result.rows
+        data = q1result.rows.map(row => {
+            return {
+                code: row.code,
+                name: row.name,
+                discount: row.discount,
+                startdate: row.startdate,
+                enddate: row.enddate,
+                timesavailed: row.timesavailed
+            }
+        })
     }
 
     let activeCount

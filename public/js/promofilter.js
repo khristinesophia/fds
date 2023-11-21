@@ -99,10 +99,10 @@ document.getElementById('downloadAnchor').addEventListener('click', (event) => {
         const arr = urlString.split('?')
         const queryString = arr[1]
 
-        this.href = 'http://localhost:5000/reports/dlPromosSummary?' + queryString
+        this.href = 'dlPromosSummary?' + queryString
         window.location.href = this.href
     } else{
-        this.href = 'http://localhost:5000/reports/dlPromosSummary?'
+        this.href = 'dlPromosSummary?'
         window.location.href = this.href
     }
     
