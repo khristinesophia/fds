@@ -122,10 +122,34 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
     const hotelID = req.session.hotelID
 
     const q1 = `
-        SELECT * FROM promos
-        WHERE hotelid = $1
-        AND status = $2 
-        ORDER BY dateadded ASC
+        SELECT 
+            t1.id,
+            t1.code,
+            t1.name,
+            t1.description,
+            t1.poster,
+            t1.discount,
+            t1.startdate,
+            t1.enddate,
+            t1.isavailable_mon,
+            t1.isavailable_tues,
+            t1.isavailable_wed,
+            t1.isavailable_thurs,
+            t1.isavailable_fri,
+            t1.isavailable_sat,
+            t1.isavailable_sun,
+            t1.typeid,
+            t1.status,
+            t1.userid,
+            t1.dateadded,
+            t1.timesavailed,
+            t2.roomtype
+        FROM promos t1
+        JOIN room_type t2
+            ON t1.typeid = t2.typeid
+        WHERE t1.hotelid = $1
+            AND t1.status = $2 
+        ORDER BY t1.typeid ASC
     `
     const q1result = await pool.query(q1, [hotelID, 'Active'])
 
@@ -157,10 +181,34 @@ router.get('/inactive', isAuthenticated, getHotelColor, getHotelLogo, async(req,
     const hotelID = req.session.hotelID
 
     const q1 = `
-        SELECT * FROM promos
-        WHERE hotelid = $1
-        AND status = $2 
-        ORDER BY dateadded ASC
+        SELECT 
+            t1.id,
+            t1.code,
+            t1.name,
+            t1.description,
+            t1.poster,
+            t1.discount,
+            t1.startdate,
+            t1.enddate,
+            t1.isavailable_mon,
+            t1.isavailable_tues,
+            t1.isavailable_wed,
+            t1.isavailable_thurs,
+            t1.isavailable_fri,
+            t1.isavailable_sat,
+            t1.isavailable_sun,
+            t1.typeid,
+            t1.status,
+            t1.userid,
+            t1.dateadded,
+            t1.timesavailed,
+            t2.roomtype
+        FROM promos t1
+        JOIN room_type t2
+            ON t1.typeid = t2.typeid
+        WHERE t1.hotelid = $1
+            AND t1.status = $2 
+        ORDER BY t1.typeid ASC
     `
     const q1result = await pool.query(q1, [hotelID, 'Inactive'])
 

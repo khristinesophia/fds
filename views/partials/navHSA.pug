@@ -40,6 +40,10 @@
           a.nav-link(href='/pd')
             i.fas.fa-solid.fa-tag.fa-xl
             span Promos
+        li.nav-item
+          a.nav-link(href='/404')
+            i.fas.fa-solid.fa-tag.fa-xl
+            span 404    
         li
           a.nav-link.accordion-toggle.nav-item(href='#accordionContent', data-bs-toggle='collapse', role='button', aria-expanded='false', aria-controls='accordionContent')
             i.fas.fa-solid.fa-bars.fa-xl
@@ -48,19 +52,15 @@
           #accordionContent.collapse.accordion-collapse
             ul.nav.flex-column.accordion
               li.nav-item
-                a.nav-link(href='/link1') - Occupancy Reports
+                a.nav-link(href='/link1') Occupancy Report
               li.nav-item
-                a.nav-link(href='/link2') - Status Report
+                a.nav-link(href='/link2') Reservation Summary Report
               li.nav-item
-                a.nav-link(href='/link3') - Reservation Summary
+                a.nav-link(href='/reports/guestInHouse') Guest In-House Report
               li.nav-item
-                a.nav-link(href='/link4') - House Report
+                a.nav-link(href='/link4') Revenue Report
               li.nav-item
-                a.nav-link(href='/link2') - Revenue Report
-              li.nav-item
-                a.nav-link(href='/link3') - Promos Summary
-              li.nav-item
-                a.nav-link(href='/link4') - Occupancy Demand  
+                a.nav-link(href='/reports/promosSummary') Promos Summary Report
 
     // Sign out
     ul.nav.flex-column.sign-out-sticky

@@ -176,13 +176,53 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         })
 
         //- q11
-        //- get new book count today
+        //- get archived guestaccounts count
+        //- checked-out count
         const q11 = `
+            SELECT COUNT(*) 
+            FROM hist_guestaccounts 
+            WHERE hotelid = $1
+        `
+        const q11result = await pool.query(q11, [hotelid])
+        const archivedGuestAccountCount = q11result.rows[0].count
+
+        //- q12
+        //- get adult no (hist)
+        const q12 = `
+            SELECT adultno
+            FROM hist_guestaccounts
+            WHERE hotelid = $1
+        `
+        const q12result = await pool.query(q12, [hotelid])
+        let hist_adultNoCount = 0
+        q12result.rows.forEach(row => {
+            hist_adultNoCount += row.adultno
+        })
+
+        //- q13
+        //- get child no (hist)
+        const q13 = `
+            SELECT childno
+            FROM hist_guestaccounts
+            WHERE hotelid = $1
+        `
+        const q13result = await pool.query(q13, [hotelid])
+        let hist_childNoCount = 0
+        q13result.rows.forEach(row => {
+            hist_childNoCount += row.childno
+        })
+        
+        //- overall stayed guests count
+        const overallStayedGuestsCount = hist_adultNoCount + hist_childNoCount
+
+        //- q14
+        //- get new book count today
+        const q14 = `
             SELECT COUNT(*) AS new_book_count 
             FROM reservations
             WHERE DATE(reservationdate) = CURRENT_DATE AND hotelid = $1;
         `;
-        const q11result = await pool.query(q11, [hotelid]);
+        const q14result = await pool.query(q14, [hotelid]);
         const newBookCount = q11result.rows[0].new_book_count;
 
 
@@ -190,6 +230,8 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             hotelColor: req.hotelColor,
             hotelLogo: req.hotelImage,
             guestAccountCount: guestAccountCount,
+            archivedGuestAccountCount: archivedGuestAccountCount,
+            overallStayedGuestsCount: overallStayedGuestsCount,
             vacantRoomCount: vacantRoomCount, 
             occupiedRoomCount: occupiedRoomCount,
             adultNoCount: adultNoCount,
@@ -362,13 +404,53 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
         })
 
         //- q11
-        //- get new book count today
+        //- get archived guestaccounts count
+        //- checked-out count
         const q11 = `
+            SELECT COUNT(*) 
+            FROM hist_guestaccounts 
+            WHERE hotelid = $1
+        `
+        const q11result = await pool.query(q11, [hotelid])
+        const archivedGuestAccountCount = q11result.rows[0].count
+
+        //- q12
+        //- get adult no (hist)
+        const q12 = `
+            SELECT adultno
+            FROM hist_guestaccounts
+            WHERE hotelid = $1
+        `
+        const q12result = await pool.query(q12, [hotelid])
+        let hist_adultNoCount = 0
+        q12result.rows.forEach(row => {
+            hist_adultNoCount += row.adultno
+        })
+
+        //- q13
+        //- get child no (hist)
+        const q13 = `
+            SELECT childno
+            FROM hist_guestaccounts
+            WHERE hotelid = $1
+        `
+        const q13result = await pool.query(q13, [hotelid])
+        let hist_childNoCount = 0
+        q13result.rows.forEach(row => {
+            hist_childNoCount += row.childno
+        })
+        
+        //- overall stayed guests count
+        const overallStayedGuestsCount = hist_adultNoCount + hist_childNoCount
+
+        //- q11
+        //- get new book count today
+        const q14 = `
             SELECT COUNT(*) AS new_book_count 
             FROM reservations
             WHERE DATE(reservationdate) = CURRENT_DATE AND hotelid = $1;
         `;
-        const q11result = await pool.query(q11, [hotelid]);
+        const q14result = await pool.query(q14, [hotelid]);
         const newBookCount = q11result.rows[0].new_book_count;
 
 
@@ -377,6 +459,8 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
             hotelColor: req.hotelColor,
             hotelLogo: req.hotelImage,
             guestAccountCount: guestAccountCount,
+            archivedGuestAccountCount: archivedGuestAccountCount,
+            overallStayedGuestsCount: overallStayedGuestsCount,
             vacantRoomCount: vacantRoomCount, 
             occupiedRoomCount: occupiedRoomCount,
             adultNoCount: adultNoCount,

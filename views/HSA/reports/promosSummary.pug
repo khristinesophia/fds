@@ -16,7 +16,7 @@ html(lang="en")
     link(rel='stylesheet', href='/css/table.css')
     link(rel='stylesheet', href='/css/card.css')
 
-    title Guest In-House Report
+    title Promos Summary
 
     //- sa head lagi nakalagay ang color.pug
     include ../../partials/color.pug
@@ -33,57 +33,81 @@ html(lang="en")
                     //- card
                     .card.bg-success.shadow.text-white.text-center 
                         .card-body
-                            p.display-6.fw-normal #{totalInHouseGuests}
-                            p.lead Total In-House Guests
+                            p.display-6.fw-normal #{activeCount}
+                            p.lead Number of Active Promos
 
                 //- column
                 .col 
                     //- card
                     .card.bg-warning.shadow.text-center 
                         .card-body
-                            p.display-6.fw-normal #{total_adultNoCount}
-                            p.lead Total Number of Adults
+                            p.display-6.fw-normal #{inactiveCount}
+                            p.lead Number of Inactive Promos
 
                 //- column
                 .col 
                     //- card
                     .card.bg-danger.shadow.text-white.text-center 
                         .card-body
-                            p.display-6.fw-normal #{total_childNoCount}
-                            p.lead Total Number of Children
+                            p.display-6.fw-normal #{timesAvailed}
+                            p.lead Times Availed
             
             .d-flex.justify-content-between.align-items-center.mt-5
                 .col 
-                    h2 Guests Currently In-House 
+                    h2 Promos Summary
+                form(id="promoFilterForm" action="")
+                    .d-flex
+                        .row.g-3.align-items-center
+                            .col-auto
+                                label.col-form-label Status
+                            .col-auto
+                                select.form-select.form-select-sm(id='status')
+                                    option(value="All" id='nullstatus') All
+                                    option(value="Active") Active
+                                    option(value="Inactive") Inactive
+
+                        .row.g-3.align-items-center
+                            .col-auto
+                                label.col-form-label Room Type
+                            .col-auto
+                                select.form-select.form-select-sm(id='typeid', name='typeid')
+                                    option(value="All" id='nulltypeid') All
+                                    each x in allRoomTypeArray
+                                        option(value=x.typeid)= x.roomtype
+                        
+
                 .col.text-end 
                     a(href="#") 
                         h2.fa-solid.fa-print.me-3
-                    a(href="/reports/dlGuestInHouse") 
+                    a(href="#" id="downloadAnchor") 
                         h2.fa-solid.fa-download
+
             .row.mt-4.p-3.bg-white.shadow
                 table.table
                     //- thead
                     thead 
                         //- trow
                         tr 
-                            th Room Number
-                            th Guest Name
-                            th No. of Adult
-                            th No. of Child
-                            th Check-In Date
-                            th Check-Out Date
+                            th Promo Code
+                            th Promo Name
+                            th Discount
+                            th Room Type
+                            th Start Date
+                            th End Date
+                            th Times Availed
                     tbody
                         each data in dataArray
                             tr 
-                                td #{data.roomnum}
-                                td #{data.fullname}
-                                td #{data.adultno}
-                                td #{data.childno}
-                                td #{data.checkindate}
-                                td #{data.checkoutdate}
+                                td #{data.code}
+                                td #{data.name}
+                                td #{data.discount}
+                                td #{data.roomtype}
+                                td #{data.startdate}
+                                td #{data.enddate}
+                                td #{data.timesavailed}
             
 
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     script(src='/js/nav-active.js')
-      
+    script(src='/js/promofilter.js')
