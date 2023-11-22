@@ -124,13 +124,17 @@ router.post('/checkin', isAuthenticated, getHotelLogo, getHotelColor, async (req
         const reservationd = await pool.query('SELECT * FROM reservation_guestdetails WHERE reservationid = \$1', [reservationid]);
         const rd = reservationd.rows[0];
 
+        //- Get the promoid of promocode
+        const promoidres = await pool.query('SELECT id FROM promos WHERE code = $1', [r.promocode]);
+        const promoid = promoidres.rows[0].code;
+
         //- insert to "guestaccounts" T
         const q1 = `
-            INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, reservationdate, checkindate, checkoutdate, numofdays, modeofpayment, promocode)
+            INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, reservationdate, checkindate, checkoutdate, numofdays, modeofpayment, promoid)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
             RETURNING *
         `
-        const q1result = await pool.query(q1, [hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, 'Card', r.promocode])
+        const q1result = await pool.query(q1, [hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, 'Card', promoid])
         //- get accountid of newly inserted record
         const accountid = q1result.rows[0].accountid
 
