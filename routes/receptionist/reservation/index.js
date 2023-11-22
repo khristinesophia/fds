@@ -10,8 +10,10 @@ const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'
 const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
 const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
+const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 
 const hotelid = 'H0T1L3D7';
+const date = getCurrentDate()
 
 //- Route for rendering the view
 //router.get('/', async(req, res) => {
@@ -124,10 +126,17 @@ router.post('/checkin', isAuthenticated, getHotelLogo, getHotelColor, async (req
         const reservationd = await pool.query('SELECT * FROM reservation_guestdetails WHERE reservationid = \$1', [reservationid]);
         const rd = reservationd.rows[0];
 
+        const reservationt = await pool.query('SELECT * FROM reservation_trans WHERE reservationid = \$1', [reservationid]);
+        const rt = reservationt.rows[0];
+
         //- Get the promoid of promocode
         const promoidres = await pool.query('SELECT id FROM promos WHERE code = $1', [r.promocode]);
-        const promoid = promoidres.rows[0].code;
+        let promoid = null;
 
+        if (promoidres.rows.length > 0) {
+            promoid = promoidres.rows[0].code;
+        }
+        
         //- insert to "guestaccounts" T
         const q1 = `
             INSERT INTO guestaccounts(hotelid, typeid, roomid, adultno, childno, reservationdate, checkindate, checkoutdate, numofdays, modeofpayment, promoid)
@@ -145,27 +154,55 @@ router.post('/checkin', isAuthenticated, getHotelLogo, getHotelColor, async (req
         `
         const q2result = await pool.query(q2, [accountid, hotelid, rd.fullname, rd.email, rd.contactno, rd.address])
 
+        //- insert to "folios"
+        const q3 = `
+            INSERT INTO folios(accountid, hotelid, discount, tax, paid, settled)
+            VALUES ($1, $2, $3, $4, $5, $6)
+            RETURNING *
+        `
+        const q3result = await pool.query(q3, [accountid, hotelid, rt.discount, 12, rt.amount, false])
+        
+        //- get folioid of newly inserted record
+        const folioid = q3result.rows[0].folioid
+    
+        //- insert to "transactions" T
+        const q4 = `
+            INSERT INTO transactions(hotelid, accountid, folioid, roomid, description, price, qty, amount, date, paid)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
+        `
+        const q4result = await pool.query(q4, [hotelid, accountid, folioid, r.roomid, rt.description, rt.price, rt.qty, rt.amount, date, true])
+    
+        //- update room status to 'Occupied'
+        const q5 = `
+            UPDATE rooms
+                SET status = $1
+            WHERE roomid = $2 AND 
+                hotelid = $3
+        `
+        const q5result = await pool.query(q5, ['Occupied', r.roomid, hotelid])
+
 
         //- insert in history
         //- insert to "hist_reservations" T
-        const q3 = `
+        const q6 = `
             INSERT INTO hist_reservations(reservationid, hotelid, typeid, roomid, adultno, childno, reservationdate, checkindate, checkoutdate, numofdays, promocode, status)
             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
             RETURNING *
         `
-        const q3result = await pool.query(q3, [reservationid, hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, r.promocode, 'Checked-in'])
+        const q6result = await pool.query(q6, [reservationid, hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, r.promocode, 'Checked-in'])
 
         //- insert to "hist_reservation_guestdetails" T
-        const q4 = `
+        const q7 = `
             INSERT INTO hist_reservation_guestdetails(reservationid, hotelid, fullname, email, contactno, address)
             VALUES ($1, $2, $3, $4, $5, $6)
         `
-        const q4result = await pool.query(q4, [reservationid, hotelid, rd.fullname, rd.email, rd.contactno, rd.address])
+        const q7result = await pool.query(q7, [reservationid, hotelid, rd.fullname, rd.email, rd.contactno, rd.address])
 
         //- delete from reservation table
         await pool.query('DELETE FROM reservations WHERE reservationid = $1', [reservationid]);
         
         res.redirect('/reservation');
+        return;
 
     }
     catch (error) {
