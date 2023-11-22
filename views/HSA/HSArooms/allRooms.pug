@@ -27,7 +27,7 @@ html(lang="en")
         .col-8.d-flex.align-items-center
           h2.text All Rooms
         .col-4.d-flex.align-items-center.justify-content-end
-          a.btn.mod_btn( onclick="openModal()" role='button') Add Room
+          a.btn.mod_btn( onclick="openroomModal()" role='button') Add Room
         include ../../mixins/modals.pug
         +addRoom
 
@@ -72,5 +72,4 @@ html(lang="en")
     script(src='/js/modal.js') 
     script(src='/js/room_nav.js') 
     script(src='/js/nav-active.js')
-    script(src='/js/acc.js') 
     

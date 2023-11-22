@@ -6,9 +6,17 @@ function openModal() {
 function closeModal() {
     var modal = document.getElementById('modal');
     modal.classList.remove('modal-active');
-
 }
 
+function openModalcash() {
+  var modal = document.getElementById('modalcash');
+  modal.classList.add('modal-active');
+}
+
+function closeModalcash() {
+  var modal = document.getElementById('modalcash');
+  modal.classList.remove('modal-active');
+}
 
 function openDeleteHotelModal(clickedElement) {
   var modal = document.getElementById('deletehotel');
@@ -716,3 +724,50 @@ function closeExtendStay() {
   modal.classList.remove('modal-active')
 }
   
+
+
+function openroomModal() {
+  var modal = document.getElementById('addRoom');
+  modal.classList.add('modal-active');
+
+  const roomTypeSelect = document.querySelector('select[name="roomtype"]');
+  const roomPriceInput = document.querySelector('input[name="roomprice"]');
+  const capacityInput = document.querySelector('input[name="capacity"]');
+  const roomNumInput = document.querySelector('input[name="roomnum"]');
+  const roomFloorInput = document.querySelector('input[name="roomfloor"]');
+
+  // Function to update the price and capacity inputs
+  function updatePriceAndCapacity() {
+      // Get the selected option
+      const selectedOption = roomTypeSelect.options[roomTypeSelect.selectedIndex];
+
+      // Update the price and capacity inputs
+      roomPriceInput.value = selectedOption.getAttribute('data-price');
+      capacityInput.value = selectedOption.getAttribute('data-capacity');
+  }
+
+  // Update the price and capacity inputs when the page loads
+  updatePriceAndCapacity();
+
+  // Update the price and capacity inputs when the room type changes
+  roomTypeSelect.addEventListener('change', updatePriceAndCapacity);
+
+  roomNumInput.addEventListener('input', function () {
+      // Get the first character of the room number
+      const firstDigit = this.value.charAt(0);
+
+      // Populate and disable the roomfloor input
+      roomFloorInput.value = firstDigit;
+  });
+// Handle the form submission
+// Handle the form submission
+  
+
+}
+
+function closeroomModal() {
+  var modal = document.getElementById('addRoom');
+  modal.classList.remove('modal-active');
+
+}
+
