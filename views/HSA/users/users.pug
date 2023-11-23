@@ -51,6 +51,7 @@ html(lang="en")
                       a.sa-icon.sa-edit(data-userid=ha.userid data-username=ha.username onclick="Edit_Admin_User(this)" role='button')
                         i.fa-solid.fa-pen-to-square.fa-lg  
                       include ../../mixins/modals.pug
+                      
                       +editAdminHSA(ha.userid)
                       //- Change Password   
                       a.sa-icon.sa-pass(data-userid=ha.userid data-password=ha.hashpassword onclick="ChangePass_Admin_User(this)" role='button')

@@ -9,11 +9,13 @@ html(lang="en")
 
         //- jquery
         script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js' integrity='sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw==' crossorigin='anonymous' referrerpolicy='no-referrer')
-
+        
         //- custom css
-        link(rel='stylesheet', href='/css/font.css')
         link(rel='stylesheet', href='/css/modal.css')
-        link(rel='stylesheet', href='/css/table.css')
+        link(rel='stylesheet', href='/css/font.css')
+        link(rel='stylesheet', href='/css/action_button.css')
+        
+
 
         //- title
         title Folio
@@ -180,23 +182,31 @@ html(lang="en")
                         .px-5.py-3.mb-3.bg
                             h4.m-0 Payment
                         .px-5.py-3
-                            .d-flex.justify-content-center 
-                                .row
-                                    a(onclick="openModal()" role='button') 
+                            .d-flex.justify-content-center.text-align-center 
+                                .row.me-3
+                                    a.sa-credit(onclick="openModal()" role='button') 
                                         i.fa-solid.fa-credit-card
-                                        p Credit Card
-                                .row
-                                    a(onclick="openModal()" role='button') 
-                                        i.fa-regular.fa-credit-card
-                                        p Debit Card
-                                .row 
-                                    form(action=`/ga/cashpayment/${ga.accountid}` method="POST") 
-                                        i.fa-solid.fa-money-bills
-                                        
+                                        h6 Credit Card
+                                include ../../mixins/modals.pug
+                                +approvalcode        
+                                .row.me-3
+                                    a.sa-debit(onclick="openModal()" role='button') 
+                                        i.fa-solid.fa-credit-card
+                                        h6 Debit Card
+                                include ../../mixins/modals.pug
+                                +approvalcode                                        
+                                .row.me-3
+                                    form.cash(action=`/ga/cashpayment/${ga.accountid}` method="POST") 
                                         input(type="hidden" id="subtotal3" name="subtotal3")
                                         input(type="hidden" id="totalamount3" name="totalamount3")
                                         input(type="hidden" id="paidtodate3" name="paidtodate3")
                                         input(type="hidden" id="balance3" name="balance3")
+                                        
+                                        a.sa-cash( onclick="openModalcash()" role='button') 
+                                            i.fa-solid.fa-money-bills
+                                            h6 Cash
+                                        include ../../mixins/modals.pug
+                                        +cashpay
                                         
                                         script.
                                             document.addEventListener('DOMContentLoaded', ()=>{
@@ -213,10 +223,10 @@ html(lang="en")
                                                 const balance = parseInt(document.querySelector('#balance').innerText)
                                                 document.querySelector('#balance3').value = balance
                                             })
+                                            
+                                        
 
-                                        input(type="submit" value="Cash")
-                                include ../../mixins/modals.pug
-                                +approvalcode
+                                
                 
                 if ga.settled === true
                     .container.shadow.mt-3.p-0.bg-white
@@ -226,7 +236,7 @@ html(lang="en")
                             .d-flex.justify-content-center 
                                 .row
                                     form(action=`/ga/invoice/${ga.accountid}` method="GET") 
-                                        input(type="submit" value="Download")
+                                        input.btn.mod_btn(type="submit" value="Download")
 
 
     //-Bootstrap Js
@@ -234,6 +244,7 @@ html(lang="en")
     //-FontAwesome
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     //-Customize JS
-    script(src='/js/nav-active.js') 
-    script(src='/js/room_nav.js')      
     script(src='/js/modal.js') 
+    script(src='/js/room_nav.js') 
+    script(src='/js/nav-active.js')      
+    
