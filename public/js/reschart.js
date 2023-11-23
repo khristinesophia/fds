@@ -35,10 +35,10 @@ document.addEventListener('DOMContentLoaded', function() {
             position: 'right',
             labels: {
                 font: {
-                  size: 14, // Set the font size
-                  weight: 'bold' // Set the font weight
+                  size: 14,
+                  weight: 'bold' 
                 }
-            } // Change to 'left' if you want it on the left side
+            } 
           },
         },
       };

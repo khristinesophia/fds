@@ -14,6 +14,16 @@ document.addEventListener('DOMContentLoaded', function() {
     cutoutPercentage: 70,
     responsive: true,
     maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        labels: {
+            font: {
+              size: 14,
+              weight: 'bold' 
+            }
+        } 
+      },
+    },
   };
 
   var myDoughnutChart = new Chart(ctx, {

@@ -26,57 +26,53 @@ html(lang="en")
             //- First Row (Checked In, Overall Stayed, Checked Out)
             .row.mx-5
               //- Checked In
-              .col-3.col-md-3.mt-4.d-flex.justify-content-start
+              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
                 .card.act_card.card1.custom-hover-shadow
-                  .card-body.act_card_body
-                    .d-flex.flex-row.align-items-center
-                      //- Container for the icon with a background box
-                      .icon-container.d-flex.align-items-center
-                        i.fas.fa-thumbtack.icon
-                      //- Right column for span and h1
-                      .d-flex.flex-column.align-items-start.body-info
-                        h2 #{guestAccountCount}
-                        span.card-titles.text-muted Checked In
+                  .card-body.act_card_body.d-flex.flex-row.align-items-center
+                    //- Container for the icon with a background box
+                    .icon-container.d-flex.align-items-center
+                      i.fas.fa-thumbtack.icon-sm
+                    //- Right column for span and h1
+                    .d-flex.flex-column.align-items-start.body-info.ms-3
+                      h2= guestAccountCount
+                      span.card-titles.text-muted Checked In
 
               //- New Book
-              .col-3.col-md-3.mt-4.d-flex.justify-content-start
+              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
                 .card.act_card.card1.custom-hover-shadow
-                  .card-body.act_card_body
-                    .d-flex.flex-row.align-items-center
-                      //- Container for the icon with a background box
-                      .icon-container.d-flex.align-items-center
-                        i.fas.fa-bookmark.icon
-                      //- Right column for span and h1
-                      .d-flex.flex-column.align-items-start.body-info
-                        h2 #{newBookCount}
-                        span.card-titles.text-muted New Book
-                        
-              //-Overall Stayed
-              .col-3.col-md-3.mt-4.d-flex.justify-content-start
-                .card.act_card.card1.custom-hover-shadow
-                  .card-body.act_card_body
-                    .d-flex.flex-row.align-items-center
-                      //- Container for the icon with a background box
-                      .icon-container.d-flex.align-items-center
-                        i.fas.fa-arrow-right-to-bracket.icon
-                      //- Right column for span and h1
-                      .d-flex.flex-column.align-items-start.body-info
-                        h2 #{overallStayedGuestsCount}
-                        span.card-titles.text-muted Overall Stayed Guest
-                      
-              //-Checked Out              
-              .col-3.col-md-3.mt-4.d-flex.justify-content-start
-                .card.act_card.card1.custom-hover-shadow
-                  .card-body.act_card_body
-                    .d-flex.flex-row.align-items-center
-                      //- Container for the icon with a background box
-                      .icon-container.d-flex.align-items-center
-                        i.fas.fa-arrow-right-from-bracket.icon
-                      //- Right column for span and h1
-                      .d-flex.flex-column.align-items-start.body-info
+                  .card-body.act_card_body.d-flex.flex-row.align-items-center
+                    //- Container for the icon with a background box
+                    .icon-container.d-flex.align-items-center
+                      i.fas.fa-bookmark.icon-sm
+                    //- Right column for span and h1
+                    .d-flex.flex-column.align-items-start.body-info.ms-3
+                      h2= newBookCount
+                      span.card-titles.text-muted New Book
 
-                        h2 #{archivedGuestAccountCount}
-                        span.card-titles.text-muted Checked out
+              //- Overall Stayed
+              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
+                .card.act_card.card1.custom-hover-shadow
+                  .card-body.act_card_body.d-flex.flex-row.align-items-center
+                    //- Container for the icon with a background box
+                    .icon-container.d-flex.align-items-center
+                      i.fas.fa-arrow-right-to-bracket.icon-sm
+                    //- Right column for span and h1
+                    .d-flex.flex-column.align-items-start.body-info.ms-3
+                      h2= overallStayedGuestsCount
+                      span.card-titles.text-muted Overall Guest
+
+              //-Checked Out
+              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
+                .card.act_card.card1.custom-hover-shadow
+                  .card-body.act_card_body.d-flex.flex-row.align-items-center
+                    //- Container for the icon with a background box
+                    .icon-container.d-flex.align-items-center
+                      i.fas.fa-arrow-right-from-bracket.icon-sm
+                    //- Right column for span and h1
+                    .d-flex.flex-column.align-items-start.body-info.ms-3
+                      h2= archivedGuestAccountCount
+                      span.card-titles.text-muted Checked out
+
 
 
             //-Second Row
