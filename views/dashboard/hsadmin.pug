@@ -82,27 +82,32 @@ html(lang="en")
 
             //-Second Row
             .row.mx-5
-              .col-6.col-md-6.mt-4  
+              - var reservationAllCount = (reservationAllCount);
+              - var reservations = JSON.stringify(reservations);
+
+              script.
+                var reservationAllCount = !{reservationAllCount};
+                var reservations = !{reservations};
+              .col-8.col-md-8.mt-4
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start.text-muted
-                      h4.card-title.mb-2.text-muted Reservation
-                      h2 #{reservationAllCount}
-                      table 
-                        thead 
-                          th 
-                          th 
-                        tbody
-                          each r in reservations
-                            tr
-                              td= r.roomtype
-                              td= r.roomtype_count
+                    .row
+                      .col-6 
+                        h4.card-title.mb-2.text-muted Reservation
+                      .col-6   
+                        h4#reservationCount(style="display: none;") #{reservationAllCount}
+                        h4 Total Count:  #{reservationAllCount}
+                      .row  
+                        .col-12 
+                          .canvas-container
+                            canvas#reservationDonutChart(style="height: 230px;")
+
 
               script.
                 var adultNoCount = #{adultNoCount};
                 var childNoCount = #{childNoCount};
                 
-              .col-6.col-md-6.mt-4
+              .col-4.col-md-4.mt-4
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
                     .row
@@ -182,4 +187,5 @@ html(lang="en")
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     script(src='/js/modal.js') 
     script(src='/js/nav-active.js')
-    script(src='/js/chartScript.js')  
+    script(src='/js/chartScript.js')
+    script(src='/js/reschart.js')    
