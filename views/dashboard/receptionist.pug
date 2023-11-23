@@ -153,36 +153,38 @@ html(lang="en")
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start.text-muted
-                      span.card-title.mb-2.text-muted Arrival
-                      table 
-                        thead 
-                          th Reservation ID
-                          th Guest Name 
-                          th Checkin Date
-                        tbody
-                          each x in arrivalArray
-                            tr
-                              td #{x.reservationid}
-                              td #{x.fullname}
-                              td #{x.checkindate}
+                    h4.card-title.mb-2 Arrival
+                    .d-flex.flex-column.align-items-start
+                      .table-scroll
+                        table.table.table-striped.table-hover
+                          thead 
+                            th Reservation ID
+                            th Guest Name 
+                            th Checkin Date
+                          tbody
+                            each x in arrivalArray
+                              tr
+                                td #{x.reservationid}
+                                td #{x.fullname}
+                                td #{x.checkindate}
 
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start.text-muted
-                      span.card-title.mb-2.text-muted Departure
-                      table 
-                        thead 
-                          th Room Number 
-                          th Guest Name 
-                          th Checkout Date
-                        tbody
-                          each x in departuresArray
-                            tr
-                              td #{x.roomnum}
-                              td #{x.fullname}
-                              td #{x.checkoutdate}
+                    h4.card-title.mb-2 Departure
+                    .d-flex.flex-column.align-items-start
+                      .table-scroll
+                        table.table.table-striped.table-hover
+                          thead 
+                            th Room Number 
+                            th Guest Name 
+                            th Checkout Date
+                          tbody
+                            each x in departuresArray
+                              tr
+                                td #{x.roomnum}
+                                td #{x.fullname}
+                                td #{x.checkoutdate}
 
 
 
