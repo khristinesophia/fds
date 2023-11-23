@@ -67,10 +67,12 @@ html(lang="en")
                         span #{r.rate_perhour}     
                   h6.hotel-free_breakfast.mb-3
                       | Free Breakfast: 
-                      if r.free_breakfast
-                          input.form-check-input(type="checkbox", name="free_breakfast", checked=!!r.free_breakfast, disabled)
-                      else
-                          input.form-check-input(type="checkbox", name="free_breakfast", disabled)
+                      if r.free_breakfast === true
+                        input.form-check-input(type="checkbox", name="free_breakfast", checked, disabled)
+                      if r.free_breakfast === false
+                        input.form-check-input(type="checkbox", name="free_breakfast", disabled)
+                  
+                  //- h1 #{typeof(r.free_breakfast)}
 
                   .d-flex.justify-content-end
                     
@@ -84,7 +86,7 @@ html(lang="en")
                       data-roomprice=r.price 
                       data-roomcapacity=r.capacity
                       data-rateperhour=r.rate_perhour
-                      data-free_breakfast=Boolean(r.free_breakfast)
+                      data-free_breakfast=r.free_breakfast.toString()
                       data-roomimage=r.roomimage
                       onclick="Edit_RoomType(this)"
                       role='button')
