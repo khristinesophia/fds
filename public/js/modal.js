@@ -582,7 +582,11 @@ function Edit_RoomType(clickedElement) {
   var roomCapacity = clickedElement.getAttribute('data-roomcapacity');
   var roomPrice = clickedElement.getAttribute('data-roomprice');
   var roomRate = clickedElement.getAttribute('data-rateperhour');
+  // var roomFreeBreakfast = clickedElement.getAttribute('data-free_breakfast') === true;
   var roomFreeBreakfast = clickedElement.getAttribute('data-free_breakfast');
+
+  console.log(typeof(roomFreeBreakfast))
+  console.log(roomFreeBreakfast)
 
   // Populate the form fields with the data from data attributes
   var typeInput = document.querySelector('#editroomtype input[name="roomtype"]');
@@ -608,18 +612,28 @@ function Edit_RoomType(clickedElement) {
     rateInput.value = roomRate || '';
   }
 
+  if (freeBreakfastInput) {
+    freeBreakfastInput.checked = roomFreeBreakfast;
+    if(roomFreeBreakfast === "true"){
+      freeBreakfastInput.checked = true
+    }
+    else if(roomFreeBreakfast === "false"){
+      freeBreakfastInput.checked = false
+    }
+  }
+
   // Set the form action in the modal
   var editForm = document.querySelector('#editroomtype form');
   if (editForm) {
     editForm.action = `/roomtype/edit/${typeId}`;
   }
 
-// Set the checkbox state after a short delay
-setTimeout(function () {
-  if (freeBreakfastInput) {
-    freeBreakfastInput.checked = roomFreeBreakfast;
-  }
-}, 0);
+// // Set the checkbox state after a short delay
+// setTimeout(function () {
+//   if (freeBreakfastInput) {
+//     freeBreakfastInput.checked = roomFreeBreakfast;
+//   }
+// }, 0);
 
 }
 

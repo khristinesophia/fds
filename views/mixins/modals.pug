@@ -488,27 +488,28 @@ mixin editRoomType(typeid, roomtype, roomdescription, roomprice, roomcapacity, r
       .modal-body.mb-3
         form(action=`/roomtype/edit/${typeid}`, method="POST" , enctype="multipart/form-data")
                 
-            label.col-form-label(for="type") Room Type:
+            label.form-label.fw-bold(for="type") Room Type:
             input.form-control(type="text", name="roomtype", value=roomtype, required)
 
-            label.col-form-label(for="description") Room Description:
+            label.form-label.fw-bold(for="description") Room Description:
             textarea.form-control(name="description", value=roomdescription, required)
 
-            label.col-form-label(for="capacity") Room Capacity:
+            label.form-label.fw-bold(for="capacity") Room Capacity:
             input.form-control(type="text", name="capacity", value=roomcapacity, required)
 
-            label.col-form-label(for="price") Room Price:
+            label.form-label.fw-bold(for="price") Room Price:
             input.form-control(type="text", name="price", value=roomprice, required)
 
-            label.col-form-label(for="rateperhour") Rate per Hour:
+            label.form-label.fw-bold(for="rateperhour") Rate per Hour:
             input.form-control(type="text", name="rate_perhour", value=rateperhour, required)
 
-            label.col-form-label(for="free_breakfast") Free Breakfast:
-            input.form-check-input(type="checkbox", name="free_breakfast", checked=free_breakfast)
-            label.form-check-label(for="free_breakfast") Include Free Breakfast
+            label.form-label.fw-bold(for="rateperhour") Free Breakfast:
+            input.form-check-input(type="checkbox", name="free_breakfast")
+            label.form-check-label(for="free_breakfast") Included
+            //- label.form-check-label(for="free_breakfast") Include Free Breakfast
 
             br
-            label.col-form-label(for="roomimage") Room Image:
+            label.form-label.fw-bold(for="roomimage") Room Image:
             input.form-control(type="file", name="roomimage", accept="image/*", onchange="previewImage(event)")
 
             .modal-footer
