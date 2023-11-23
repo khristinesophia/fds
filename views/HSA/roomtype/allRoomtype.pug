@@ -73,31 +73,28 @@ html(lang="en")
                         input.form-check-input(type="checkbox", name="free_breakfast", disabled)
                   
                   //- h1 #{typeof(r.free_breakfast)}
-
-                  .d-flex.justify-content-end
-                    
-                    //button
-                      a(href=`/roomtype/edit/${r.typeid}`) Edit
-                    //- Edit
-                    a.sa-icon.sa-edit(
-                      data-typeid=r.typeid
-                      data-roomtype=r.roomtype
-                      data-roomdescription=r.description
-                      data-roomprice=r.price 
-                      data-roomcapacity=r.capacity
-                      data-rateperhour=r.rate_perhour
-                      data-free_breakfast=r.free_breakfast.toString()
-                      data-roomimage=r.roomimage
-                      onclick="Edit_RoomType(this)"
-                      role='button')
-                      i.fa-solid.fa-pen-to-square.fa-lg  
-                    include ../../mixins/modals.pug
-                    +editRoomType(r.typeid)  
-                    //-Delete
-                    a.delete-icon(data-typeid=r.typeid data-roomtype=r.roomtype  onclick="openDeleteRoomType(this)" role='button')
-                      i.fa-solid.fa-trash-can.fa-xl
-                    include ../../mixins/modals.pug
-                    +deleteRoomType(r.typeid)
+                  
+                .card-footer.d-flex.justify-content-end
+                  //- Edit
+                  a.sa-icon.sa-edit.me-1(
+                    data-typeid=r.typeid
+                    data-roomtype=r.roomtype
+                    data-roomdescription=r.description
+                    data-roomprice=r.price 
+                    data-roomcapacity=r.capacity
+                    data-rateperhour=r.rate_perhour
+                    data-free_breakfast=r.free_breakfast.toString()
+                    data-roomimage=r.roomimage
+                    onclick="Edit_RoomType(this)"
+                    role='button')
+                    i.fa-solid.fa-pen-to-square.fa-lg  
+                  include ../../mixins/modals.pug
+                  +editRoomType(r.typeid)  
+                  //-Delete
+                  a.delete-icon(data-typeid=r.typeid data-roomtype=r.roomtype  onclick="openDeleteRoomType(this)" role='button')
+                    i.fa-solid.fa-trash-can.fa-xl
+                  include ../../mixins/modals.pug
+                  +deleteRoomType(r.typeid)
                       
                   //- card end
 

@@ -101,7 +101,7 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
                 ON t1.roomid = t3.roomid
             WHERE t1.hotelid = $1
             ORDER BY checkoutdate ASC
-            LIMIT 3
+            LIMIT 5
         `
         const q6result = await pool.query(q6, [hotelid])
         q6result.rows.forEach(row=>{
@@ -166,7 +166,7 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
                 ON t1.reservationid = t2.reservationid
             WHERE t1.hotelid = $1
             ORDER BY checkindate ASC
-            LIMIT 3
+            LIMIT 5
         `
         const q10result = await pool.query(q10, [hotelid])
         q10result.rows.forEach(row=>{
@@ -329,7 +329,7 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
                 ON t1.roomid = t3.roomid
             WHERE t1.hotelid = $1
             ORDER BY checkoutdate ASC
-            LIMIT 3
+            LIMIT 5
         `
         const q6result = await pool.query(q6, [hotelid])
         q6result.rows.forEach(row=>{
@@ -394,7 +394,7 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
                 ON t1.reservationid = t2.reservationid
             WHERE t1.hotelid = $1
             ORDER BY checkindate ASC
-            LIMIT 3
+            LIMIT 5
         `
         const q10result = await pool.query(q10, [hotelid])
         q10result.rows.forEach(row=>{

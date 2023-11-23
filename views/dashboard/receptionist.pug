@@ -26,76 +26,78 @@ html(lang="en")
             //- First Row (Checked In, Overall Stayed, Checked Out)
             .row.mx-5
               //- Checked In
-              .col-3.col-md-3.mt-4.d-flex.justify-content-start
+              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
                 .card.act_card.card1.custom-hover-shadow
-                  .card-body.act_card_body
-                    .d-flex.flex-row.align-items-center
-                      //- Container for the icon with a background box
-                      .icon-container.d-flex.align-items-center
-                        i.fas.fa-thumbtack.icon
-                      //- Right column for span and h1
-                      .d-flex.flex-column.align-items-start.body-info
-                        h2 #{guestAccountCount}
-                        span.card-titles.text-muted Checked In
+                  .card-body.act_card_body.d-flex.flex-row.align-items-center
+                    //- Container for the icon with a background box
+                    .icon-container.d-flex.align-items-center
+                      i.fas.fa-thumbtack.icon-sm
+                    //- Right column for span and h1
+                    .d-flex.flex-column.align-items-start.body-info.ms-3
+                      h2= guestAccountCount
+                      span.card-titles.text-muted Checked In
 
               //- New Book
-              .col-3.col-md-3.mt-4.d-flex.justify-content-start
+              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
                 .card.act_card.card1.custom-hover-shadow
-                  .card-body.act_card_body
-                    .d-flex.flex-row.align-items-center
-                      //- Container for the icon with a background box
-                      .icon-container.d-flex.align-items-center
-                        i.fas.fa-bookmark.icon
-                      //- Right column for span and h1
-                      .d-flex.flex-column.align-items-start.body-info
-                        h2 #{newBookCount}
-                        span.card-titles.text-muted New Book
-                        
-              //-Overall Stayed
-              .col-3.col-md-3.mt-4.d-flex.justify-content-start
-                .card.act_card.card1.custom-hover-shadow
-                  .card-body.act_card_body
-                    .d-flex.flex-row.align-items-center
-                      //- Container for the icon with a background box
-                      .icon-container.d-flex.align-items-center
-                        i.fas.fa-arrow-right-to-bracket.icon
-                      //- Right column for span and h1
-                      .d-flex.flex-column.align-items-start.body-info
-                        h2 #{overallStayedGuestsCount}
-                        span.card-titles.text-muted Overall Stayed Guest
-                      
-              //-Checked Out              
-              .col-3.col-md-3.mt-4.d-flex.justify-content-start
-                .card.act_card.card1.custom-hover-shadow
-                  .card-body.act_card_body
-                    .d-flex.flex-row.align-items-center
-                      //- Container for the icon with a background box
-                      .icon-container.d-flex.align-items-center
-                        i.fas.fa-arrow-right-from-bracket.icon
-                      //- Right column for span and h1
-                      .d-flex.flex-column.align-items-start.body-info
+                  .card-body.act_card_body.d-flex.flex-row.align-items-center
+                    //- Container for the icon with a background box
+                    .icon-container.d-flex.align-items-center
+                      i.fas.fa-bookmark.icon-sm
+                    //- Right column for span and h1
+                    .d-flex.flex-column.align-items-start.body-info.ms-3
+                      h2= newBookCount
+                      span.card-titles.text-muted New Book
 
-                        h2 #{archivedGuestAccountCount}
-                        span.card-titles.text-muted Checked out
+              //- Overall Stayed
+              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
+                .card.act_card.card1.custom-hover-shadow
+                  .card-body.act_card_body.d-flex.flex-row.align-items-center
+                    //- Container for the icon with a background box
+                    .icon-container.d-flex.align-items-center
+                      i.fas.fa-arrow-right-to-bracket.icon-sm
+                    //- Right column for span and h1
+                    .d-flex.flex-column.align-items-start.body-info.ms-3
+                      h2= overallStayedGuestsCount
+                      span.card-titles.text-muted Overall Guest
+
+              //-Checked Out
+              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
+                .card.act_card.card1.custom-hover-shadow
+                  .card-body.act_card_body.d-flex.flex-row.align-items-center
+                    //- Container for the icon with a background box
+                    .icon-container.d-flex.align-items-center
+                      i.fas.fa-arrow-right-from-bracket.icon-sm
+                    //- Right column for span and h1
+                    .d-flex.flex-column.align-items-start.body-info.ms-3
+                      h2= archivedGuestAccountCount
+                      span.card-titles.text-muted Checked out
+
 
 
             //-Second Row
             .row.mx-5
-              .col-6.col-md-6.mt-4  
+              - var reservationAllCount = (reservationAllCount);
+              - var reservations = JSON.stringify(reservations);
+
+              script.
+                var reservationAllCount = !{reservationAllCount};
+                var reservations = !{reservations};
+              .col-6.col-md-6.mt-4
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start.text-muted
-                      h4.card-title.mb-2.text-muted Reservation
-                      h2 #{reservationAllCount}
-                      table 
-                        thead 
-                          th 
-                          th 
-                        tbody
-                          each r in reservations
-                            tr
-                              td #{r.roomtype}
-                              td #{r.roomtype_count}
+                    .row
+                      .col-6 
+                        h4.card-title.mb-2 Reservation
+                      .col-6
+                        .d-flex.justify-content-end   
+                          h4#reservationCount(style="display: none;") #{reservationAllCount}
+                          h4 Total Count:  #{reservationAllCount}
+                      .row  
+                        .col-12 
+                          .canvas-container
+                            canvas#reservationDonutChart(style="height: 230px;")
+
 
               script.
                 var adultNoCount = #{adultNoCount};
@@ -147,36 +149,38 @@ html(lang="en")
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start.text-muted
-                      span.card-title.mb-2.text-muted Arrival
-                      table 
-                        thead 
-                          th Reservation ID
-                          th Guest Name 
-                          th Checkin Date
-                        tbody
-                          each x in arrivalArray
-                            tr
-                              td #{x.reservationid}
-                              td #{x.fullname}
-                              td #{x.checkindate}
+                    h4.card-title.mb-2 Arrival
+                    .d-flex.flex-column.align-items-start
+                      .table-scroll
+                        table.table.table-striped.table-hover
+                          thead 
+                            th Reservation ID
+                            th Guest Name 
+                            th Checkin Date
+                          tbody
+                            each x in arrivalArray
+                              tr
+                                td #{x.reservationid}
+                                td #{x.fullname}
+                                td #{x.checkindate}
 
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start.text-muted
-                      span.card-title.mb-2.text-muted Departure
-                      table 
-                        thead 
-                          th Room Number 
-                          th Guest Name 
-                          th Checkout Date
-                        tbody
-                          each x in departuresArray
-                            tr
-                              td #{x.roomnum}
-                              td #{x.fullname}
-                              td #{x.checkoutdate}
+                    h4.card-title.mb-2 Departure
+                    .d-flex.flex-column.align-items-start
+                      .table-scroll
+                        table.table.table-striped.table-hover
+                          thead 
+                            th Room Number 
+                            th Guest Name 
+                            th Checkout Date
+                          tbody
+                            each x in departuresArray
+                              tr
+                                td #{x.roomnum}
+                                td #{x.fullname}
+                                td #{x.checkoutdate}
 
 
 
@@ -189,5 +193,6 @@ html(lang="en")
     script(src='/js/chartScript.js') 
     script(src='/js/modal.js') 
     script(src='/js/nav-active.js') 
+    script(src='/js/reschart.js')
  
 
