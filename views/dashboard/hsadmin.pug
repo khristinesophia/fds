@@ -88,15 +88,16 @@ html(lang="en")
               script.
                 var reservationAllCount = !{reservationAllCount};
                 var reservations = !{reservations};
-              .col-8.col-md-8.mt-4
+              .col-6.col-md-6.mt-4
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
                     .row
                       .col-6 
-                        h4.card-title.mb-2.text-muted Reservation
-                      .col-6   
-                        h4#reservationCount(style="display: none;") #{reservationAllCount}
-                        h4 Total Count:  #{reservationAllCount}
+                        h4.card-title.mb-2 Reservation
+                      .col-6
+                        .d-flex.justify-content-end   
+                          h4#reservationCount(style="display: none;") #{reservationAllCount}
+                          h4 Total Count:  #{reservationAllCount}
                       .row  
                         .col-12 
                           .canvas-container
@@ -107,7 +108,7 @@ html(lang="en")
                 var adultNoCount = #{adultNoCount};
                 var childNoCount = #{childNoCount};
                 
-              .col-4.col-md-4.mt-4
+              .col-6.col-md-6.mt-4
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
                     .row
@@ -151,8 +152,8 @@ html(lang="en")
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start.text-muted
-                      span.card-title.mb-2.text-muted Arrival
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2 Arrival
                       table 
                         thead 
                           th Reservation ID
@@ -168,8 +169,8 @@ html(lang="en")
               .col-6.col-md-6.mt-4  
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .d-flex.flex-column.align-items-start.text-muted
-                      span.card-title.mb-2.text-muted Departure
+                    .d-flex.flex-column.align-items-start
+                      span.card-title.mb-2 Departure
                       table 
                         thead 
                           th Room Number 
