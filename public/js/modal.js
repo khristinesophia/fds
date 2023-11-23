@@ -585,9 +585,6 @@ function Edit_RoomType(clickedElement) {
   // var roomFreeBreakfast = clickedElement.getAttribute('data-free_breakfast') === true;
   var roomFreeBreakfast = clickedElement.getAttribute('data-free_breakfast');
 
-  console.log(typeof(roomFreeBreakfast))
-  console.log(roomFreeBreakfast)
-
   // Populate the form fields with the data from data attributes
   var typeInput = document.querySelector('#editroomtype input[name="roomtype"]');
   var descriptionInput = document.querySelector('#editroomtype textarea[name="description"]');
@@ -613,7 +610,6 @@ function Edit_RoomType(clickedElement) {
   }
 
   if (freeBreakfastInput) {
-    freeBreakfastInput.checked = roomFreeBreakfast;
     if(roomFreeBreakfast === "true"){
       freeBreakfastInput.checked = true
     }
