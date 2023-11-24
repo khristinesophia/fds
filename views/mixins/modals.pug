@@ -385,7 +385,11 @@ mixin addR
                     input.form-control(type="text", id="username", name="username", required)
 
                     label.col-form-label(for="password") Password:
-                    input.form-control(type="password", id="password", name="password" pattern='.{8,}' title='Password must be at least 8 characters' required)
+                    .input-group.showpass
+                        input.form-control(type="password", id="password", name="password" pattern='.{8,}' title='Password must be at least 8 characters' required)
+                        .input-group-append
+                            span#showPasswordToggle.input-group-text.showpassicon
+                                i#showPasswordIcon.fas.fa-eye-slash
                     div#error-messages.alert.alert-danger.mt-3(style="text-align: center")
 
                     .modal-footer
