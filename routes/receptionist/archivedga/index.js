@@ -36,10 +36,6 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
         SELECT * FROM hist_guestaccounts t1
         JOIN hist_guestaccounts_guestdetails t2
             ON t1.accountid = t2.accountid
-        JOIN rooms t3
-            ON t1.roomid = t3.roomid
-        JOIN room_type t4
-            ON t1.typeid = t4.typeid
         WHERE t1.hotelid = $1
     `
     const q1result = await pool.query(q1, [hotelid])
@@ -122,10 +118,8 @@ router.get('/folio/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req
     const q4 = `
         SELECT *
         FROM hist_guestaccounts t1
-            JOIN hist_guestaccounts_guestdetails t2
-                ON t1.accountid = t2.accountid
-            JOIN rooms t3
-                ON t1.roomid = t3.roomid
+        JOIN hist_guestaccounts_guestdetails t2
+            ON t1.accountid = t2.accountid
         WHERE t1.hotelid = $1 AND 
             t1.accountid = $2
     `
@@ -154,10 +148,6 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(re
         SELECT * FROM hist_guestaccounts t1
         JOIN hist_guestaccounts_guestdetails t2
             ON t1.accountid = t2.accountid
-        JOIN room_type t3 
-            ON t1.typeid = t3.typeid
-        JOIN rooms t4 
-            ON t1.roomid = t4.roomid 
         WHERE t1.accountid = $1 AND
             t1.hotelid = $2
     `
@@ -235,10 +225,8 @@ router.get('/invoice/:id', async(req, res)=>{
     const q4 = `
         SELECT *
         FROM hist_guestaccounts t1
-            JOIN hist_guestaccounts_guestdetails t2
-                ON t1.accountid = t2.accountid
-            JOIN rooms t3
-                ON t1.roomid = t3.roomid
+        JOIN hist_guestaccounts_guestdetails t2
+            ON t1.accountid = t2.accountid
         WHERE t1.hotelid = $1 AND 
             t1.accountid = $2
     `
