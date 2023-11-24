@@ -89,13 +89,39 @@
 .alert.alert-success {
     display: none;
 }
-
+.HSAerror-message {
+    display: none; 
+    margin-top: 10px; /* Add spacing from elements above */
+    font-size: 14px;
+    padding:10px;
+    color: #dc3545; /* Red color for error messages, you can change this as needed */
+    text-align: center;
+    /* You can add more styles like padding, border, etc. to fit your design */
+    }  
+.Rerror-message {
+    display: none; 
+    margin-top: 10px; /* Add spacing from elements above */
+    font-size: 14px;
+    padding:10px;
+    color: #dc3545; /* Red color for error messages, you can change this as needed */
+    text-align: center;
+    /* You can add more styles like padding, border, etc. to fit your design */
+    }     
+.error-messages {
+    display: none; 
+    margin-top: 10px; /* Add spacing from elements above */
+    font-size: 14px;
+    padding:10px;
+    color: #dc3545; /* Red color for error messages, you can change this as needed */
+    text-align: center;
+    /* You can add more styles like padding, border, etc. to fit your design */
+    }  
 #password-error-message {
-    display: none;
-    border: 1px solid rgb(240, 61, 61);
     background-color: rgb(255, 211, 211);
     color: red; 
-    padding: 5px; 
     border-radius: 5px; 
     text-align: center; 
   }
+
+
+
