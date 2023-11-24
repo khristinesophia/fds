@@ -96,7 +96,7 @@ mixin addHSA
                         .input-group-append
                             span#showPasswordToggle.input-group-text.showpassicon
                                 i#showPasswordIcon.fas.fa-eye-slash
-                    #password-error-message.text-danger            
+                    #password-error-message.text-danger.mt-3            
 
                     label.col-form-label.mt-2(for="") Hotel:
                     select.form-select(id='hotelid', name='hotelid')
@@ -122,8 +122,10 @@ mixin addHSA
                             passwordInput.addEventListener('input', function() {
                                 if (passwordInput.validity.valid) {
                                     errorMessage.textContent = ''; // Clear error message
+                                          errorMessage.style.display = 'none'; // Hide the error message
                                 } else {
                                     errorMessage.textContent = 'Password must be at least 8 characters';
+                                    errorMessage.style.display = 'block'; // Show the error message
                                 }
                             });
 
@@ -338,7 +340,7 @@ mixin changeAdminHSA
 
                     label.col-form-label(for='new-password') New Password:
                     .input-group.showpass
-                        input#newpasswordAdmin.form-control(type='password' name='newPassword')
+                        input#newpasswordAdmin.form-control(type='password' name='newPassword' pattern='.{8,}' title='Password must be at least 8 characters' required)
                         .input-group-append
                             span#shownewPasswordToggleAdmin.input-group-text.showpassicon
                                 i#shownewPasswordIconAdmin.fas.fa-eye-slash  
@@ -352,10 +354,27 @@ mixin changeAdminHSA
 
                     // Error message element
                     p.mt-3.err#error-message-admin
+                    #password-error-message.text-danger.mt-3 
                     
                     .modal-footer
                         button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Admin_User()") Cancel
                         input.btn.mod_btn(type="submit", value="Submit")
+
+                    script.
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const newPasswordInput = document.getElementById('newpasswordAdmin');
+                            const errorMessage = document.getElementById('password-error-message');
+
+                            newPasswordInput.addEventListener('input', function() {
+                                if (newPasswordInput.validity.valid) {
+                                    errorMessage.textContent = ''; // Clear error message
+                                    errorMessage.style.display = 'none'; // Hide the error message
+                                } else {
+                                    errorMessage.textContent = 'Password must be at least 8 characters';
+                                    errorMessage.style.display = 'block'; // Show the error message
+                                }
+                            });
+                        });    
 
 
 //- EDIT Receptionist in HSA
