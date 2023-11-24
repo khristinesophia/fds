@@ -19,6 +19,7 @@ html(lang="en")
         link(rel='stylesheet', href='/css/font.css')
         link(rel='stylesheet', href='/css/modal.css')
         link(rel='stylesheet', href='/css/table.css')
+        link(rel='stylesheet', href='/css/action_button.css')
 
         //- title
         title Archived Guest Accounts
@@ -51,8 +52,8 @@ html(lang="en")
                                     td #{ga.accountid}
                                     td #{ga.fullname}
                                     td 
-                                        a.btn(href=`/archivedga/detail/${ga.accountid}`) View
-
+                                        a.sa-icon.sa-view(href=`/archivedga/detail/${ga.accountid}`)
+                                            i.fa-solid.fa-eye.fa-lg
 
     //-Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')

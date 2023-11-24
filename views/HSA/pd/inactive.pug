@@ -29,7 +29,11 @@ html(lang="en")
         //- Header Title for page
         .container
             .row
-                h2.text Inactive Promos
+                .col-6
+                    h2.text Inactive Promos
+                .col-6 
+                    .d-flex.justify-content-end
+                        a.btn.mod_btn(href='/pd/add') Add Promo
             
             include ../../partials/navHSApd.pug
 

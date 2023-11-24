@@ -15,7 +15,7 @@ mixin addhotel
                         input.form-control(type="text", id="hotellocation", name="hotellocation", required)
 
                         label.col-form-label(for="hotelcontact") Contact Number:
-                        input.form-control(type="text", id="hotelcontact", name="hotelcontact", required)
+                        input.form-control(type="text", id="hotelcontact", name="hotelcontact" pattern="^[0-9]{11}$" title='Contact Number must be exactly 11 characters' required)
 
                         label.col-form-label(for="hotelemail") Email:
                         input.form-control(type="text", id="hotelemail", name="hotelemail", required)
@@ -42,7 +42,7 @@ mixin edithotel
                         input.form-control(type="text", id="hotellocation", name="hotellocation", required)
 
                         label.col-form-label(for="hotelcontact") Contact Number:
-                        input.form-control(type="text", id="hotelcontact", name="hotelcontact", required)
+                        input.form-control(type="text", id="hotelcontact", name="hotelcontact" pattern="^[0-9]{11}$" title='Contact Number must be exactly 11 characters' required)
 
                         label.col-form-label(for="hotelemail") Email:
                         input.form-control(type="text", id="hotelemail", name="hotelemail", required)
@@ -83,7 +83,7 @@ mixin addHSA
         .modal-content
             .modal-header
                 h5.modal-title(id='') Add Hotel System Admin
-                button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
+                button.btn-close.closer(type='button' onclick='closeModal()' aria-label='Close')
             .modal-body.mb-3
                 form(id="addhoteladminform", action="/hsadmins", method="POST")
 
@@ -92,15 +92,48 @@ mixin addHSA
 
                     label.col-form-label.mt-3(for='password') Password:
                     .input-group.showpass
-                        input#password.form-control(type='password' name='password' required)
+                        input#password.form-control(type='password' name='password' pattern='.{8,}' title='Password must be at least 8 characters' required)
                         .input-group-append
                             span#showPasswordToggle.input-group-text.showpassicon
                                 i#showPasswordIcon.fas.fa-eye-slash
+                    #password-error-message.text-danger.mt-3            
 
-                    label.col-form-label.mt-3(for="") Hotel:
+                    label.col-form-label.mt-2(for="") Hotel:
                     select.form-select(id='hotelid', name='hotelid')
                         each h in allHotelsArray
                             option(value=h.hotelid)= h.hotelname
+
+                    
+
+                    script.
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const usernameSAInput = document.getElementById('username');
+                            const passwordSAInput = document.getElementById('password');
+                            const errorMessageSA = document.getElementById('password-error-message');
+                            const closeModalBtn = document.querySelector('.closeModalBtn');
+                            const closeBtn = document.querySelector('.closer')
+
+                            function clearInputsAndMessageSA() {
+                                usernameSAInput.value = '';
+                                passwordSAInput.value = '';
+                                errorMessageSA.textContent = '';
+                            }
+
+                            passwordSAInput.addEventListener('input', function() {
+                                if (passwordSAInput.validity.valid) {
+                                    errorMessageSA.textContent = ''; // Clear error message
+                                          errorMessageSA.style.display = 'none'; // Hide the error message
+                                } else {
+                                    errorMessageSA.textContent = 'Password must be at least 8 characters';
+                                    errorMessageSA.style.display = 'block'; // Show the error message
+                                }
+                            });
+
+                            // Clear inputs and error message when the modal is closed
+                            closeModalBtn.addEventListener('click', clearInputsAndMessageSA);
+                            closeBtn.addEventListener('click', clearInputsAndMessageSA);
+                        });
+
 
                     //- ganto talaga indentation ng .modal-footer
                     .modal-footer.mt-3
@@ -252,26 +285,6 @@ mixin editProfileHSA(hotelId, colorStacksArray)
                         input.btn(type="submit", value="Submit") 
 
 
-//- Hotel System Admin ADD RECEPTIONIST HSA
-mixin addR 
-    #modal.modal
-        .modal-content
-            .modal-header
-                h1 Add Receptionist
-            .modal-body
-                form(id="addreceptionistform", action="", method="POST")
-                    label.col-form-label(for="fullname") Name:
-                    input.form-control(type="text", id="fullname", name="fullname", required)
-
-                    label.col-form-label(for="username") Username:
-                    input.form-control(type="text", id="username", name="username", required)
-
-                    label.col-form-label(for="password") Password:
-                    input.form-control(type="password", id="password", name="password", required)
-
-                    .modal-footer
-                        button.btn.closeAddModalBtn.mod_btn_sec(type="button", onclick="closeModal()") Cancel
-                        input.btn.mod_btn(type="submit", value="Submit")  
 
 //- Hotel System Admin EDIT ADMIN HSA 
 mixin editAdminHSA
@@ -295,7 +308,7 @@ mixin changeAdminHSA
         .modal-content
             .modal-header
                 h5.modal-title(id='') Change Password
-                button.btn-close(type='button' onclick='Close_ChangePass_Admin_User()' aria-label='Close')
+                button.btn-close.HSAcloser(type='button' onclick='Close_ChangePass_Admin_User()' aria-label='Close')
             .modal-body.mb-3
                 form(action='', method="POST")
                     label.col-form-label(for='old-password') Old Password:
@@ -307,7 +320,7 @@ mixin changeAdminHSA
 
                     label.col-form-label(for='new-password') New Password:
                     .input-group.showpass
-                        input#newpasswordAdmin.form-control(type='password' name='newPassword')
+                        input#newpasswordAdmin.form-control(type='password' name='newPassword' pattern='.{8,}' title='Password must be at least 8 characters' required)
                         .input-group-append
                             span#shownewPasswordToggleAdmin.input-group-text.showpassicon
                                 i#shownewPasswordIconAdmin.fas.fa-eye-slash  
@@ -321,10 +334,102 @@ mixin changeAdminHSA
 
                     // Error message element
                     p.mt-3.err#error-message-admin
-                    
+                    div#HSAerror-message.alert.alert-danger.mt-3(style="text-align: center")
+
                     .modal-footer
-                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Admin_User()") Cancel
+                        button.btn.mod_btn_sec.me-3.HSAcloseModalBtn(type="button", onclick="Close_ChangePass_Admin_User()") Cancel
                         input.btn.mod_btn(type="submit", value="Submit")
+                
+                    script.
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const newPasswordInputHSA = document.getElementById('newpasswordAdmin');
+                            const oldPasswordInputHSA = document.getElementById('oldpasswordAdmin');
+                            const conPasswordInputHSA = document.getElementById('conpasswordAdmin');
+                            const HSAerrorMessage = document.getElementById('HSAerror-message');
+                            const closeModalBtnHSA = document.querySelector('.HSAcloseModalBtn');
+                            const closeBtnHSA = document.querySelector('.HSAcloser')
+
+                            function HSAclearInputsAndMessage() {
+                                HSAerrorMessage.textContent = '';
+                                HSAerrorMessage.style.display = 'none';
+
+                            }
+                            newPasswordInputHSA.addEventListener('input', function() {
+                                if (newPasswordInputHSA.validity.valid) {
+                                    HSAerrorMessage.textContent = ''; // Clear error message
+                                    HSAerrorMessage.style.display = 'none'; // Hide the error message
+                                } else {
+                                    HSAerrorMessage.textContent = 'Password must be at least 8 characters';
+                                    HSAerrorMessage.style.display = 'block'; // Show the error message
+                                }
+                            });
+                            closeModalBtnHSA.addEventListener('click', HSAclearInputsAndMessage);
+                            closeBtnHSA.addEventListener('click', HSAclearInputsAndMessage);
+                        });    
+                    
+
+//- Hotel System Admin ADD RECEPTIONIST HSA
+mixin addR 
+    #addR.modal
+        .modal-content
+            .modal-header
+                h5.modal-title Add Receptionist
+                button.btn-close.closer(type='button' onclick='closeModaladdR()' aria-label='Close')
+
+            .modal-body
+                form(id="addreceptionistform", action="", method="POST")
+                    label.col-form-label(for="fullname") Name:
+                    input.form-control(type="text", id="fullname", name="fullname", required)
+
+                    label.col-form-label(for="username") Username:
+                    input.form-control(type="text", id="username", name="username", required)
+
+                    label.col-form-label(for="password") Password:
+                    .input-group.showpass
+                        input.form-control(type="password", id="password", name="password" pattern='.{8,}' title='Password must be at least 8 characters' required)
+                        .input-group-append
+                            span#showPasswordToggle.input-group-text.showpassicon
+                                i#showPasswordIcon.fas.fa-eye-slash
+                    div#error-messages.alert.alert-danger.mt-3(style="text-align: center")
+
+                    .modal-footer
+                        button.btn.closeModalBtn.mod_btn_sec(type="button", onclick="closeModaladdR()") Cancel
+                        input.btn.mod_btn(type="submit", value="Submit")
+                
+                
+                    script.
+                        document.addEventListener('DOMContentLoaded', function() {
+
+                            const usernameInput = document.getElementById('username');
+                            const fullnameInput = document.getElementById('fullname');
+                            const passwordInput = document.getElementById('password');
+                            const errorMessage = document.getElementById('error-messages');
+                            const closeModalBtn = document.querySelector('.closeModalBtn');
+                            const closeBtn = document.querySelector('.closer');
+
+                            function clearInputsAndMessageR() {
+                                usernameInput.value = '';
+                                fullnameInput.value = '';
+                                passwordInput.value = '';
+                                errorMessage.textContent = '';
+                                errorMessage.style.display = 'none';
+                            }
+
+                            passwordInput.addEventListener('input', function() {
+                                if (passwordInput.validity.valid) {
+                                    errorMessage.textContent = ''; // Clear error message
+                                    errorMessage.style.display = 'none'; // Hide the error message
+                                } else {
+                                    errorMessage.textContent = 'Password must be at least 8 characters';
+                                    errorMessage.style.display = 'block'; // Show the error message
+                                }
+                            });
+
+                            closeModalBtn.addEventListener('click', clearInputsAndMessageR);
+                            closeBtn.addEventListener('click', clearInputsAndMessageR);
+                        });
+                    
+                    
 
 
 //- EDIT Receptionist in HSA
@@ -377,7 +482,7 @@ mixin changeReceptionistHSA
         .modal-content
             .modal-header
                 h5.modal-title(id='') Change Password
-                button.btn-close(type='button' onclick='Close_ChangePass_Receptionist_User()' aria-label='Close')
+                button.btn-close.Rcloser(type='button' onclick='Close_ChangePass_Receptionist_User()' aria-label='Close')
             .modal-body.mb-3
                 form(action='', method="POST")
                     label.col-form-label(for='old-password') Old Password:
@@ -389,7 +494,7 @@ mixin changeReceptionistHSA
 
                     label.col-form-label(for='new-password') New Password:
                     .input-group.showpass
-                        input#newpasswordReceptionist.form-control(type='password' name='newPassword')
+                        input#newpasswordReceptionist.form-control(type='password' name='newPassword' pattern='.{8,}' title='Password must be at least 8 characters' required)
                         .input-group-append
                             span#shownewPasswordToggleReceptionist.input-group-text.showpassicon
                                 i#shownewPasswordIconReceptionist.fas.fa-eye-slash  
@@ -403,11 +508,38 @@ mixin changeReceptionistHSA
 
                     // Error message element
                     p.mt-3.err#error-message-receptionist
+                    div#Rerror-message.alert.alert-danger.mt-3(style="text-align:center")
                     
                     .modal-footer
-                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="Close_ChangePass_Receptionist_User()") Cancel
+                        button.btn.mod_btn_sec.me-3.RcloseModalBtn(type="button", onclick="Close_ChangePass_Receptionist_User()") Cancel
                         input.btn.mod_btn(type="submit", value="Submit")
+                
+                    script.
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const RnewPasswordInput = document.getElementById('newpasswordReceptionist');
+                            const RoldPasswordInput = document.getElementById('oldpasswordReceptionist');
+                            const RconPasswordInput = document.getElementById('conpasswordReceptionist');
+                            const RerrorMessage = document.getElementById('Rerror-message');
+                            const RcloseModalBtn = document.querySelector('.RcloseModalBtn');
+                            const RcloseBtn = document.querySelector('.Rcloser')
 
+                            function RclearInputsAndMessage() {
+                                RerrorMessage.textContent = '';
+                                RerrorMessage.style.display = 'none';
+
+                            }
+                            RnewPasswordInput.addEventListener('input', function() {
+                                if (RnewPasswordInput.validity.valid) {
+                                    RerrorMessage.textContent = ''; // Clear error message
+                                    RerrorMessage.style.display = 'none'; // Hide the error message
+                                } else {
+                                    RerrorMessage.textContent = 'Password must be at least 8 characters';
+                                    RerrorMessage.style.display = 'block'; // Show the error message
+                                }
+                            });
+                            RcloseModalBtn.addEventListener('click', RclearInputsAndMessage);
+                            RcloseBtn.addEventListener('click', RclearInputsAndMessage);
+                        });   
 
 //- ADD Room Type
 mixin addRoomType 

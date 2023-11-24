@@ -48,6 +48,7 @@ router.post('/edit', isAuthenticated, async(req,res)=>{
     res.redirect('/settings')
 })
 
+//-Change Password
 router.post('/changepw', isAuthenticated, async (req, res) => {
     const userid = req.session.userID;
     const { oldPassword, newPassword, confirmPassword } = req.body;

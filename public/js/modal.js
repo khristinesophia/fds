@@ -8,6 +8,18 @@ function closeModal() {
     modal.classList.remove('modal-active');
 }
 
+//-Add Receptionist
+function openModaladdR() {
+  var modal = document.getElementById('addR');
+  modal.classList.add('modal-active');
+}
+
+function closeModaladdR() {
+  var modal = document.getElementById('addR');
+  modal.classList.remove('modal-active');
+}
+
+
 function openModalcash() {
   var modal = document.getElementById('modalcash');
   modal.classList.add('modal-active');
