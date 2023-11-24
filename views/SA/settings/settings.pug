@@ -51,36 +51,56 @@ html(lang="en")
 
             //- Edit Password
             .col-12.col-md-12.mt-4
-              .card.bg-white.shadow
-                .card-body.text-dark
-                  h2.text Change Password
-                      
-                  form(id="passwordChangeForm", action='/settings/changepw', method="POST")
-                    label.col-form-label(for='old-password') Old Password:
-                    .input-group.showpass
-                      input#oldpassword.form-control(type='password' name='oldPassword')
-                      .input-group-append
-                        span#showoldPasswordToggle.input-group-text.showpassicon
-                          i#showoldPasswordIcon.fas.fa-eye-slash
-            
-                    label.col-form-label(for='new-password') New Password:
-                    .input-group.showpass
-                      input#newpassword.form-control(type='password' name='newPassword')
-                      .input-group-append
-                        span#shownewPasswordToggle.input-group-text.showpassicon
-                          i#shownewPasswordIcon.fas.fa-eye-slash
+                .card.bg-white.shadow
+                    .card-body.text-dark
+                        h2.text Change Password
 
-                    label.col-form-label(for='confirm-password') Confirm Password:
-                    .input-group.showpass
-                      input#conpassword.form-control(type='password' name='confirmPassword')
-                      .input-group-append
-                        span#showconPasswordToggle.input-group-text.showpassicon
-                          i#showconPasswordIcon.fas.fa-eye-slash
-            
-                    input.btn.mt-3(type="submit", value="Submit")
-                    div#success-message.alert.alert-success(style="display: none")
-                    //- Add this div to display error messages
-                    div#error-message.alert.alert-danger(style="display: none")
+                        form(id="passwordChangeForm", action='/settings/changepw', method="POST")
+                            label.col-form-label(for='old-password') Old Password:
+                            .input-group.showpass
+                                input#oldpassword.form-control(type='password' name='oldPassword')
+                                .input-group-append
+                                    span#showoldPasswordToggle.input-group-text.showpassicon
+                                        i#showoldPasswordIcon.fas.fa-eye-slash
+
+                            label.col-form-label(for='new-password') New Password:
+                            .input-group.showpass
+                                input#newpassword.form-control(type='password' name='newPassword' pattern='.{8,}' title='Password must be at least 8 characters' required)
+                                .input-group-append
+                                    span#shownewPasswordToggle.input-group-text.showpassicon
+                                        i#shownewPasswordIcon.fas.fa-eye-slash
+
+                            label.col-form-label(for='confirm-password') Confirm Password:
+                            .input-group.showpass
+                                input#conpassword.form-control(type='password' name='confirmPassword')
+                                .input-group-append
+                                    span#showconPasswordToggle.input-group-text.showpassicon
+                                        i#showconPasswordIcon.fas.fa-eye-slash
+
+                            input.btn.mt-3(type="submit", value="Submit")
+                            div#success-message.alert.alert-success(style="display: none")
+                            //- Add this div to display error messages
+                            div#error-message.alert.alert-danger(style="display: none")
+
+                            script.
+                              document.addEventListener('DOMContentLoaded', function() {
+                                  const newPasswordInput = document.getElementById('newpassword');
+                                  const errorMessage = document.getElementById('error-message');
+
+                                  newPasswordInput.addEventListener('input', function() {
+                                      if (newPasswordInput.validity.valid) {
+                                          errorMessage.textContent = ''; // Clear error message
+                                          errorMessage.style.display = 'none'; // Hide the error message
+                                      } else {
+                                          errorMessage.textContent = 'Password must be at least 8 characters';
+                                          errorMessage.style.display = 'block'; // Show the error message
+                                      }
+                                  });
+                              });
+
+
+
+
 
 
 
