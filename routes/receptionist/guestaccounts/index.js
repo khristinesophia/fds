@@ -661,13 +661,17 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
             ON t1.accountid = t2.accountid
         JOIN folios t3
             ON t1.accountid = t3.accountid
+        JOIN room_type t4
+            ON t1.typeid = t4.typeid
+        JOIN rooms t5
+            ON t1.roomid = t5.roomid
         WHERE t1.hotelid = $1 AND
             t1.accountid = $2
     `
     const q1result = await pool.query(q1, [hotelID, id])
 
     //- destructure
-    const { accountid, hotelid, typeid, roomid, adultno, childno, 
+    const { accountid, hotelid, roomtype, roomnum, adultno, childno, 
         reservationdate, checkindate, checkoutdate, numofdays, 
         modeofpayment, promocode, 
         fullname, email, contactno, address,
@@ -675,12 +679,12 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
 
     //- insert into hist_guestaccounts
     const q2 = `
-        INSERT INTO hist_guestaccounts(accountid, hotelid, typeid, roomid, adultno, childno, 
+        INSERT INTO hist_guestaccounts(accountid, hotelid, roomtype, roomnum, adultno, childno, 
             reservationdate, checkindate, checkoutdate, numofdays, 
             modeofpayment, promocode)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     `
-    const q2result = await pool.query(q2, [accountid, hotelid, typeid, roomid, adultno, childno, 
+    const q2result = await pool.query(q2, [accountid, hotelid, roomtype, roomnum, adultno, childno, 
         reservationdate, checkindate, checkoutdate, numofdays, 
         modeofpayment, promocode])
 
@@ -704,20 +708,22 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
     //- get t record (fds)
     const q5 = `
         SELECT * 
-        FROM transactions
-        WHERE accountid = $1 AND
-            hotelid = $2
+        FROM transactions t1
+        JOIN rooms t2
+            ON t1.roomid = t2.roomid
+        WHERE t1.accountid = $1 AND
+            t1.hotelid = $2
     `
     const q5result = await pool.query(q5, [id, hotelID])
     const t_fds = q5result.rows
 
     //- insert into hist_transactions
     t_fds.forEach(async (t) => {
-        await pool.query(`INSERT INTO hist_transactions(transactionid, hotelid, accountid, roomid, 
+        await pool.query(`INSERT INTO hist_transactions(transactionid, hotelid, accountid, roomnum, 
                         description, price, qty, amount, date, 
                         approvalcode, paid, folioid)
                     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-            `, [t.transactionid, t.hotelid, t.accountid, t.roomid, 
+            `, [t.transactionid, t.hotelid, t.accountid, t.roomnum, 
                 t.description, t.price, t.qty, t.amount, t.date, 
                 t.approvalcode, t.paid, t.folioid]
         )
@@ -751,21 +757,23 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
     //- get t record (hsk)
     const q7 = `
         SELECT * 
-        FROM housekeeping_transactions
-        WHERE accountid = $1 AND
-            hotelid = $2
+        FROM housekeeping_transactions t1
+        JOIN rooms t2
+            ON t1.roomid = t2.roomid
+        WHERE t1.accountid = $1 AND
+            t1.hotelid = $2
     `
     const q7result = await pool.query(q7, [id, hotelID])
     const t_hsk = q7result.rows
     
     //- insert into hist_housekeeping_transactions
     t_hsk.forEach(async (t) => {
-        await pool.query(`INSERT INTO hist_housekeeping_transactions(transactionid, reservationid, description, roomid,
+        await pool.query(`INSERT INTO hist_housekeeping_transactions(transactionid, reservationid, description, roomnum,
                         transaction_type, ref_itemid, transactiondate, employeeid, remarks, 
                         price, qty, archiveddate, 
                         accountid, hotelid, amount, paid, approvalcode, folioid)
                     VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
-            `, [t.transactionid, t.reservationid, t.description, t.roomid,
+            `, [t.transactionid, t.reservationid, t.description, t.roomnum,
                 t.transaction_type, t.ref_itemid, t.transactiondate, t.employeeid, t.remarks, 
                 t.price, t.qty, t.archiveddate, 
                 t.accountid, t.hotelid, t.amount, t.paid, t.approvalcode, t.folioid])
