@@ -13,23 +13,30 @@ const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 
 
 // add hsadmin
-router.post('/', isAuthenticated, async(req, res)=>{
+router.post('/', isAuthenticated, async (req, res) => {
     try {
-        const { username, password, hotelid } = req.body
+        const { username, password, hotelid } = req.body;
+
+        // Check password length
+        if (password.length < 8) {
+            return res.status(400).send('Password must be at least 8 characters');
+        }
 
         const hashedPassword = bcrypt.hashSync(password, 10);
+        const datecreated = getCurrentDate();
 
-        const datecreated = getCurrentDate()
-
-        const newHotelAdmin = await pool.query(`INSERT INTO hoteladmin_login(username, hashpassword, hotelid, datecreated) VALUES($1, $2, $3, $4) RETURNING *`,
+        const newHotelAdmin = await pool.query(
+            `INSERT INTO hoteladmin_login(username, hashpassword, hotelid, datecreated) VALUES($1, $2, $3, $4) RETURNING *`,
             [username, hashedPassword, hotelid, datecreated]
-        )
+        );
 
-        res.redirect('/hsadmins')
+        res.redirect('/hsadmins');
     } catch (error) {
-        console.error(error.message)
+        console.error(error.message);
+        res.status(500).send('Internal Server Error');
     }
-})
+});
+
 
 // read all hsadmins
 router.get('/', isAuthenticated, async(req, res)=>{

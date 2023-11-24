@@ -83,7 +83,7 @@ mixin addHSA
         .modal-content
             .modal-header
                 h5.modal-title(id='') Add Hotel System Admin
-                button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
+                button.btn-close.closer(type='button' onclick='closeModal()' aria-label='Close')
             .modal-body.mb-3
                 form(id="addhoteladminform", action="/hsadmins", method="POST")
 
@@ -92,15 +92,46 @@ mixin addHSA
 
                     label.col-form-label.mt-3(for='password') Password:
                     .input-group.showpass
-                        input#password.form-control(type='password' name='password' required)
+                        input#password.form-control(type='password' name='password' pattern='.{8,}' title='Password must be at least 8 characters' required)
                         .input-group-append
                             span#showPasswordToggle.input-group-text.showpassicon
                                 i#showPasswordIcon.fas.fa-eye-slash
+                    #password-error-message.text-danger            
 
-                    label.col-form-label.mt-3(for="") Hotel:
+                    label.col-form-label.mt-2(for="") Hotel:
                     select.form-select(id='hotelid', name='hotelid')
                         each h in allHotelsArray
                             option(value=h.hotelid)= h.hotelname
+
+                    
+
+                    script.
+                        document.addEventListener('DOMContentLoaded', function() {
+                            const usernameInput = document.getElementById('username');
+                            const passwordInput = document.getElementById('password');
+                            const errorMessage = document.getElementById('password-error-message');
+                            const closeModalBtn = document.querySelector('.closeModalBtn');
+                            const closeBtn = document.querySelector('.closer')
+
+                            function clearInputsAndMessage() {
+                                usernameInput.value = '';
+                                passwordInput.value = '';
+                                errorMessage.textContent = '';
+                            }
+
+                            passwordInput.addEventListener('input', function() {
+                                if (passwordInput.validity.valid) {
+                                    errorMessage.textContent = ''; // Clear error message
+                                } else {
+                                    errorMessage.textContent = 'Password must be at least 8 characters';
+                                }
+                            });
+
+                            // Clear inputs and error message when the modal is closed
+                            closeModalBtn.addEventListener('click', clearInputsAndMessage);
+                            closeBtn.addEventListener('click', clearInputsAndMessage);
+                        });
+
 
                     //- ganto talaga indentation ng .modal-footer
                     .modal-footer.mt-3
