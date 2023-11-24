@@ -48,13 +48,13 @@ html(lang="en")
                   td
                     .d-flex.justify-content-start
                       //- Edit
-                      a.sa-icon.sa-edit(data-userid=ha.userid data-username=ha.username onclick="Edit_Admin_User(this)" role='button')
+                      a.sa-icon.sa-edit.ms-2(data-userid=ha.userid data-username=ha.username onclick="Edit_Admin_User(this)" role='button')
                         i.fa-solid.fa-pen-to-square.fa-lg  
                       include ../../mixins/modals.pug
                       
                       +editAdminHSA(ha.userid)
                       //- Change Password   
-                      a.sa-icon.sa-pass(data-userid=ha.userid data-password=ha.hashpassword onclick="ChangePass_Admin_User(this)" role='button')
+                      a.sa-icon.sa-pass.ms-2(data-userid=ha.userid data-password=ha.hashpassword onclick="ChangePass_Admin_User(this)" role='button')
                         i.fa-solid.fa-key.fa-lg
                       include ../../mixins/modals.pug
                       +changeAdminHSA(ha.userid)
@@ -88,19 +88,19 @@ html(lang="en")
                   td
                     .d-flex.justify-content-start
                       //- Edit
-                      a.sa-icon.sa-edit(data-userid=r.userid data-fullname=r.fullname data-username=r.username onclick="Edit_Receptionist_User(this)" role='button')
+                      a.sa-icon.sa-edit.ms-2(data-userid=r.userid data-fullname=r.fullname data-username=r.username onclick="Edit_Receptionist_User(this)" role='button')
                         i.fa-solid.fa-pen-to-square.fa-lg  
                       include ../../mixins/modals.pug
                       +editReceptionistHSA(r.userid)
                       
                       //- Delete
-                      a.delete-icon(data-userid=r.userid data-fullname=r.fullname onclick="Delete_Receptionist_User(this)" role='button')
+                      a.delete-icon.ms-2(data-userid=r.userid data-fullname=r.fullname onclick="Delete_Receptionist_User(this)" role='button')
                         i.fa-solid.fa-trash-can.fa-xl
                       include ../../mixins/modals.pug
                       +deleteReceptionistHSA(r.userid)
 
                       //-Change Password    
-                      a.sa-icon.sa-pass(data-userid=r.userid data-password=r.hashpassword onclick="ChangePass_Receptionist_User(this)" role='button')
+                      a.sa-icon.sa-pass.ms-2(data-userid=r.userid data-password=r.hashpassword onclick="ChangePass_Receptionist_User(this)" role='button')
                         i.fa-solid.fa-key.fa-lg
                       include ../../mixins/modals.pug
                       +changeReceptionistHSA(r.userid)
