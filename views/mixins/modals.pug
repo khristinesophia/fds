@@ -15,7 +15,7 @@ mixin addhotel
                         input.form-control(type="text", id="hotellocation", name="hotellocation", required)
 
                         label.col-form-label(for="hotelcontact") Contact Number:
-                        input.form-control(type="text", id="hotelcontact", name="hotelcontact", required)
+                        input.form-control(type="text", id="hotelcontact", name="hotelcontact" pattern="^[0-9]{11}$" title='Contact Number must be exactly 11 characters' required)
 
                         label.col-form-label(for="hotelemail") Email:
                         input.form-control(type="text", id="hotelemail", name="hotelemail", required)
@@ -42,7 +42,7 @@ mixin edithotel
                         input.form-control(type="text", id="hotellocation", name="hotellocation", required)
 
                         label.col-form-label(for="hotelcontact") Contact Number:
-                        input.form-control(type="text", id="hotelcontact", name="hotelcontact", required)
+                        input.form-control(type="text", id="hotelcontact", name="hotelcontact" pattern="^[0-9]{11}$" title='Contact Number must be exactly 11 characters' required)
 
                         label.col-form-label(for="hotelemail") Email:
                         input.form-control(type="text", id="hotelemail", name="hotelemail", required)
