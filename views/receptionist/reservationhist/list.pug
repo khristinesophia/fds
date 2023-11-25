@@ -19,6 +19,7 @@ html(lang="en")
         link(rel='stylesheet', href='/css/font.css')
         link(rel='stylesheet', href='/css/modal.css')
         link(rel='stylesheet', href='/css/table.css')
+        link(rel='stylesheet', href='/css/action_button.css')
 
         //- title
         title Reservation History
@@ -59,7 +60,8 @@ html(lang="en")
                                     td #{r.reservationdate}
                                     td #{r.status}
                                     td 
-                                        a.btn(href=`/rhist/detail/${r.reservationid}`) View
+                                        a.sa-icon.sa-view(href=`/rhist/detail/${r.reservationid}`)
+                                            i.fa-solid.fa-eye.fa-lg
 
 
     //-Table

@@ -74,7 +74,7 @@ html(lang="en")
                 input.form-control(type="text", id="hotellocation", name="hotellocation", value=`${h.hotellocation}` required)
 
                 h2.col-form-label.mt-3(for="hotelcontact") Hotel Contact:
-                input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact}` required)
+                input.form-control(type="text", id="hotelcontact", name="hotelcontact", value=`${h.hotelcontact}` pattern="^[0-9]{11}$" title='Contact Number must be exactly 11 characters' required)
 
                 h2.col-form-label.mt-3(for="hotelemail") Hotel Email:
                 input.form-control(type="email", id="hotelemail", name="hotelemail", value=`${h.hotelemail}` required)
