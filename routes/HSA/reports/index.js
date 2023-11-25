@@ -246,9 +246,13 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
     let startdate
 
     let data = []
-    let total = {
+    let summary = {
         totalRevenue: 0,
-        totalPercentageOfRevenue: 100
+        totalPercentageOfRevenue: 100,
+        highestOccupancyRate: 0,
+        highestOccupancyRateRoomType: null,
+        highestPercentageOfRevenue: 0,
+        highestPercentageOfRevenueRoomType: null,
     }
 
 
@@ -282,7 +286,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             FROM room_type t1
             LEFT JOIN hist_guestaccounts t3
                 ON t1.roomtype = t3.roomtype
-            WHERE t3.checkindate >= $1
+            WHERE t3.checkoutdate >= $1
             GROUP BY t1.roomtype
             ) t3
         ON t1.roomtype = t3.roomtype
@@ -295,7 +299,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
                 ON t1.roomtype = t2.roomtype
             LEFT JOIN hist_folios t3
                 ON t2.accountid = t3.accountid
-            WHERE t2.checkindate >= $2
+            WHERE t2.checkoutdate >= $2
             GROUP BY t1.typeid
             ) t4
         ON t1.typeid = t4.typeid
@@ -304,12 +308,23 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
 
         result.rows.forEach(row=>{
             if(row.revenue){
-                total.totalRevenue += parseFloat(row.revenue)
+                summary.totalRevenue += parseFloat(row.revenue)
             }
         })
 
-        total.totalRevenue = parseFloat(total.totalRevenue.toFixed(2))
-        total.totalPercentageOfRevenue = parseFloat(total.totalPercentageOfRevenue.toFixed(1))
+        result.rows.forEach(row => {
+            if(row.occupancy_rate > summary.highestOccupancyRate) {
+                summary.highestOccupancyRate = row.occupancy_rate
+                summary.highestOccupancyRateRoomType = row.roomtype
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                summary.highestPercentageOfRevenueRoomType = row.roomtype
+            }
+        })
 
         data = result.rows
     } 
@@ -344,7 +359,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             FROM room_type t1
             LEFT JOIN hist_guestaccounts t3
                 ON t1.roomtype = t3.roomtype
-            WHERE t3.checkindate >= $1
+            WHERE t3.checkoutdate >= $1
             GROUP BY t1.roomtype
             ) t3
         ON t1.roomtype = t3.roomtype
@@ -357,7 +372,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
                 ON t1.roomtype = t2.roomtype
             LEFT JOIN hist_folios t3
                 ON t2.accountid = t3.accountid
-            WHERE t2.checkindate >= $2
+            WHERE t2.checkoutdate >= $2
             GROUP BY t1.typeid
             ) t4
         ON t1.typeid = t4.typeid
@@ -366,12 +381,23 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
 
         result.rows.forEach(row=>{
             if(row.revenue){
-                total.totalRevenue += parseFloat(row.revenue)
+                summary.totalRevenue += parseFloat(row.revenue)
             }
         })
 
-        total.totalRevenue = parseFloat(total.totalRevenue.toFixed(2))
-        total.totalPercentageOfRevenue = parseFloat(total.totalPercentageOfRevenue.toFixed(1))
+        result.rows.forEach(row => {
+            if(row.occupancy_rate > summary.highestOccupancyRate) {
+                summary.highestOccupancyRate = row.occupancy_rate
+                summary.highestOccupancyRateRoomType = row.roomtype
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                summary.highestPercentageOfRevenueRoomType = row.roomtype
+            }
+        })
 
         data = result.rows
     }
@@ -406,7 +432,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             FROM room_type t1
             LEFT JOIN hist_guestaccounts t3
                 ON t1.roomtype = t3.roomtype
-            WHERE t3.checkindate >= $1
+            WHERE t3.checkoutdate >= $1
             GROUP BY t1.roomtype
             ) t3
         ON t1.roomtype = t3.roomtype
@@ -419,7 +445,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
                 ON t1.roomtype = t2.roomtype
             LEFT JOIN hist_folios t3
                 ON t2.accountid = t3.accountid
-            WHERE t2.checkindate >= $2
+            WHERE t2.checkoutdate >= $2
             GROUP BY t1.typeid
             ) t4
         ON t1.typeid = t4.typeid
@@ -428,12 +454,23 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
 
         result.rows.forEach(row=>{
             if(row.revenue){
-                total.totalRevenue += parseFloat(row.revenue)
+                summary.totalRevenue += parseFloat(row.revenue)
             }
         })
 
-        total.totalRevenue = parseFloat(total.totalRevenue.toFixed(2))
-        total.totalPercentageOfRevenue = parseFloat(total.totalPercentageOfRevenue.toFixed(1))
+        result.rows.forEach(row => {
+            if(row.occupancy_rate > summary.highestOccupancyRate) {
+                summary.highestOccupancyRate = row.occupancy_rate
+                summary.highestOccupancyRateRoomType = row.roomtype
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                summary.highestPercentageOfRevenueRoomType = row.roomtype
+            }
+        })
 
         data = result.rows
     }
@@ -468,7 +505,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             FROM room_type t1
             LEFT JOIN hist_guestaccounts t3
                 ON t1.roomtype = t3.roomtype
-            WHERE t3.checkindate >= $1
+            WHERE t3.checkoutdate >= $1
             GROUP BY t1.roomtype
             ) t3
         ON t1.roomtype = t3.roomtype
@@ -481,7 +518,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
                 ON t1.roomtype = t2.roomtype
             LEFT JOIN hist_folios t3
                 ON t2.accountid = t3.accountid
-            WHERE t2.checkindate >= $2
+            WHERE t2.checkoutdate >= $2
             GROUP BY t1.typeid
             ) t4
         ON t1.typeid = t4.typeid
@@ -490,12 +527,23 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
 
         result.rows.forEach(row=>{
             if(row.revenue){
-                total.totalRevenue += parseFloat(row.revenue)
+                summary.totalRevenue += parseFloat(row.revenue)
             }
         })
 
-        total.totalRevenue = parseFloat(total.totalRevenue.toFixed(2))
-        total.totalPercentageOfRevenue = parseFloat(total.totalPercentageOfRevenue.toFixed(1))
+        result.rows.forEach(row => {
+            if(row.occupancy_rate > summary.highestOccupancyRate) {
+                summary.highestOccupancyRate = row.occupancy_rate
+                summary.highestOccupancyRateRoomType = row.roomtype
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                summary.highestPercentageOfRevenueRoomType = row.roomtype
+            }
+        })
 
         data = result.rows
     }
@@ -504,7 +552,7 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         hotelColor: req.hotelColor,
         hotelLogo: req.hotelImage,
         dataArray: data,
-        total: total
+        summary: summary
     })
 })
 

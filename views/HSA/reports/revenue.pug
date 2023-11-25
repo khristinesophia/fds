@@ -26,31 +26,31 @@ html(lang="en")
 
     .content
         .container
-            //- h2 Report Overview
-            //- .row.mt-4
-            //-     //- column
-            //-     .col 
-            //-         //- card
-            //-         .card.bg-success.shadow.text-white.text-center 
-            //-             .card-body
-            //-                 p.display-6.fw-normal 0
-            //-                 p.lead Lorem
+            h2 Report Overview
+            .row.mt-4
+                //- column
+                .col 
+                    //- card
+                    .card.bg-success.shadow.text-white.text-center 
+                        .card-body
+                            h3 #{summary.totalRevenue}
+                            p.lead Total Revenue
 
-            //-     //- column
-            //-     .col 
-            //-         //- card
-            //-         .card.bg-warning.shadow.text-center 
-            //-             .card-body
-            //-                 p.display-6.fw-normal 0
-            //-                 p.lead Lorem
+                //- column
+                .col 
+                    //- card
+                    .card.bg-warning.shadow.text-center 
+                        .card-body
+                            h3 #{summary.highestOccupancyRateRoomType}
+                            p.lead Highest Occupancy Rate
 
-            //-     //- column
-            //-     .col 
-            //-         //- card
-            //-         .card.bg-danger.shadow.text-white.text-center 
-            //-             .card-body
-            //-                 p.display-6.fw-normal 0
-            //-                 p.lead Lorem
+                //- column
+                .col 
+                    //- card
+                    .card.bg-danger.shadow.text-white.text-center 
+                        .card-body
+                            h3 #{summary.highestPercentageOfRevenueRoomType}
+                            p.lead Highest Percentage of Revenue
             
             .d-flex.justify-content-between.align-items-center.mt-5
                 .col 
@@ -99,8 +99,8 @@ html(lang="en")
                             th 
                             th 
                             th 
-                            th.fw-bold #{total.totalRevenue}
-                            th.fw-bold #{total.totalPercentageOfRevenue}
+                            th.fw-bold #{summary.totalRevenue}
+                            th.fw-bold #{summary.totalPercentageOfRevenue}
             
 
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
