@@ -42,3 +42,25 @@ document.getElementById('range').addEventListener('change', (event)=>{
 
     window.location.reload() //- reload page
 })
+
+
+// ----------------------------------------------------------------------------------------------------
+
+
+document.getElementById('downloadAnchor').addEventListener('click', (event) => {
+    event.preventDefault()
+
+    const urlString = window.location.search
+
+    if(urlString.includes('?')){
+        const arr = urlString.split('?')
+        const queryString = arr[1]
+
+        this.href = 'dlRevenue?' + queryString
+        window.location.href = this.href
+    } else{
+        this.href = 'dlRevenue?'
+        window.location.href = this.href
+    }
+    
+})
