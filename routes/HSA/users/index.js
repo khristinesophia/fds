@@ -46,6 +46,8 @@ router.post('/', isAuthenticated, async(req, res)=>{
         const { fullname, username, password } = req.body
         const hotelid = req.session.hotelID
 
+        
+
         const hashedPassword = bcrypt.hashSync(password, 10);
         const datecreated = getCurrentDate()
 

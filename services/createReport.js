@@ -45,6 +45,8 @@ function generateOverview(doc, overviewTitles, overview) {
 
   let col1X = 50
   let col2X = 250
+  let col3X = 400
+  let col4X = 475
 
   let lineHeight = 15
 
@@ -66,6 +68,22 @@ function generateOverview(doc, overviewTitles, overview) {
   doc.text(overview.overview1, col2X, overviewTop + lineHeight * 2)
   doc.text(overview.overview2, col2X, overviewTop + lineHeight * 3)
   doc.text(overview.overview3, col2X, overviewTop + lineHeight * 4)
+
+  // Third column
+  doc
+    .fontSize(10)
+    .font(boldFont)
+  doc.text(overviewTitles.title4, col3X, overviewTop + lineHeight * 2)
+  doc.text(overviewTitles.title5, col3X, overviewTop + lineHeight * 3)
+  doc.text(overviewTitles.title6, col3X, overviewTop + lineHeight * 4)
+
+  // Fourth column
+  doc
+    .fontSize(10)
+    .font(normalFont)
+  doc.text(overview.overview4, col4X, overviewTop + lineHeight * 2)
+  doc.text(overview.overview5, col4X, overviewTop + lineHeight * 3)
+  doc.text(overview.overview6, col4X, overviewTop + lineHeight * 4)
 
   // generateHr(doc, 200)
 }

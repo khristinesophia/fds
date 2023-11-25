@@ -39,26 +39,45 @@ router.get('/', isAuthenticated, getHotelLogo, getHotelColor, async(req, res)=>{
                 r.hotelid = $1;
         `;
 
-        function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-              color += letters[Math.floor(Math.random() * 16)];
+                /*
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
             }
-            return color;
-        }
 
-        const allReservation = await pool.query(reservationQuery, [hotelid])
+            const allReservation = await pool.query(reservationQuery, [hotelid])
 
-        const events = allReservation.rows.map(reservation => ({
+            const events = allReservation.rows.map(reservation => ({
+                title: `Name: ${reservation.fullname} - ReservationID: ${reservation.reservationid} | Room: ${reservation.roomnum}`,
+                start: `${reservation.checkindate}T00:00:00`, // Include time information
+                end: `${reservation.checkoutdate}T23:59:59`, // Include time information
+                id: reservation.reservationid,
+                color: getRandomColor(),
+                allDay: false,
+                displayEventTime: false,
+            })); */
+        const allReservation = await pool.query(reservationQuery, [hotelid]);
+
+        const colors = [
+            '#1f77b4', '#2ca02c', '#d62728','#ff7f0e','#9467bd',
+            '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf',
+            '#334455', '#8899aa', '#dd4477', '#117733', '#aa88cc'
+        ]; 
+
+        const events = allReservation.rows.map((reservation, index) => ({
             title: `Name: ${reservation.fullname} - ReservationID: ${reservation.reservationid} | Room: ${reservation.roomnum}`,
             start: `${reservation.checkindate}T00:00:00`, // Include time information
             end: `${reservation.checkoutdate}T23:59:59`, // Include time information
             id: reservation.reservationid,
-            color: getRandomColor(),
+            color: colors[index % colors.length], // Alternate between the two colors
             allDay: false,
             displayEventTime: false,
         }));
+
 
         res.render('receptionist/reservation/reservation', { 
             events: JSON.stringify(events),

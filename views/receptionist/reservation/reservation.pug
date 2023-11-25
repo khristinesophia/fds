@@ -28,44 +28,44 @@ html(lang="en")
           h2.text All Reservations
         
         //- ---------- full calendar section ----------
+        .container.shadow.mt-3.pt-3.pb-3.bg-white
+          div#calendar
+          script.
+              document.addEventListener('DOMContentLoaded', function() {
+                  let calendarEl = document.getElementById('calendar');
+                  let calendar = new FullCalendar.Calendar(calendarEl, {
+                  headerToolbar: {
+                      left: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
+                      center: 'title'
+                  },
+                  buttonText: {
+                      today: 'Today',
+                      month: 'Month',
+                      week: 'Week',
+                      day: 'Day',
+                      list: 'List'
+                  },
+                  events: !{events}, // Parse JSON data from the server
+                  contentHeight: '800px', // Set the height to your desired value
+                  displayEventTime: false,
+                  eventClick: function (info) {
+                      // Extract the event ID
+                      const eventId = info.event.id;
 
-        div#calendar
-        script.
-            document.addEventListener('DOMContentLoaded', function() {
-                let calendarEl = document.getElementById('calendar');
-                let calendar = new FullCalendar.Calendar(calendarEl, {
-                headerToolbar: {
-                    left: 'dayGridMonth,timeGridWeek,timeGridDay,listWeek',
-                    center: 'title'
-                },
-                buttonText: {
-                    today: 'Today',
-                    month: 'Month',
-                    week: 'Week',
-                    day: 'Day',
-                    list: 'List'
-                },
-                events: !{events}, // Parse JSON data from the server
-                contentHeight: '800px', // Set the height to your desired value
-                displayEventTime: false,
-                eventClick: function (info) {
-                    // Extract the event ID
-                    const eventId = info.event.id;
-
-                    // Navigate to the detail page with the event ID
-                    window.location.href = `/reservation/detail/${eventId}`;
-                },
-                eventMouseEnter: function (info) {
-                    // Change the cursor to a pointer when hovering over an event
-                    info.el.style.cursor = 'pointer';
-                },
-                eventMouseLeave: function (info) {
-                    // Reset the cursor when leaving the event
-                    info.el.style.cursor = 'auto';
-                }
-                });
-                calendar.render();
-            });
+                      // Navigate to the detail page with the event ID
+                      window.location.href = `/reservation/detail/${eventId}`;
+                  },
+                  eventMouseEnter: function (info) {
+                      // Change the cursor to a pointer when hovering over an event
+                      info.el.style.cursor = 'pointer';
+                  },
+                  eventMouseLeave: function (info) {
+                      // Reset the cursor when leaving the event
+                      info.el.style.cursor = 'auto';
+                  }
+                  });
+                  calendar.render();
+              });
 
 
     //-Bootstrap Js
