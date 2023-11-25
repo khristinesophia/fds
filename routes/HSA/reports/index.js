@@ -213,14 +213,16 @@ router.get('/dlGuestInHouse', isAuthenticated, async(req, res)=>{
         hotel: hotel,
         reportTitle: "Guests In-House Report",
         overviewTitles: {
-            title1: "Total In-House Guests",
-            title2: "Total Number of Adults",
-            title3: "Total Number of Children"
+            title1: "Total In-House Guests:",
+            title2: "Total Number of Adults:",
+            title3: "Total Number of Children:",
+            title4: "Date Today:"
         },
         overview: {
-            inHouse: totalInHouseGuests,
-            total_adultNoCount: adultNoCount,
-            total_childNoCount: childNoCount
+            overview1: totalInHouseGuests,
+            overview2: adultNoCount,
+            overview3: childNoCount,
+            overview4: getCurrentDate()
         },
         headers: ["Room Number", "Guest Name", "No. of Adult", "No. of Child", "Check-In Date", "Check-Out Date"],
         data: data
@@ -1088,14 +1090,18 @@ router.get('/dlRevenue', isAuthenticated, getHotelColor, getHotelLogo, async(req
         hotel: hotel,
         reportTitle: "Revenue Report",
         overviewTitles: {
-            title1: "Total Revenue",
-            title2: "Highest Occupancy Rate",
-            title3: "Highest Percentage of Revenue"
+            title1: "Total Revenue:",
+            title2: "Highest Occupancy Rate:",
+            title3: "Highest Percentage of Revenue:",
+            title4: "Date Today:",
+            title5: "Range:"
         },
         overview: {
             overview1: summary.totalRevenue,
             overview2: summary.highestOccupancyRateRoomType,
-            overview3: summary.highestPercentageOfRevenueRoomType
+            overview3: summary.highestPercentageOfRevenueRoomType,
+            overview4: getCurrentDate(),
+            overview5: range
         },
         headers: ["Room Type", "Number of Rooms", "Number of Check-Ins", "Occupancy Rate", "Revenue", "Percentage of Revenue"],
         data: data
@@ -1450,16 +1456,18 @@ router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
 
     const pass = {
         hotel: hotel,
-        reportTitle: "Promos Summary Report",
+        reportTitle: "Promos Summary Report:",
         overviewTitles: {
-            title1: "Number of Active Promos",
-            title2: "Number of Inactive Promos",
-            title3: "Times Availed"
+            title1: "Number of Active Promos:",
+            title2: "Number of Inactive Promos:",
+            title3: "Times Availed:",
+            title4: "Date Today:",
         },
         overview: {
             overview1: activeCount,
             overview2: inactiveCount,
-            overview3: timesAvailed
+            overview3: timesAvailed,
+            overview4: getCurrentDate()
         },
         headers: ["Promo Code", "Promo Name", "Discount", "Room Type", "Start Date", "End Date", "Times Availed"],
         data: data
