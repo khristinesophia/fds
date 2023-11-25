@@ -17,6 +17,10 @@ const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
 const capitalizeFirstLetter = require(path.join(__basedir, 'utils', 'capitalizeFirstLetter'))
+const getDate365DaysAgo = require(path.join(__basedir, 'utils', 'getDate365DaysAgo'))
+const getDate30DaysAgo = require(path.join(__basedir, 'utils', 'getDate30DaysAgo'))
+const getDate7DaysAgo = require(path.join(__basedir, 'utils', 'getDate7DaysAgo'))
+const getDate1DayAgo = require(path.join(__basedir, 'utils', 'getDate1DayAgo'))
 
 //- image
 const fs = require('fs')
@@ -239,33 +243,31 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
     const hotelID = req.session.hotelID
     const { range } = req.query
 
+    let startdate
+
     let data = []
+    let summary = {
+        totalRevenue: 0,
+        totalPercentageOfRevenue: 100,
+        highestOccupancyRate: 0,
+        highestOccupancyRateRoomType: null,
+        highestPercentageOfRevenue: 0,
+        highestPercentageOfRevenueRoomType: null,
+    }
 
-    //- there is a STARTDATE and ENDDATE filter
-    if(startdate && enddate){
-        
-    } 
 
-    // //- there is a STARTDATE filter
-    // else if(startdate && !enddate){
+    //- range is YEARLY
+    if(range === 'Yearly'){
+        startdate = getDate365DaysAgo()
 
-    // }
-
-    // //- there is a ENDDATE filter
-    // else if(!startdate && enddate){
-
-    // }
-
-    //- there is NO filter
-    else{
         const result = await pool.query(`
         SELECT 
             t1.roomtype,
             COALESCE(t2.room_count, 0) AS room_count, 
             COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
-            ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 2) AS occupancy_rate,
+            ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
             COALESCE(t4.revenue, 0) AS revenue,
-            ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 2) AS percentage_of_revenue
+            ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
         FROM room_type t1
         LEFT JOIN (
             SELECT 
@@ -284,23 +286,264 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             FROM room_type t1
             LEFT JOIN hist_guestaccounts t3
                 ON t1.roomtype = t3.roomtype
+            WHERE t3.checkoutdate >= $1
             GROUP BY t1.roomtype
             ) t3
         ON t1.roomtype = t3.roomtype
         LEFT JOIN (
             SELECT 
                 t1.typeid,
-                SUM(t5.paid) AS revenue
+                SUM(t3.paid) AS revenue
             FROM room_type t1
-            LEFT JOIN hist_guestaccounts t4
-                ON t1.roomtype = t4.roomtype
-            LEFT JOIN hist_folios t5
-                ON t4.accountid = t5.accountid
+            LEFT JOIN hist_guestaccounts t2
+                ON t1.roomtype = t2.roomtype
+            LEFT JOIN hist_folios t3
+                ON t2.accountid = t3.accountid
+            WHERE t2.checkoutdate >= $2
             GROUP BY t1.typeid
             ) t4
         ON t1.typeid = t4.typeid
-        WHERE t1.hotelid = $1
-        `, [hotelID])
+        WHERE t1.hotelid = $3
+        `, [startdate, startdate, hotelID])
+
+        result.rows.forEach(row=>{
+            if(row.revenue){
+                summary.totalRevenue += parseFloat(row.revenue)
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.occupancy_rate > summary.highestOccupancyRate) {
+                summary.highestOccupancyRate = row.occupancy_rate
+                summary.highestOccupancyRateRoomType = row.roomtype
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                summary.highestPercentageOfRevenueRoomType = row.roomtype
+            }
+        })
+
+        data = result.rows
+    } 
+
+    //- range is MONTHLY
+    else if(range === 'Monthly'){
+        startdate = getDate30DaysAgo()
+
+        const result = await pool.query(`
+        SELECT 
+            t1.roomtype,
+            COALESCE(t2.room_count, 0) AS room_count, 
+            COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+            ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+            COALESCE(t4.revenue, 0) AS revenue,
+            ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+        FROM room_type t1
+        LEFT JOIN (
+            SELECT 
+                t1.typeid,
+                COUNT(t2.roomid) AS room_count
+            FROM room_type t1
+            JOIN rooms t2
+                ON t1.typeid = t2.typeid
+            GROUP BY t1.typeid
+            ) t2
+        ON t1.typeid = t2.typeid
+        LEFT JOIN (
+            SELECT 
+                t1.roomtype,
+                COUNT(t3.accountid) AS guestaccount_count
+            FROM room_type t1
+            LEFT JOIN hist_guestaccounts t3
+                ON t1.roomtype = t3.roomtype
+            WHERE t3.checkoutdate >= $1
+            GROUP BY t1.roomtype
+            ) t3
+        ON t1.roomtype = t3.roomtype
+        LEFT JOIN (
+            SELECT 
+                t1.typeid,
+                SUM(t3.paid) AS revenue
+            FROM room_type t1
+            LEFT JOIN hist_guestaccounts t2
+                ON t1.roomtype = t2.roomtype
+            LEFT JOIN hist_folios t3
+                ON t2.accountid = t3.accountid
+            WHERE t2.checkoutdate >= $2
+            GROUP BY t1.typeid
+            ) t4
+        ON t1.typeid = t4.typeid
+        WHERE t1.hotelid = $3
+        `, [startdate, startdate, hotelID])
+
+        result.rows.forEach(row=>{
+            if(row.revenue){
+                summary.totalRevenue += parseFloat(row.revenue)
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.occupancy_rate > summary.highestOccupancyRate) {
+                summary.highestOccupancyRate = row.occupancy_rate
+                summary.highestOccupancyRateRoomType = row.roomtype
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                summary.highestPercentageOfRevenueRoomType = row.roomtype
+            }
+        })
+
+        data = result.rows
+    }
+
+    //- range is WEEKLY
+    else if(range === 'Weekly'){
+        startdate = getDate7DaysAgo()
+
+        const result = await pool.query(`
+        SELECT 
+            t1.roomtype,
+            COALESCE(t2.room_count, 0) AS room_count, 
+            COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+            ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+            COALESCE(t4.revenue, 0) AS revenue,
+            ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+        FROM room_type t1
+        LEFT JOIN (
+            SELECT 
+                t1.typeid,
+                COUNT(t2.roomid) AS room_count
+            FROM room_type t1
+            JOIN rooms t2
+                ON t1.typeid = t2.typeid
+            GROUP BY t1.typeid
+            ) t2
+        ON t1.typeid = t2.typeid
+        LEFT JOIN (
+            SELECT 
+                t1.roomtype,
+                COUNT(t3.accountid) AS guestaccount_count
+            FROM room_type t1
+            LEFT JOIN hist_guestaccounts t3
+                ON t1.roomtype = t3.roomtype
+            WHERE t3.checkoutdate >= $1
+            GROUP BY t1.roomtype
+            ) t3
+        ON t1.roomtype = t3.roomtype
+        LEFT JOIN (
+            SELECT 
+                t1.typeid,
+                SUM(t3.paid) AS revenue
+            FROM room_type t1
+            LEFT JOIN hist_guestaccounts t2
+                ON t1.roomtype = t2.roomtype
+            LEFT JOIN hist_folios t3
+                ON t2.accountid = t3.accountid
+            WHERE t2.checkoutdate >= $2
+            GROUP BY t1.typeid
+            ) t4
+        ON t1.typeid = t4.typeid
+        WHERE t1.hotelid = $3
+        `, [startdate, startdate, hotelID])
+
+        result.rows.forEach(row=>{
+            if(row.revenue){
+                summary.totalRevenue += parseFloat(row.revenue)
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.occupancy_rate > summary.highestOccupancyRate) {
+                summary.highestOccupancyRate = row.occupancy_rate
+                summary.highestOccupancyRateRoomType = row.roomtype
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                summary.highestPercentageOfRevenueRoomType = row.roomtype
+            }
+        })
+
+        data = result.rows
+    }
+
+    //- there is NO filter
+    else {
+        startdate = getDate1DayAgo()
+
+        const result = await pool.query(`
+        SELECT 
+            t1.roomtype,
+            COALESCE(t2.room_count, 0) AS room_count, 
+            COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+            ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+            COALESCE(t4.revenue, 0) AS revenue,
+            ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+        FROM room_type t1
+        LEFT JOIN (
+            SELECT 
+                t1.typeid,
+                COUNT(t2.roomid) AS room_count
+            FROM room_type t1
+            JOIN rooms t2
+                ON t1.typeid = t2.typeid
+            GROUP BY t1.typeid
+            ) t2
+        ON t1.typeid = t2.typeid
+        LEFT JOIN (
+            SELECT 
+                t1.roomtype,
+                COUNT(t3.accountid) AS guestaccount_count
+            FROM room_type t1
+            LEFT JOIN hist_guestaccounts t3
+                ON t1.roomtype = t3.roomtype
+            WHERE t3.checkoutdate >= $1
+            GROUP BY t1.roomtype
+            ) t3
+        ON t1.roomtype = t3.roomtype
+        LEFT JOIN (
+            SELECT 
+                t1.typeid,
+                SUM(t3.paid) AS revenue
+            FROM room_type t1
+            LEFT JOIN hist_guestaccounts t2
+                ON t1.roomtype = t2.roomtype
+            LEFT JOIN hist_folios t3
+                ON t2.accountid = t3.accountid
+            WHERE t2.checkoutdate >= $2
+            GROUP BY t1.typeid
+            ) t4
+        ON t1.typeid = t4.typeid
+        WHERE t1.hotelid = $3
+        `, [startdate, startdate, hotelID])
+
+        result.rows.forEach(row=>{
+            if(row.revenue){
+                summary.totalRevenue += parseFloat(row.revenue)
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.occupancy_rate > summary.highestOccupancyRate) {
+                summary.highestOccupancyRate = row.occupancy_rate
+                summary.highestOccupancyRateRoomType = row.roomtype
+            }
+        })
+
+        result.rows.forEach(row => {
+            if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                summary.highestPercentageOfRevenueRoomType = row.roomtype
+            }
+        })
 
         data = result.rows
     }
@@ -308,7 +551,8 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
     res.render('HSA/reports/revenue', {
         hotelColor: req.hotelColor,
         hotelLogo: req.hotelImage,
-        dataArray: data
+        dataArray: data,
+        summary: summary
     })
 })
 
