@@ -116,7 +116,8 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         const q7 = `
             SELECT rt.roomtype, COUNT(r.typeid) AS roomtype_count 
             FROM room_type rt
-            LEFT JOIN reservations r ON rt.typeid = r.typeid AND r.hotelid = $1
+            LEFT JOIN reservations r ON rt.typeid = r.typeid 
+            WHERE rt.hotelid = $1
             GROUP BY rt.roomtype;
         `
         const q7result = await pool.query(q7, [hotelid])
@@ -344,7 +345,8 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
         const q7 = `
             SELECT rt.roomtype, COUNT(r.typeid) AS roomtype_count 
             FROM room_type rt
-            LEFT JOIN reservations r ON rt.typeid = r.typeid AND r.hotelid = $1
+            LEFT JOIN reservations r ON rt.typeid = r.typeid
+            WHERE rt.hotelid = $1
             GROUP BY rt.roomtype
         `
         const q7result = await pool.query(q7, [hotelid])

@@ -9,11 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
       return r.roomtype_count;
   });
 
-  var totalReservations = roomTypeCounts.reduce(function(acc, count) {
-      return acc + count;
-  }, 0);
-
-  document.getElementById('reservationCount').textContent = 'Total Reservations: ' + totalReservations;
 
   var ctxReservation = document.getElementById('reservationDonutChart').getContext('2d');
 
