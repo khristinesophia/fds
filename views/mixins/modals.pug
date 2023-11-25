@@ -893,3 +893,24 @@ mixin cashpay()
                     p.err.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before Proceeding.
 
 
+mixin cancelreservation()
+    #modal.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Cancel Reservation
+                button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
+            .modal-body
+                p.mb-3
+                    | Are you sure you want to Cancel this Reservation?
+                .form-check.mt-3
+                    input.form-check-input#confirm-checkbox(type="checkbox")
+                    label.form-check-label(for="confirm-checkbox") I Agree
+                    
+            .modal-footer.mt-3.modalcash
+                form(action='', method="POST")
+                    .ms
+                        button.btn.mod_btn_sec.me-3(type="button", onclick="closeModal()") Cancel
+                        input.btn.mod_btn(type="submit" value="Proceed" onclick="confirmDelete()")
+                    p.err.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before Proceeding.                    
+
+

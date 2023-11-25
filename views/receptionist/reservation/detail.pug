@@ -32,7 +32,10 @@ html(lang="en")
                 .col-4.d-flex.align-items-center.justify-content-end
                     form.me-3(method='POST' action='/reservation/cancelReservation')
                         input(type='hidden' name='reservationid' value=r.reservationid)
-                        button.btn.mod_btn_sec(type='submit') Cancel Reservation 
+                        a.btn.mod_btn_sec( onclick="openModal()" role='button') 
+                            h6 Cancel Reservation
+                        include ../../mixins/modals.pug
+                        +cancelreservation
 
                     form(method='POST' action='/reservation/checkin')
                         input(type='hidden' name='reservationid' value=r.reservationid)
@@ -105,3 +108,4 @@ html(lang="en")
     script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
     //-Customize JS
     script(src='/js/nav-active.js')    
+    script(src='/js/modal.js') 
