@@ -17,6 +17,8 @@ app.use(session({
     saveUninitialized: true
 }))
 
+app.use('/forecasting', express.static(path.join(__basedir, 'forecasting')))
+
 
 // set pug as view engine
 app.set('view engine', 'pug')
@@ -70,7 +72,7 @@ app.use('/HSArooms', HSArooms)
 app.use('/roomtype', roomtype)
 app.use('/pd', pd)
 app.use('/reports', reports)
-app.use('/od', pd)
+app.use('/od', od)
     // receptionist user routes
 app.use('/Rrooms', Rrooms)
 app.use('/reservation', reservation)

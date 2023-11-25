@@ -9,6 +9,8 @@ html(lang="en")
     script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
     script(src='//code.jquery.com/jquery-1.11.1.min.js')
     link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
+    //- Plotly js
+    script(src='https://cdn.plot.ly/plotly-latest.min.js')
 
     //-Customize Css
     link(rel='stylesheet', href='/css/font.css')
@@ -27,13 +29,10 @@ html(lang="en")
         .col-8.d-flex.align-items-center
           h2.text Occupancy Demand
 
-        
-        
+      // iframe to display the HTML file
+      iframe(src=plotPath, width="100%", height="600px")    
 
 
-    //-Table
-    script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
-    script(src='/js/table.js')
     //-Bootstrap Js
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
     //-FontAwesome
