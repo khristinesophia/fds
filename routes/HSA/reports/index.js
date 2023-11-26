@@ -33,6 +33,566 @@ const upload = multer({ dest: 'uploads/' })
 // const { createPdf } = require(path.join(__basedir, 'services', 'createPdf'))
 const { createReport } = require(path.join(__basedir, 'services', 'createReport'))
 
+
+//- promos summary
+router.get('/occupancyReport', getHotelColor, getHotelLogo, async(req, res)=>{
+    const hotelID = req.session.hotelID
+    const { status, typeid } = req.query
+ 
+    const q1 = `
+        SELECT * FROM room_type
+        WHERE hotelid = $1
+        ORDER BY price ASC
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+    const q2 = `
+        SELECT * 
+        FROM promos t1
+        JOIN room_type t2
+            ON t1.typeid = t2.typeid
+        WHERE t1.hotelid = $1
+    `
+    const q2result = await pool.query(q2, [hotelID])
+
+    q2result.rows.forEach(row=>{
+        if(row.startdate){
+            row.startdate = formatDate(row.startdate)
+        }
+        if(row.enddate){
+            row.enddate = formatDate(row.enddate)
+        }
+    })
+
+    let data = []
+
+    //- there is a STATUS and TYPEID filter
+    if(status && typeid){
+        const filteredData = q2result.rows.filter(row => {
+            return row.status == capitalizeFirstLetter(status) && row.typeid == typeid
+        })
+        // console.log(filteredData)
+        data = filteredData
+    } 
+
+    //- there is a STATUS filter
+    else if(status && !typeid){
+        const filteredData = q2result.rows.filter(row => {
+            return row.status == capitalizeFirstLetter(status)
+        })
+        data = filteredData
+    }
+
+    //- there is a TYPEID filter
+    else if(!status && typeid){
+        const filteredData = q2result.rows.filter(row => {
+            return row.typeid == typeid
+        })
+        data = filteredData
+    }
+
+    //- there is NO filter
+    else{
+        data = q2result.rows
+    }
+
+    let activeCount
+    let inactiveCount
+    let timesAvailed = 0
+
+    // console.log(typeid)
+    if(typeid){
+        const result1 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2 AND
+                typeid = $3
+        `, [hotelID, 'Active', typeid])
+
+        //- result.rows.count
+        activeCount = result1.rows[0].count
+
+
+        const result2 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2 AND
+                typeid = $3
+        `, [hotelID, 'Inactive', typeid])
+
+        //- result.rows.count
+        inactiveCount = result2.rows[0].count
+
+        const result3 = await pool.query(`
+            SELECT timesavailed
+            FROM promos
+            WHERE hotelid = $1 AND
+                typeid = $2
+        `, [hotelID, typeid])
+
+        result3.rows.forEach((row)=>{
+            timesAvailed += row.timesavailed
+        })
+    }
+    else{
+        const result1 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2
+        `, [hotelID, 'Active'])
+
+        //- result.rows.count
+        activeCount = result1.rows[0].count
+
+
+        const result2 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2
+        `, [hotelID, 'Inactive'])
+
+        //- result.rows.count
+        inactiveCount = result2.rows[0].count
+
+        const result3 = await pool.query(`
+            SELECT timesavailed
+            FROM promos
+            WHERE hotelid = $1
+        `, [hotelID])
+
+        result3.rows.forEach((row)=>{
+            timesAvailed += row.timesavailed
+        })
+    }
+
+    res.render('HSA/reports/occpuancyReport', {
+        hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
+        allRoomTypeArray: q1result.rows,
+        dataArray: data,
+        activeCount: activeCount,
+        inactiveCount: inactiveCount,
+        timesAvailed: timesAvailed
+    })
+})
+
+router.get('/dlPromosSummary', isAuthenticated, async(req, res)=>{
+    const hotelID = req.session.hotelID
+    const { status, typeid } = req.query
+
+    //- q1
+    //- select all promos
+    const q1result = await pool.query(`
+        SELECT 
+            t1.code,
+            t1.name,
+            t1.discount,
+            t1.startdate,
+            t1.enddate,
+            t1.timesavailed,
+            t1.status,
+            t1.typeid,
+            t2.roomtype
+        FROM promos t1
+        JOIN room_type t2
+            ON t1.typeid = t2.typeid
+        WHERE t1.hotelid = $1
+    `, [hotelID])
+
+    //- format start and end date
+    q1result.rows.forEach(row=>{
+        if(row.startdate){
+            row.startdate = formatDate(row.startdate)
+        }
+        if(row.enddate){
+            row.enddate = formatDate(row.enddate)
+        }
+    })
+
+    let data = []
+
+    //- there is a STATUS and TYPEID filter
+    if(status && typeid){
+        const filteredData = q1result.rows.filter(row => {
+            return row.status == capitalizeFirstLetter(status) && row.typeid == typeid
+        })
+        data = filteredData.map(row => {
+            return {
+                code: row.code,
+                name: row.name,
+                discount: row.discount,
+                roomtype: row.roomtype,
+                startdate: row.startdate,
+                enddate: row.enddate,
+                timesavailed: row.timesavailed
+            }
+        })
+    } 
+
+    //- there is a STATUS filter
+    else if(status && !typeid){
+        const filteredData = q1result.rows.filter(row => {
+            return row.status == capitalizeFirstLetter(status)
+        })
+        data = filteredData.map(row => {
+            return {
+                code: row.code,
+                name: row.name,
+                discount: row.discount,
+                roomtype: row.roomtype,
+                startdate: row.startdate,
+                enddate: row.enddate,
+                timesavailed: row.timesavailed
+            }
+        })
+    }
+
+    //- there is a TYPEID filter
+    else if(!status && typeid){
+        const filteredData = q1result.rows.filter(row => {
+            return row.typeid == typeid
+        })
+        data = filteredData.map(row => {
+            return {
+                code: row.code,
+                name: row.name,
+                discount: row.discount,
+                roomtype: row.roomtype,
+                startdate: row.startdate,
+                enddate: row.enddate,
+                timesavailed: row.timesavailed
+            }
+        })
+    }
+
+    //- there is NO filter
+    else{
+        data = q1result.rows.map(row => {
+            return {
+                code: row.code,
+                name: row.name,
+                discount: row.discount,
+                roomtype: row.roomtype,
+                startdate: row.startdate,
+                enddate: row.enddate,
+                timesavailed: row.timesavailed
+            }
+        })
+    }
+
+    let activeCount
+    let inactiveCount
+    let timesAvailed = 0
+
+    if(typeid){
+        const result1 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2 AND
+                typeid = $3
+        `, [hotelID, 'Active', typeid])
+
+        //- result.rows.count
+        activeCount = result1.rows[0].count
+
+
+        const result2 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2 AND
+                typeid = $3
+        `, [hotelID, 'Inactive', typeid])
+
+        //- result.rows.count
+        inactiveCount = result2.rows[0].count
+
+        const result3 = await pool.query(`
+            SELECT timesavailed
+            FROM promos
+            WHERE hotelid = $1 AND
+                typeid = $2
+        `, [hotelID, typeid])
+
+        result3.rows.forEach((row)=>{
+            timesAvailed += row.timesavailed
+        })
+    }
+    else{
+        const result1 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2
+        `, [hotelID, 'Active'])
+
+        //- result.rows.count
+        activeCount = result1.rows[0].count
+
+
+        const result2 = await pool.query(`
+            SELECT COUNT(*)
+            FROM promos
+            WHERE hotelid = $1 AND
+                status = $2
+        `, [hotelID, 'Inactive'])
+
+        //- result.rows.count
+        inactiveCount = result2.rows[0].count
+
+        const result3 = await pool.query(`
+            SELECT timesavailed
+            FROM promos
+            WHERE hotelid = $1
+        `, [hotelID])
+
+        result3.rows.forEach((row)=>{
+            timesAvailed += row.timesavailed
+        })
+    }
+
+    //- q2
+    const q2result = await pool.query(`
+        SELECT 
+            hotelname, 
+            hotellocation
+        FROM hotels
+        WHERE hotelid = $1
+    `, [hotelID])
+
+    //- hotel
+    const hotel = q2result.rows[0]
+
+    const pass = {
+        hotel: hotel,
+        reportTitle: "Promos Summary Report:",
+        overviewTitles: {
+            title1: "Number of Active Promos:",
+            title2: "Number of Inactive Promos:",
+            title3: "Times Availed:",
+            title4: "Date Today:",
+        },
+        overview: {
+            overview1: activeCount,
+            overview2: inactiveCount,
+            overview3: timesAvailed,
+            overview4: getCurrentDate()
+        },
+        headers: ["Promo Code", "Promo Name", "Discount", "Room Type", "Start Date", "End Date", "Times Availed"],
+        data: data
+    }
+
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `GuestInHouse.pdf`
+    })
+
+    createReport(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        pass
+    )
+})
+
+
+
+
+
+
+
+
+
+
+
+//- reservation summary report
+router.get('/reservationSummary', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
+    const hotelID = req.session.hotelID
+
+    //- select all reservationhistory
+    const q1 = `
+        SELECT *, t1.status FROM hist_reservations t1
+        LEFT JOIN hist_reservation_guestdetails t2
+            ON t1.reservationid = t2.reservationid
+        LEFT JOIN rooms t3
+            ON t1.roomid = t3.roomid
+        LEFT JOIN room_type t4
+            ON t1.typeid = t4.typeid
+        WHERE t1.hotelid = $1
+        ORDER BY t1.checkindate DESC
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+    q1result.rows.forEach((r)=>{
+        if(r.checkindate){
+            r.checkindate = formatDate(r.checkindate)
+        }
+        if(r.checkoutdate){
+            r.checkoutdate = formatDate(r.checkoutdate)
+        }
+        if(r.reservationdate){
+            r.reservationdate = formatDate(r.reservationdate)
+        }
+    })
+
+    //- overall count of reservations
+    const q2 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1;
+    `
+    const q2result = await pool.query(q2, [hotelID])
+    const reservationAllCount = q2result.rows[0].count
+
+    //- overall count of checked-in reservation
+    const q3 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1
+        AND status = $2;
+    `
+    const q3result = await pool.query(q3, [hotelID, 'Checked-in'])
+    const checkedinCount = q3result.rows[0].count
+
+    //- overall count of cancelled reservations
+    const q4 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1
+        AND status = $2;
+    `
+    const q4result = await pool.query(q4, [hotelID, 'Cancelled'])
+    const cancelledCount = q4result.rows[0].count
+
+
+    res.render('HSA/reports/reservationSummary', {
+        hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
+        reservation: q1result.rows,
+        reservationAllCount: reservationAllCount,
+        checkedinCount: checkedinCount,
+        cancelledCount: cancelledCount
+    })
+})
+
+router.get('/dlreservationSummary', isAuthenticated, async(req, res)=>{
+    const hotelID = req.session.hotelID
+
+
+    //- select all reservationhistory
+    const q1 = `
+        SELECT
+            t1.reservationid,
+            t2.fullname,
+            t4.roomtype,
+            t3.roomnum,
+            t1.reservationdate,
+            t1.status 
+        FROM hist_reservations t1
+        LEFT JOIN hist_reservation_guestdetails t2
+            ON t1.reservationid = t2.reservationid
+        LEFT JOIN rooms t3
+            ON t1.roomid = t3.roomid
+        LEFT JOIN room_type t4
+            ON t1.typeid = t4.typeid
+        WHERE t1.hotelid = $1
+        ORDER BY t1.checkindate DESC
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+    q1result.rows.forEach((r)=>{
+        if(r.checkindate){
+            r.checkindate = formatDate(r.checkindate)
+        }
+        if(r.checkoutdate){
+            r.checkoutdate = formatDate(r.checkoutdate)
+        }
+        if(r.reservationdate){
+            r.reservationdate = formatDate(r.reservationdate)
+        }
+    })
+
+    //- overall count of reservations
+    const q2 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1;
+    `
+    const q2result = await pool.query(q2, [hotelID])
+    const reservationAllCount = q2result.rows[0].count
+
+    //- overall count of checked-in reservation
+    const q3 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1
+        AND status = $2;
+    `
+    const q3result = await pool.query(q3, [hotelID, 'Checked-in'])
+    const checkedinCount = q3result.rows[0].count
+
+    //- overall count of cancelled reservations
+    const q4 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1
+        AND status = $2;
+    `
+    const q4result = await pool.query(q4, [hotelID, 'Cancelled'])
+    const cancelledCount = q4result.rows[0].count
+
+    //- q5
+    const q5result = await pool.query(`
+        SELECT 
+            hotelname, 
+            hotellocation
+        FROM hotels
+        WHERE hotelid = $1
+    `, [hotelID])
+    
+    //- data
+    const data = q1result.rows
+
+    //- hotel
+    const hotel = q5result.rows[0] 
+
+    const pass = {
+        hotel: hotel,
+        reportTitle: "Reservation Summary Report",
+        overviewTitles: {
+            title1: "Total Number of Reservation:",
+            title2: "Total Number of Successful Reservation:",
+            title3: "Total Number of Cancelled Reservation:",
+            title4: "Date Today:"
+        },
+        overview: {
+            overview1: reservationAllCount,
+            overview2: checkedinCount,
+            overview3: cancelledCount,
+            overview4: getCurrentDate()
+        },
+        headers: ["Reservation ID", "Guest Name", "Room Type", "Room Number", "Reservation Date", "Status"],
+        data: data
+    }
+
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `ReservationSummary.pdf`
+    })
+
+    createReport(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        pass
+    )
+})
+
+
+
 //- guest in-house report
 router.get('/guestInHouse', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     const hotelID = req.session.hotelID

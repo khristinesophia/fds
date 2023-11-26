@@ -1,0 +1,87 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    
+    script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
+    script(src='//code.jquery.com/jquery-1.11.1.min.js')
+    link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
+
+    link(rel='stylesheet', href='/css/font.css')
+    link(rel='stylesheet', href='/css/navigation.css')
+    link(rel='stylesheet', href='/css/action_button.css')
+    link(rel='stylesheet', href='/css/table.css')
+    link(rel='stylesheet', href='/css/card.css')
+
+    title Reservation Summary
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
+  
+  body
+    include ../../partials/navHSA.pug
+
+    .content
+        .container
+            h2 Report Overview
+            .row.mt-4
+                //- column
+                .col 
+                    //- card
+                    .card.bg-success.shadow.text-white.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{reservationAllCount}
+                            p.lead Total Reservation
+
+                //- column
+                .col 
+                    //- card
+                    .card.bg-warning.shadow.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{checkedinCount}
+                            p.lead Total Successful Reservation
+
+                //- column
+                .col 
+                    //- card
+                    .card.bg-danger.shadow.text-white.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{cancelledCount}
+                            p.lead Total Cancelled Reservation
+            
+            .d-flex.justify-content-between.align-items-center.mt-5
+                .col 
+                    h2 All Reservations
+                .col.text-end 
+                    a(href="/reports/dlreservationSummary") 
+                        h2.fa-solid.fa-download
+            .row.mt-4.p-3.bg-white.shadow
+                table.table
+                    //- thead
+                    thead 
+                        //- trow
+                        tr 
+                            th Reservation ID
+                            th Guest Name
+                            th Room Type
+                            th Room Number
+                            th Reservation Date
+                            th Status
+                    tbody
+                        each r in reservation
+                            tr
+                                td #{r.reservationid}
+                                td #{r.fullname}
+                                td #{r.roomtype}
+                                td #{r.roomnum}
+                                td #{r.reservationdate}
+                                td #{r.status}
+            
+
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
+    script(src='/js/nav-active.js')
+      

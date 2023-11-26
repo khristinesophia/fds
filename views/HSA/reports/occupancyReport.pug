@@ -1,0 +1,113 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    
+    script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
+    script(src='//code.jquery.com/jquery-1.11.1.min.js')
+    link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
+
+    link(rel='stylesheet', href='/css/font.css')
+    link(rel='stylesheet', href='/css/navigation.css')
+    link(rel='stylesheet', href='/css/action_button.css')
+    link(rel='stylesheet', href='/css/table.css')
+    link(rel='stylesheet', href='/css/card.css')
+
+    title Occupancy Report
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
+  
+  body
+    include ../../partials/navHSA.pug
+
+    .content
+        .container
+            h2 Report Overview
+            .row.mt-4
+                //- column
+                .col 
+                    //- card
+                    .card.bg-success.shadow.text-white.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{activeCount}
+                            p.lead Number of Active Promos
+
+                //- column
+                .col 
+                    //- card
+                    .card.bg-warning.shadow.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{inactiveCount}
+                            p.lead Number of Inactive Promos
+
+                //- column
+                .col 
+                    //- card
+                    .card.bg-danger.shadow.text-white.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{timesAvailed}
+                            p.lead Times Availed
+            
+            .d-flex.justify-content-between.align-items-center.mt-5
+                .col 
+                    h2 Occupancy Report
+                form(id="promoFilterForm" action="")
+                    .d-flex
+                        .row.g-3.align-items-center
+                            .col-auto
+                                label.col-form-label Status
+                            .col-auto
+                                select.form-select.form-select-sm(id='status')
+                                    option(value="All" id='nullstatus') All
+                                    option(value="Active") Active
+                                    option(value="Inactive") Inactive
+
+                        .row.g-3.align-items-center
+                            .col-auto
+                                label.col-form-label Room Type
+                            .col-auto
+                                select.form-select.form-select-sm(id='typeid', name='typeid')
+                                    option(value="All" id='nulltypeid') All
+                                    each x in allRoomTypeArray
+                                        option(value=x.typeid)= x.roomtype
+                        
+
+                .col.text-end 
+                    a(href="#") 
+                        h2.fa-solid.fa-print.me-3
+                    a(href="#" id="downloadAnchor") 
+                        h2.fa-solid.fa-download
+
+            .row.mt-4.p-3.bg-white.shadow
+                table.table
+                    //- thead
+                    thead 
+                        //- trow
+                        tr 
+                            th Promo Code
+                            th Promo Name
+                            th Discount
+                            th Room Type
+                            th Start Date
+                            th End Date
+                            th Times Availed
+                    tbody
+                        each data in dataArray
+                            tr 
+                                td #{data.code}
+                                td #{data.name}
+                                td #{data.discount}
+                                td #{data.roomtype}
+                                td #{data.startdate}
+                                td #{data.enddate}
+                                td #{data.timesavailed}
+            
+
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
+    script(src='/js/nav-active.js')
+    script(src='/js/reports/promofilter.js')
