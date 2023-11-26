@@ -28,6 +28,10 @@ html(lang="en")
       .row.mx-5
         .col-8.d-flex.align-items-center
           h2.text Occupancy Demand
+        .col-4.text-end
+          // Add the download button on the right side
+          button(type="button", id="downloadButton", class="btn btn-primary") Download Report
+
 
       // iframe to display the HTML file
       iframe(src=plotPath, width="100%", height="600px")    
