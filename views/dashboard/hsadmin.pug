@@ -109,13 +109,33 @@ html(lang="en")
                     .row
                       .col-6
                         h4.card-title.mb-2 Guest In-House 
-                        .canvas-container
-                          canvas#donutChart(style="height: 230px;")
+                        
                       .col-6
-                        .d-flex.flex-column.align-items-start
-                          h2 Adult: #{adultNoCount}
-                          h2#childrenCount Children: #{childNoCount}
-                          h2#totalCount Total: 
+                        .d-flex.justify-content-end   
+                          h4#totalCount Total Count: 
+                      .row
+                        .col-6 
+                          .canvas-container
+                            canvas#donutChart(style="height: 230px;")
+                        .col-6
+                          .card.shadow-sm(style="background: #36a2eb; width:200px;")
+                            .card-body.d-flex.flex-row.align-items-center
+                              //- Container for the icon with a background box
+                              .icon-counts.d-flex.align-items-center
+                                i.fas.fa-person-half-dress.icon-sm
+                              //- Right column for span and h1
+                              .d-flex.flex-column.align-items-start.body-info.ms-3
+                                h4 #{adultNoCount}
+                                h6 Adult
+                          .card.shadow-sm.mt-3(style="background: #ff6384; width:200px;")
+                            .card-body.d-flex.flex-row.align-items-center
+                              //- Container for the icon with a background box
+                              .icon-count.d-flex.align-items-center
+                                i.fas.fa-children.icon-sm
+                              //- Right column for span and h1
+                              .d-flex.flex-column.align-items-start.body-info.ms-3
+                                h4#childrenCount #{childNoCount}
+                                h6 Children            
 
               
             //-Third Row
