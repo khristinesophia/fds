@@ -82,15 +82,18 @@ app.use('/rhist', reservationhist)
 app.use('/404', forofor)
 
 
-// app.get('/', (req, res) => {
-//     res.render('landing')
-// })
 
 app.get('/', (req, res)=>{
     res.render('login/loginSA', {
         route: "/login"
     })
 })
+
+
+app.use((req, res, next) => {
+    res.render('404')
+})
+
 
 
 const PORT = 5000
