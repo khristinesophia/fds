@@ -157,7 +157,7 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
 
         //- q10
         //- get first 3 arrival
-        const q10 = `
+        /*const q10 = `
             SELECT 
                 t1.reservationid,
                 t2.fullname,
@@ -168,6 +168,18 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             WHERE t1.hotelid = $1
             ORDER BY checkindate ASC
             LIMIT 5
+        `*/
+        const q10 = `
+            SELECT 
+                t1.reservationid,
+                t2.fullname,
+                t1.checkindate
+            FROM reservations t1
+            JOIN reservation_guestdetails t2
+                ON t1.reservationid = t2.reservationid
+            WHERE 
+                t1.hotelid = $1
+                AND t1.checkindate::date = CURRENT_DATE;
         `
         const q10result = await pool.query(q10, [hotelid])
         q10result.rows.forEach(row=>{
@@ -386,7 +398,7 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
 
         //- q10
         //- get first 3 arrival
-        const q10 = `
+        /*const q10 = `
             SELECT 
                 t1.reservationid,
                 t2.fullname,
@@ -397,6 +409,18 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
             WHERE t1.hotelid = $1
             ORDER BY checkindate ASC
             LIMIT 5
+        `*/
+        const q10 = `
+            SELECT 
+                t1.reservationid,
+                t2.fullname,
+                t1.checkindate
+            FROM reservations t1
+            JOIN reservation_guestdetails t2
+                ON t1.reservationid = t2.reservationid
+            WHERE 
+                t1.hotelid = $1
+                AND t1.checkindate::date = CURRENT_DATE;
         `
         const q10result = await pool.query(q10, [hotelid])
         q10result.rows.forEach(row=>{

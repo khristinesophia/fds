@@ -129,11 +129,6 @@ router.get('/detail/:id', isAuthenticated, getHotelLogo, getHotelColor, async(re
 })
 
 
-//- route that handles edit
-
-
-
-
 //- route that handles checkin
 router.post('/checkin', isAuthenticated, getHotelLogo, getHotelColor, async (req, res) => {
     try {

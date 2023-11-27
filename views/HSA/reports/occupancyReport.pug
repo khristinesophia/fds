@@ -1,0 +1,160 @@
+doctype html
+html(lang="en")
+  head
+    meta(charset="UTF-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+    link(href='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css' rel='stylesheet' integrity='sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC' crossorigin='anonymous')
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    
+    script(src='//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js')
+    script(src='//code.jquery.com/jquery-1.11.1.min.js')
+    link(rel='stylesheet' type='text/css' href='https://cdn.datatables.net/1.10.16/css/jquery.dataTables.min.css')
+
+    link(rel='stylesheet', href='/css/font.css')
+    link(rel='stylesheet', href='/css/navigation.css')
+    link(rel='stylesheet', href='/css/action_button.css')
+    link(rel='stylesheet', href='/css/table.css')
+    link(rel='stylesheet', href='/css/card.css')
+
+    title Occupancy Report
+
+    //- sa head lagi nakalagay ang color.pug
+    include ../../partials/color.pug
+  
+  body
+    include ../../partials/navHSA.pug
+
+    .content
+        .container
+            h2 Report Overview
+            .row.mt-4
+                //- column
+                .col 
+                    //- card
+                    .card.bg-success.shadow.text-white.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{allOccupancy}
+                            p.lead Total Occupancy
+
+                //- column
+                .col 
+                    //- card
+                    .card.bg-warning.shadow.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{highestDay}
+                            p.lead Highest Occupancy (Day)
+
+                //- column
+                .col 
+                    //- card
+                    .card.bg-danger.shadow.text-white.text-center 
+                        .card-body
+                            p.display-6.fw-normal #{highestMonth}
+                            p.lead Highest Occupancy (Month)
+            
+            //- All Guests
+            .d-flex.justify-content-between.align-items-center.mt-5
+                .col 
+                    h3 Guests History
+                .col.text-end 
+                    a(href="/reports/dloccupancyReport") 
+                        h2.fa-solid.fa-download
+            .row.mt-4.p-3.bg-white.shadow
+                .table-scroll
+                    table.table
+                        //- thead
+                        thead 
+                            //- trow
+                            tr 
+                                th(class='text-center') Guest Name
+                                th(class='text-center') Room Type
+                                th(class='text-center') Room Number
+                                th(class='text-center') Check-in Date
+                                th(class='text-center') Check-out Date
+                                th(class='text-center') Number of Days
+                        tbody
+                            each r in allGuests
+                                tr
+                                    td(class='text-center') #{r.fullname}
+                                    td(class='text-center') #{r.roomtype}
+                                    td(class='text-center') #{r.roomnum}
+                                    td(class='text-center') #{r.checkindate}
+                                    td(class='text-center') #{r.checkoutdate}
+                                    td(class='text-center') #{r.numofdays}
+            
+            //- Guest Type
+            .d-flex.justify-content-between.align-items-center.mt-5
+                .col 
+                    h3 Guest Type
+            .row.mt-4.p-3.bg-white.shadow
+                table.table
+                    //- thead
+                    thead 
+                        //- trow
+                        tr 
+                            th(class='text-center') Guest Type
+                            th(class='text-center') Total Occupancy
+                    tbody
+                        each r in guesttype
+                            tr
+                                td(class='text-center') #{r.guest_type}
+                                td(class='text-center') #{r.guest_count}
+
+            //- Room Type
+            .d-flex.justify-content-between.align-items-center.mt-5
+                .col 
+                    h3 Room Type
+            .row.mt-4.p-3.bg-white.shadow
+                table.table
+                    //- thead
+                    thead 
+                        tr 
+                            th(class='text-center') Room Type
+                            th(class='text-center') Total Occupancy
+                    tbody
+                        each r in roomtype
+                            tr
+                                td(class='text-center') #{r.roomtype}
+                                td(class='text-center') #{r.roomtype_count}
+
+            //- Occupancy per Day
+            .d-flex.justify-content-between.align-items-center.mt-5
+                .col 
+                    h3 Occupancy per Day
+            .row.mt-4.p-3.bg-white.shadow
+                table.table
+                    //- thead
+                    thead 
+                        //- trow
+                        tr 
+                            th(class='text-center') Day
+                            th(class='text-center') Total Occupancy
+                    tbody
+                        each r in perDay
+                            tr
+                                td(class='text-center') #{r.day_of_week}
+                                td(class='text-center') #{r.checkin_count}
+
+            //- Occupancy per Month
+            .d-flex.justify-content-between.align-items-center.mt-5
+                .col 
+                    h3 Occupancy per Month
+            .row.mt-4.p-3.bg-white.shadow
+                table.table
+                    //- thead
+                    thead 
+                        //- trow
+                        tr 
+                            th(class='text-center') Month
+                            th(class='text-center') Total Occupancy
+                    tbody
+                        each r in perMonth
+                            tr
+                                td(class='text-center') #{r.month_name}
+                                td(class='text-center') #{r.checkin_count}
+
+
+    script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
+    script(src='https://kit.fontawesome.com/72e773f6c0.js' crossorigin='anonymous')
+    script(src='/js/nav-active.js')
+      

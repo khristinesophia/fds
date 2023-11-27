@@ -23,6 +23,12 @@ const { getDate365DaysAgo,
     getDate7DaysAgo, 
     getDate1DayAgo } = require(path.join(__basedir, 'utils', 'getDateDaysAgo'))
 
+
+const puppeteer = require('puppeteer');
+const pug = require('pug');
+
+
+
 //- image
 const fs = require('fs')
 const multer = require('multer')
@@ -32,6 +38,712 @@ const upload = multer({ dest: 'uploads/' })
 // const { createGuestInHouse } = require(path.join(__basedir, 'services', 'pdf-guestinhouse'))
 // const { createPdf } = require(path.join(__basedir, 'services', 'createPdf'))
 const { createReport } = require(path.join(__basedir, 'services', 'createReport'))
+
+
+//- occupancy report
+router.get('/occupancyReport', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
+    const hotelID = req.session.hotelID
+
+    //- count per guest type
+    const q1 = `
+        SELECT
+            CASE
+                WHEN reservationdate IS NULL THEN 'Walk-in'
+                ELSE 'Reservation'
+            END AS guest_type,
+            COUNT(*) AS guest_count
+        FROM
+            hist_guestaccounts
+        WHERE hotelid = $1
+        GROUP BY
+            guest_type;
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+
+    //- count per room type
+    const q2 = `
+        SELECT roomtype, COUNT(roomtype) AS roomtype_count 
+        FROM hist_guestaccounts
+        WHERE hotelid = $1
+        GROUP BY roomtype
+        ORDER BY roomtype_count DESC;
+    `
+    const q2result = await pool.query(q2, [hotelID])
+
+    //- occupancy per day
+    const q3 = `
+        SELECT
+            all_days.day_of_week,
+            COUNT(hist_guestaccounts.checkindate) AS checkin_count
+        FROM
+            (SELECT 'Sunday' AS day_of_week, 0 AS day_order
+            UNION SELECT 'Monday', 1
+            UNION SELECT 'Tuesday', 2
+            UNION SELECT 'Wednesday', 3
+            UNION SELECT 'Thursday', 4
+            UNION SELECT 'Friday', 5
+            UNION SELECT 'Saturday', 6) AS all_days
+        LEFT JOIN
+            hist_guestaccounts ON all_days.day_of_week = 
+            CASE
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 0 THEN 'Sunday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 1 THEN 'Monday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 2 THEN 'Tuesday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 3 THEN 'Wednesday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 4 THEN 'Thursday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 5 THEN 'Friday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 6 THEN 'Saturday'
+            END
+        WHERE hotelid = $1
+        GROUP BY
+            all_days.day_of_week
+        ORDER BY
+            checkin_count DESC;
+    `
+    const q3result = await pool.query(q3, [hotelID])
+
+    //- occupancy per month
+    const q4 = `
+        SELECT
+            all_months.month_name,
+            COALESCE(COUNT(hist_guestaccounts.checkindate), 0) AS checkin_count
+        FROM
+            (SELECT 'January' AS month_name, 1 AS month_order
+            UNION SELECT 'February', 2
+            UNION SELECT 'March', 3
+            UNION SELECT 'April', 4
+            UNION SELECT 'May', 5
+            UNION SELECT 'June', 6
+            UNION SELECT 'July', 7
+            UNION SELECT 'August', 8
+            UNION SELECT 'September', 9
+            UNION SELECT 'October', 10
+            UNION SELECT 'November', 11
+            UNION SELECT 'December', 12) AS all_months
+        LEFT JOIN
+            hist_guestaccounts ON all_months.month_name = 
+            CASE
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 1 THEN 'January'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 2 THEN 'February'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 3 THEN 'March'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 4 THEN 'April'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 5 THEN 'May'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 6 THEN 'June'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 7 THEN 'July'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 8 THEN 'August'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 9 THEN 'September'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 10 THEN 'October'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 11 THEN 'November'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 12 THEN 'December'
+            END
+        WHERE hotelid = $1
+        GROUP BY
+            all_months.month_name
+        ORDER BY
+            checkin_count DESC;
+    `
+    const q4result = await pool.query(q4, [hotelID])
+
+    // Occupancy all count
+    const q5 = `
+        SELECT COUNT(*)
+        FROM hist_guestaccounts
+        WHERE hotelid = $1;
+    `
+    const q5result = await pool.query(q5, [hotelID])
+    const allOccupancy = q5result.rows[0].count
+
+    // Day with highest occupancy
+    const q6 = `
+        SELECT
+            all_days.day_of_week
+        FROM
+            (SELECT 'Sunday' AS day_of_week, 0 AS day_order
+            UNION SELECT 'Monday', 1
+            UNION SELECT 'Tuesday', 2
+            UNION SELECT 'Wednesday', 3
+            UNION SELECT 'Thursday', 4
+            UNION SELECT 'Friday', 5
+            UNION SELECT 'Saturday', 6) AS all_days
+        LEFT JOIN
+            hist_guestaccounts ON all_days.day_of_week = 
+            CASE
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 0 THEN 'Sunday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 1 THEN 'Monday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 2 THEN 'Tuesday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 3 THEN 'Wednesday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 4 THEN 'Thursday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 5 THEN 'Friday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 6 THEN 'Saturday'
+            END
+        WHERE hotelid = $1
+        GROUP BY
+            all_days.day_of_week
+        ORDER BY
+            COUNT(hist_guestaccounts.checkindate) DESC
+        LIMIT 1;
+    `
+    const q6result = await pool.query(q6, [hotelID])
+    const highestDay = q6result.rows[0].day_of_week
+
+    // Month with highest occupancy
+    const q7 = `
+        SELECT
+            all_months.month_name
+        FROM
+            (SELECT 'January' AS month_name, 1 AS month_order
+            UNION SELECT 'February', 2
+            UNION SELECT 'March', 3
+            UNION SELECT 'April', 4
+            UNION SELECT 'May', 5
+            UNION SELECT 'June', 6
+            UNION SELECT 'July', 7
+            UNION SELECT 'August', 8
+            UNION SELECT 'September', 9
+            UNION SELECT 'October', 10
+            UNION SELECT 'November', 11
+            UNION SELECT 'December', 12) AS all_months
+        LEFT JOIN
+            hist_guestaccounts ON all_months.month_name = 
+            CASE
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 1 THEN 'January'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 2 THEN 'February'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 3 THEN 'March'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 4 THEN 'April'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 5 THEN 'May'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 6 THEN 'June'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 7 THEN 'July'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 8 THEN 'August'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 9 THEN 'September'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 10 THEN 'October'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 11 THEN 'November'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 12 THEN 'December'
+            END
+        WHERE hotelid = $1
+        GROUP BY
+            all_months.month_name
+        ORDER BY
+            COUNT(hist_guestaccounts.checkindate) DESC
+        LIMIT 1;
+    `
+    const q7result = await pool.query(q7, [hotelID])
+    const highestMonth = q7result.rows[0].month_name
+
+    //all guests checkedout
+    const q8 = `
+        SELECT hgg.fullname, roomtype, roomnum, checkindate, checkoutdate, numofdays 
+        FROM hist_guestaccounts hg 
+        JOIN hist_guestaccounts_guestdetails hgg 
+        ON hg.accountid = hgg.accountid
+        WHERE hg.hotelid = $1;
+    `
+    const q8result = await pool.query(q8, [hotelID])
+
+    q8result.rows.forEach((r)=>{
+        if(r.checkindate){
+            r.checkindate = formatDate(r.checkindate)
+        }
+        if(r.checkoutdate){
+            r.checkoutdate = formatDate(r.checkoutdate)
+        }
+    })
+
+
+    res.render('HSA/reports/occupancyReport', {
+        hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
+        guesttype: q1result.rows,
+        roomtype: q2result.rows,
+        perDay: q3result.rows,
+        perMonth: q4result.rows,
+        allOccupancy: allOccupancy,
+        highestDay: highestDay,
+        highestMonth: highestMonth,
+        allGuests: q8result.rows
+    })
+})
+
+router.get('/dloccupancyReport', isAuthenticated, async(req, res)=>{
+    const hotelID = req.session.hotelID
+
+    //- count per guest type
+    const q1 = `
+        SELECT
+            CASE
+                WHEN reservationdate IS NULL THEN 'Walk-in'
+                ELSE 'Reservation'
+            END AS guest_type,
+            COUNT(*) AS guest_count
+        FROM
+            hist_guestaccounts
+        WHERE hotelid = $1
+        GROUP BY
+            guest_type;
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+
+    //- count per room type
+    const q2 = `
+        SELECT roomtype, COUNT(roomtype) AS roomtype_count 
+        FROM hist_guestaccounts
+        WHERE hotelid = $1
+        GROUP BY roomtype
+        ORDER BY roomtype_count DESC;
+    `
+    const q2result = await pool.query(q2, [hotelID])
+
+    //- occupancy per day
+    const q3 = `
+        SELECT
+            all_days.day_of_week,
+            COUNT(hist_guestaccounts.checkindate) AS checkin_count
+        FROM
+            (SELECT 'Sunday' AS day_of_week, 0 AS day_order
+            UNION SELECT 'Monday', 1
+            UNION SELECT 'Tuesday', 2
+            UNION SELECT 'Wednesday', 3
+            UNION SELECT 'Thursday', 4
+            UNION SELECT 'Friday', 5
+            UNION SELECT 'Saturday', 6) AS all_days
+        LEFT JOIN
+            hist_guestaccounts ON all_days.day_of_week = 
+            CASE
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 0 THEN 'Sunday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 1 THEN 'Monday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 2 THEN 'Tuesday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 3 THEN 'Wednesday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 4 THEN 'Thursday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 5 THEN 'Friday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 6 THEN 'Saturday'
+            END
+        WHERE hotelid = $1
+        GROUP BY
+            all_days.day_of_week
+        ORDER BY
+            checkin_count DESC;
+    `
+    const q3result = await pool.query(q3, [hotelID])
+
+    //- occupancy per month
+    const q4 = `
+        SELECT
+            all_months.month_name,
+            COALESCE(COUNT(hist_guestaccounts.checkindate), 0) AS checkin_count
+        FROM
+            (SELECT 'January' AS month_name, 1 AS month_order
+            UNION SELECT 'February', 2
+            UNION SELECT 'March', 3
+            UNION SELECT 'April', 4
+            UNION SELECT 'May', 5
+            UNION SELECT 'June', 6
+            UNION SELECT 'July', 7
+            UNION SELECT 'August', 8
+            UNION SELECT 'September', 9
+            UNION SELECT 'October', 10
+            UNION SELECT 'November', 11
+            UNION SELECT 'December', 12) AS all_months
+        LEFT JOIN
+            hist_guestaccounts ON all_months.month_name = 
+            CASE
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 1 THEN 'January'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 2 THEN 'February'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 3 THEN 'March'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 4 THEN 'April'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 5 THEN 'May'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 6 THEN 'June'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 7 THEN 'July'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 8 THEN 'August'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 9 THEN 'September'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 10 THEN 'October'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 11 THEN 'November'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 12 THEN 'December'
+            END
+        WHERE hotelid = $1
+        GROUP BY
+            all_months.month_name
+        ORDER BY
+            checkin_count DESC;
+    `
+    const q4result = await pool.query(q4, [hotelID])
+
+    // Occupancy all count
+    const q5 = `
+        SELECT COUNT(*)
+        FROM hist_guestaccounts
+        WHERE hotelid = $1;
+    `
+    const q5result = await pool.query(q5, [hotelID])
+    const allOccupancy = q5result.rows[0].count
+
+    // Day with highest occupancy
+    const q6 = `
+        SELECT
+            all_days.day_of_week
+        FROM
+            (SELECT 'Sunday' AS day_of_week, 0 AS day_order
+            UNION SELECT 'Monday', 1
+            UNION SELECT 'Tuesday', 2
+            UNION SELECT 'Wednesday', 3
+            UNION SELECT 'Thursday', 4
+            UNION SELECT 'Friday', 5
+            UNION SELECT 'Saturday', 6) AS all_days
+        LEFT JOIN
+            hist_guestaccounts ON all_days.day_of_week = 
+            CASE
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 0 THEN 'Sunday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 1 THEN 'Monday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 2 THEN 'Tuesday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 3 THEN 'Wednesday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 4 THEN 'Thursday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 5 THEN 'Friday'
+                WHEN EXTRACT(DOW FROM hist_guestaccounts.checkindate) = 6 THEN 'Saturday'
+            END
+        WHERE hotelid = $1
+        GROUP BY
+            all_days.day_of_week
+        ORDER BY
+            COUNT(hist_guestaccounts.checkindate) DESC
+        LIMIT 1;
+    `
+    const q6result = await pool.query(q6, [hotelID])
+    const highestDay = q6result.rows[0].day_of_week
+
+    // Month with highest occupancy
+    const q7 = `
+        SELECT
+            all_months.month_name
+        FROM
+            (SELECT 'January' AS month_name, 1 AS month_order
+            UNION SELECT 'February', 2
+            UNION SELECT 'March', 3
+            UNION SELECT 'April', 4
+            UNION SELECT 'May', 5
+            UNION SELECT 'June', 6
+            UNION SELECT 'July', 7
+            UNION SELECT 'August', 8
+            UNION SELECT 'September', 9
+            UNION SELECT 'October', 10
+            UNION SELECT 'November', 11
+            UNION SELECT 'December', 12) AS all_months
+        LEFT JOIN
+            hist_guestaccounts ON all_months.month_name = 
+            CASE
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 1 THEN 'January'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 2 THEN 'February'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 3 THEN 'March'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 4 THEN 'April'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 5 THEN 'May'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 6 THEN 'June'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 7 THEN 'July'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 8 THEN 'August'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 9 THEN 'September'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 10 THEN 'October'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 11 THEN 'November'
+                WHEN EXTRACT(MONTH FROM hist_guestaccounts.checkindate) = 12 THEN 'December'
+            END
+        WHERE hotelid = $1
+        GROUP BY
+            all_months.month_name
+        ORDER BY
+            COUNT(hist_guestaccounts.checkindate) DESC
+        LIMIT 1;
+    `
+    const q7result = await pool.query(q7, [hotelID])
+    const highestMonth = q7result.rows[0].month_name
+
+    //all guests checkedout
+    const q8 = `
+        SELECT hgg.fullname, roomtype, roomnum, checkindate, checkoutdate, numofdays 
+        FROM hist_guestaccounts hg 
+        JOIN hist_guestaccounts_guestdetails hgg 
+        ON hg.accountid = hgg.accountid
+        WHERE hg.hotelid = $1;
+    `
+    const q8result = await pool.query(q8, [hotelID])
+
+    q8result.rows.forEach((r)=>{
+    if(r.checkindate){
+        r.checkindate = formatDate(r.checkindate)
+    }
+    if(r.checkoutdate){
+        r.checkoutdate = formatDate(r.checkoutdate)
+    }
+    })
+
+    //- q5
+    const q9result = await pool.query(`
+        SELECT 
+            hotelname, 
+            hotellocation
+        FROM hotels
+        WHERE hotelid = $1
+    `, [hotelID])
+    
+    //- data
+    const data1 = q1result.rows
+    const data2 = q2result.rows
+    const data3 = q3result.rows
+    const data4 = q4result.rows
+    const data5 = q8result.rows
+
+    //- hotel
+    const hotel = q9result.rows[0] 
+
+    /*const pass = {
+        hotel: hotel,
+        reportTitle: "Occupancy Report",
+        overviewTitles: {
+            title1: "Total Number of Occupancy:",
+            title2: "Day with Highest Occupancy:",
+            title3: "Month with Highest Occupancy:",
+            title4: "Date Today:"
+        },
+        overview: {
+            overview1: allOccupancy,
+            overview2: highestDay,
+            overview3: highestMonth,
+            overview4: getCurrentDate()
+        },
+        headers: ["Guest Name", "Room Type", "Room Number", "Check-in Date", "Check-out Date", "Number of Days"],
+        data: data5
+    }
+
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `OccupancyReport.pdf`
+    })
+
+    createReport(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        pass
+    )*/
+
+    // render the Pug template to HTML
+    const html = pug.renderFile('views/HSA/reports/occupancy.pug', {
+        // pass the data needed by the template
+        hotel: hotel,
+        guesttype: q1result.rows,
+        roomtype: q2result.rows,
+        perDay: q3result.rows,
+        perMonth: q4result.rows,
+        allOccupancy: allOccupancy,
+        highestDay: highestDay,
+        highestMonth: highestMonth,
+        allGuests: q8result.rows,
+        date: getCurrentDate() 
+    });
+
+    // create a new browser instance
+    const browser = await puppeteer.launch();
+
+    // create a new page in the browser
+    const page = await browser.newPage();
+
+    // set the HTML content of the page
+    await page.setContent(html);
+
+    // generate a PDF from the page content
+    const pdf = await page.pdf({ format: 'Legal', landscape: true });
+
+    // close the browser
+    await browser.close();
+
+    // set the response headers
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', 'attachment; filename=occupancyReport.pdf');
+
+    // send the generated PDF
+    res.send(pdf);
+})
+
+
+
+//- reservation summary report
+router.get('/reservationSummary', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
+    const hotelID = req.session.hotelID
+
+    //- select all reservationhistory
+    const q1 = `
+        SELECT *, t1.status FROM hist_reservations t1
+        LEFT JOIN hist_reservation_guestdetails t2
+            ON t1.reservationid = t2.reservationid
+        LEFT JOIN rooms t3
+            ON t1.roomid = t3.roomid
+        LEFT JOIN room_type t4
+            ON t1.typeid = t4.typeid
+        WHERE t1.hotelid = $1
+        ORDER BY t1.checkindate DESC
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+    q1result.rows.forEach((r)=>{
+        if(r.checkindate){
+            r.checkindate = formatDate(r.checkindate)
+        }
+        if(r.checkoutdate){
+            r.checkoutdate = formatDate(r.checkoutdate)
+        }
+        if(r.reservationdate){
+            r.reservationdate = formatDate(r.reservationdate)
+        }
+    })
+
+    //- overall count of reservations
+    const q2 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1;
+    `
+    const q2result = await pool.query(q2, [hotelID])
+    const reservationAllCount = q2result.rows[0].count
+
+    //- overall count of checked-in reservation
+    const q3 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1
+        AND status = $2;
+    `
+    const q3result = await pool.query(q3, [hotelID, 'Checked-in'])
+    const checkedinCount = q3result.rows[0].count
+
+    //- overall count of cancelled reservations
+    const q4 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1
+        AND status = $2;
+    `
+    const q4result = await pool.query(q4, [hotelID, 'Cancelled'])
+    const cancelledCount = q4result.rows[0].count
+
+
+    res.render('HSA/reports/reservationSummary', {
+        hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
+        reservation: q1result.rows,
+        reservationAllCount: reservationAllCount,
+        checkedinCount: checkedinCount,
+        cancelledCount: cancelledCount
+    })
+})
+
+router.get('/dlreservationSummary', isAuthenticated, async(req, res)=>{
+    const hotelID = req.session.hotelID
+
+
+    //- select all reservationhistory
+    const q1 = `
+        SELECT
+            t1.reservationid,
+            t2.fullname,
+            t4.roomtype,
+            t3.roomnum,
+            t1.reservationdate,
+            t1.status 
+        FROM hist_reservations t1
+        LEFT JOIN hist_reservation_guestdetails t2
+            ON t1.reservationid = t2.reservationid
+        LEFT JOIN rooms t3
+            ON t1.roomid = t3.roomid
+        LEFT JOIN room_type t4
+            ON t1.typeid = t4.typeid
+        WHERE t1.hotelid = $1
+        ORDER BY t1.checkindate DESC
+    `
+    const q1result = await pool.query(q1, [hotelID])
+
+    q1result.rows.forEach((r)=>{
+        if(r.checkindate){
+            r.checkindate = formatDate(r.checkindate)
+        }
+        if(r.checkoutdate){
+            r.checkoutdate = formatDate(r.checkoutdate)
+        }
+        if(r.reservationdate){
+            r.reservationdate = formatDate(r.reservationdate)
+        }
+    })
+
+    //- overall count of reservations
+    const q2 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1;
+    `
+    const q2result = await pool.query(q2, [hotelID])
+    const reservationAllCount = q2result.rows[0].count
+
+    //- overall count of checked-in reservation
+    const q3 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1
+        AND status = $2;
+    `
+    const q3result = await pool.query(q3, [hotelID, 'Checked-in'])
+    const checkedinCount = q3result.rows[0].count
+
+    //- overall count of cancelled reservations
+    const q4 = `
+        SELECT COUNT(*)
+        FROM hist_reservations
+        WHERE hotelid = $1
+        AND status = $2;
+    `
+    const q4result = await pool.query(q4, [hotelID, 'Cancelled'])
+    const cancelledCount = q4result.rows[0].count
+
+    //- q5
+    const q5result = await pool.query(`
+        SELECT 
+            hotelname, 
+            hotellocation
+        FROM hotels
+        WHERE hotelid = $1
+    `, [hotelID])
+    
+    //- data
+    const data = q1result.rows
+
+    //- hotel
+    const hotel = q5result.rows[0] 
+
+    const pass = {
+        hotel: hotel,
+        reportTitle: "Reservation Summary Report",
+        overviewTitles: {
+            title1: "Total Number of Reservation:",
+            title2: "Total Number of Successful Reservation:",
+            title3: "Total Number of Cancelled Reservation:",
+            title4: "Date Today:"
+        },
+        overview: {
+            overview1: reservationAllCount,
+            overview2: checkedinCount,
+            overview3: cancelledCount,
+            overview4: getCurrentDate()
+        },
+        headers: ["Reservation ID", "Guest Name", "Room Type", "Room Number", "Reservation Date", "Status"],
+        data: data
+    }
+
+    const stream = res.writeHead(200, {
+        'Content-Type': 'application/pdf',
+        'Content-Disposition': `ReservationSummary.pdf`
+    })
+
+    createReport(
+        (chunk) => stream.write(chunk),
+        () => stream.end(),
+        pass
+    )
+})
+
+
 
 //- guest in-house report
 router.get('/guestInHouse', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
