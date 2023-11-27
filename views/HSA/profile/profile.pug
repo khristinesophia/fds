@@ -40,9 +40,12 @@ html(lang="en")
                 p.fs-5.fw-bold.text-center.mt-4 Color Theme: 
                   span #{hotelColor.color}
               hr
+              if h.hotelname
+                p.fw-bold.mt-4 Hotel: 
+                  span #{h.hotelname}
               if h.hotellocation
                 p.fw-bold.mt-4 Location: 
-                  span #{h.hotellocation}
+                  span #{h.hotellocation}    
               if h.hotelcontact
                 p.fw-bold Contact Number: 
                   span #{h.hotelcontact}
