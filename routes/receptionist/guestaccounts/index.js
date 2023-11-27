@@ -397,7 +397,7 @@ router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
     `
     const q2result = await pool.query(q2, [true, approvalcode, hotelid, id])
 
-    //- update ga "settled column"
+    //- update folio's "settled column"
     const q3 = `
         UPDATE folios
         SET settled = $1,
@@ -409,6 +409,15 @@ router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
             accountid = $7
     `
     const q3result = await pool.query(q3, [true, subtotal2, totalamount2, totalamount2, 0, hotelid, id])
+
+    //- update ga "settled column"
+    const q4 = `
+        UPDATE guestaccounts
+        SET settled = $1
+        WHERE hotelid = $2 AND
+            accountid = $3
+    `
+    const q4result = await pool.query(q4, [true,hotelid, id])
 
     res.redirect(`/ga/checkout/${id}`)
 })
@@ -440,7 +449,7 @@ router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
     `
     const q2result = await pool.query(q2, [true, hotelid, id])
 
-    //- update ga "settled column"
+    //- update folio's "settled column"
     const q3 = `
         UPDATE folios
         SET settled = $1,
@@ -452,6 +461,15 @@ router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
             accountid = $7
     `
     const q3result = await pool.query(q3, [true, subtotal3, totalamount3, totalamount3, 0, hotelid, id])
+
+    //- update ga "settled column"
+    const q4 = `
+        UPDATE guestaccounts
+        SET settled = $1
+        WHERE hotelid = $2 AND
+            accountid = $3
+    `
+    const q4result = await pool.query(q4, [true,hotelid, id])
 
     res.redirect(`/ga/checkout/${id}`)
 })
@@ -681,12 +699,12 @@ router.post('/archive/:id', isAuthenticated, async(req, res)=>{
     const q2 = `
         INSERT INTO hist_guestaccounts(accountid, hotelid, roomtype, roomnum, adultno, childno, 
             reservationdate, checkindate, checkoutdate, numofdays, 
-            modeofpayment, promocode)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+            modeofpayment, promocode, settled)
+        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
     `
     const q2result = await pool.query(q2, [accountid, hotelid, roomtype, roomnum, adultno, childno, 
         reservationdate, checkindate, checkoutdate, numofdays, 
-        modeofpayment, promocode])
+        modeofpayment, promocode, settled])
 
     //- insert into hist_guestaccounts_guestdetails
     const q3 = `
