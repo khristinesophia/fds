@@ -29,7 +29,7 @@ const loginRateLimit = rateLimit({
 //- "/login" route
 router.post('/', loginRateLimit, async(req, res)=>{
     // get username and password from the request body
-    const { username, password } = req.body
+    const { username, password } = req.body 
 
     try {
         // 
