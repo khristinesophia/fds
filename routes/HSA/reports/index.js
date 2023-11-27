@@ -24,9 +24,6 @@ const { getDate365DaysAgo,
     getDate1DayAgo } = require(path.join(__basedir, 'utils', 'getDateDaysAgo'))
 
 
-const puppeteer = require('puppeteer');
-const pug = require('pug');
-
 
 
 //- image
