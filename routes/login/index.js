@@ -4,20 +4,32 @@ const path = require('path')
 //- express and router
 const express = require('express')
 const router = express.Router()
+const app = express()
 
 //- pool import
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
 //- packages
 const bcrypt = require('bcrypt')
+const rateLimit = require('express-rate-limit');
 
 
+//login limiter
+const loginRateLimit = rateLimit({
+	windowMs: 60 * 60 * 1000, // 1 hour
+	max: 10, // Limit each IP to 10 requests per `window` (here, per 1 hour).
+    message: 'Login Error: 10 Failed Login Attempts! Please try again later',
+    requestWasSuccessful: (request, response) => response.statusCode > 200,
+    skipSuccessfulRequests: true, 
+}) 
+
+//app.use('/', loginRateLimit) 
 
 
 //- "/login" route
-router.post('/', async(req, res)=>{
+router.post('/', loginRateLimit, async(req, res)=>{
     // get username and password from the request body
-    const { username, password } = req.body
+    const { username, password } = req.body 
 
     try {
         // 
@@ -122,9 +134,6 @@ router.post('/', async(req, res)=>{
         res.send(error.message)
     }
 })
-
-
-
 
 
 module.exports = router

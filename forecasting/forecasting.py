@@ -9,7 +9,7 @@ import plotly.io as pio
 import plotly.offline as pyo
 from plotly import express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+import plotly.subplots as sp
 from pmdarima import auto_arima
 from scipy.stats import mode, norm, skew
 import statsmodels.api as sm
@@ -116,7 +116,7 @@ sns.barplot(x="Day", y="Total Guests", data=NumberOfGuestsDaily, order=NumberOfG
 
 plt.xlabel('Day')
 plt.ylabel('Average Guests')
-plt.savefig('average_guests_per_week.png')
+#plt.savefig('average_guests_per_week.png')
 plt.show()
 
 # Number of Guest per Month
@@ -162,7 +162,7 @@ plt.xlabel('Months')
 plt.ylabel('Average Guests')
 plt.show()
 
-plt.savefig('average_guests_per_month.png')
+#plt.savefig('average_guests_per_month.png')
 
 
 
@@ -247,11 +247,11 @@ def obtain_adf_kpss_results(timeseries, max_d):
 obtain_adf_kpss_results(NumberOfGuests_Daily, 3)
 
 NumberOfGuests_Daily.plot(grid=True,figsize=(8,3), title = "Original timeseries" )
-plt.savefig('original_timeseries.png')
+#plt.savefig('original_timeseries.png')
 plt.show()
 
 NumberOfGuests_Daily.diff().dropna().plot(grid=True,figsize=(8,3), title = "Stationary timeseries - original timeseries differenced once" )
-plt.savefig('stationary_timeseries.png')
+#plt.savefig('stationary_timeseries.png')
 plt.show()
 
 """### **Forecasting Model**"""
@@ -274,7 +274,7 @@ plt.plot(rolling_mean, color='red', label='Rolling Mean')
 plt.plot(rolling_std, color='black', label='Rolling Std')
 plt.legend(loc='upper right')
 plt.title('Rolling Mean & Rolling Standard Deviation of the Weekly Number of Guests')
-plt.savefig('mean_sd.png')
+#plt.savefig('mean_sd.png')
 plt.show()
 
 trainResort = NumberOfGuests_ResortWeekly[:90]
@@ -306,7 +306,7 @@ predictionsResortTest.plot(legend=True)
 plt.title('Prediction of Number of Guests (Test Data)', fontsize=16)
 plt.xlabel('Arrival Date', fontsize=12)
 plt.ylabel('Number of Guests', fontsize=12)
-plt.savefig('test_prediction.png')
+#plt.savefig('test_prediction.png')
 
 
 plt.figure(figsize=(15, 8))
@@ -315,7 +315,7 @@ predictionsResortTest.plot(legend=True)
 plt.title('Prediction of Number of Guests', fontsize=16)
 plt.xlabel('Arrival Date', fontsize=12)
 plt.ylabel('Number of Guests', fontsize=12)
-plt.savefig('prediction1.png')
+#plt.savefig('prediction1.png')
 
 # Forecast for the next year (365 days)
 forecast = resultResort.get_forecast(steps=100)
@@ -333,7 +333,7 @@ plt.xlabel('Date')
 plt.ylabel('Total Guests')
 plt.legend()
 plt.show()
-plt.savefig('prediction_weekly.png')
+#plt.savefig('prediction_weekly.png')
 
 MeanAbsPercentageErrResort_test = mean_absolute_percentage_error(testResort, predictionsResortTest)
 print('Test MAPE Resort Hotel: %f' % MeanAbsPercentageErrResort_test)
@@ -364,3 +364,66 @@ plot_html = pyo.plot(fig, output_type='div', include_plotlyjs='cdn', auto_open=F
 # Write the HTML content to a file or pass it to the Pug template
 with open('plot.html', 'w') as file:
     file.write(plot_html)
+
+
+
+
+
+
+
+modelResort = ARIMA(trainResort['Total Guests'],
+                    order=(2, 0, 0),
+                    seasonal_order=(2, 1, 0, 12))
+
+resultResort = modelResort.fit()
+
+# Prediction of the Test data
+predictionsResortTest = resultResort.predict(90, 113, typ='levels').rename("Predictions")
+
+# Forecast for the next year (365 days)
+forecast = resultResort.get_forecast(steps=100)
+forecast_values = forecast.predicted_mean.round().astype(int)
+
+# Create a DataFrame for the forecast values
+forecast_df = pd.DataFrame({'Date': forecast_values.index, 'Forecast': forecast_values})
+
+# Extract the month and year from the date
+forecast_df['Month'] = forecast_df['Date'].dt.month
+forecast_df['Year'] = forecast_df['Date'].dt.year
+
+# Filter the DataFrame for the year 2023
+forecast_2023 = forecast_df[forecast_df['Year'] == 2023]
+
+# Create a separate table for each month
+figs = []
+for month in range(1, 13):
+    monthly_forecast = forecast_2023[forecast_2023['Month'] == month]
+    table = go.Figure(data=[go.Table(
+        header=dict(values=['Date per Week', 'Forecast Number of Guest']),
+        cells=dict(values=[monthly_forecast['Date'].dt.strftime('%Y-%m-%d'), monthly_forecast['Forecast']])
+    )])
+    table.update_layout(title=f'Forecast for {pd.to_datetime(month, format="%m").strftime("%B")} {2023}')
+    figs.append(table)
+
+
+# Set a common height for all tables
+table_height = 300
+
+# Create a subplot with 12 tables
+all_tables_subplot = sp.make_subplots(rows=12, cols=1, subplot_titles=[
+    f'Forecast for {pd.to_datetime(month, format="%m").strftime("%B")} {2023}' for month in range(1, 13)
+])
+
+# Add each table to the subplot
+for i, fig in enumerate(figs, start=1):
+    fig.update_layout(
+        margin=dict(b=10),  # Adjust the bottom margin
+        height=table_height  # Set the height of each table
+    )
+    all_tables_subplot.add_trace(fig.data[0], row=i, col=1)
+
+# Update the layout of the subplot
+all_tables_subplot.update_layout(height=table_height * 12, showlegend=False)
+
+# Display the compiled subplot
+all_tables_subplot.show()
