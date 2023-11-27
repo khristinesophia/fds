@@ -16,9 +16,9 @@ const rateLimit = require('express-rate-limit');
 
 //login limiter
 const loginRateLimit = rateLimit({
-	windowMs: 30 * 60 * 1000, // 30 minutes
-	max: 5, // Limit each IP to 5 requests per `window` (here, per 1 hour).
-    message: 'Login Error: 5 Failed Login Attempts! Please try again later',
+	windowMs: 60 * 60 * 1000, // 1 hour
+	max: 10, // Limit each IP to 10 requests per `window` (here, per 1 hour).
+    message: 'Login Error: 10 Failed Login Attempts! Please try again later',
     requestWasSuccessful: (request, response) => response.statusCode > 200,
     skipSuccessfulRequests: true, 
 }) 
