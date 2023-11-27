@@ -25,6 +25,8 @@ const { getDate365DaysAgo,
 
 
 const puppeteer = require('puppeteer');
+const pug = require('pug');
+
 
 
 //- image
@@ -489,7 +491,7 @@ router.get('/dloccupancyReport', isAuthenticated, async(req, res)=>{
     //- hotel
     const hotel = q9result.rows[0] 
 
-    const pass = {
+    /*const pass = {
         hotel: hotel,
         reportTitle: "Occupancy Report",
         overviewTitles: {
@@ -517,10 +519,10 @@ router.get('/dloccupancyReport', isAuthenticated, async(req, res)=>{
         (chunk) => stream.write(chunk),
         () => stream.end(),
         pass
-    )
+    )*/
 
     // render the Pug template to HTML
-    /*const html = pug.renderFile('views/HSA/reports/occupancy.pug', {
+    const html = pug.renderFile('views/HSA/reports/occupancy.pug', {
         // pass the data needed by the template
         hotel: hotel,
         guesttype: q1result.rows,
@@ -554,7 +556,7 @@ router.get('/dloccupancyReport', isAuthenticated, async(req, res)=>{
     res.setHeader('Content-Disposition', 'attachment; filename=occupancyReport.pdf');
 
     // send the generated PDF
-    res.send(pdf);*/
+    res.send(pdf);
 })
 
 
