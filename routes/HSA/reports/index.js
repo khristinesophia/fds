@@ -546,7 +546,7 @@ router.get('/dloccupancyReport', isAuthenticated, async(req, res)=>{
     await page.setContent(html);
 
     // generate a PDF from the page content
-    const pdf = await page.pdf({ format: 'Letter' });
+    const pdf = await page.pdf({ format: 'Legal', landscape: true });
 
     // close the browser
     await browser.close();

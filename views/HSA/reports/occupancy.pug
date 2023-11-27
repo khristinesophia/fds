@@ -19,8 +19,8 @@ html(lang="en")
     title Occupancy Report
 
     .content
-        .container
-            h1 Occupancy Report
+        .container.mt-4
+            h3 Occupancy Report
             .row.mt-4
                 h7 Total Occupancy: 
                     strong #{allOccupancy}
@@ -35,7 +35,7 @@ html(lang="en")
             .d-flex.justify-content-between.align-items-center.mt-5
                 .col 
                     h5 Guest Type
-            .row.mt-4.p-3.bg-white.shadow
+            .row.mt-1.p-2
                 table.table
                     //- thead
                     thead 
@@ -50,10 +50,10 @@ html(lang="en")
                                 td(class='text-center') #{r.guest_count}
 
             //- Room Type
-            .d-flex.justify-content-between.align-items-center.mt-5
+            .d-flex.justify-content-between.align-items-center.mt-3
                 .col 
                     h5 Room Type
-            .row.mt-4.p-3.bg-white.shadow
+            .row.mt-1.p-2
                 table.table
                     //- thead
                     thead 
@@ -67,10 +67,10 @@ html(lang="en")
                                 td(class='text-center') #{r.roomtype_count}
 
             //- Occupancy per Day
-            .d-flex.justify-content-between.align-items-center.mt-5
+            .d-flex.justify-content-between.align-items-center.mt-3
                 .col 
                     h5 Occupancy per Day
-            .row.mt-4.p-3.bg-white.shadow
+            .row.mt-1.p-2
                 table.table
                     //- thead
                     thead 
@@ -85,10 +85,10 @@ html(lang="en")
                                 td(class='text-center') #{r.checkin_count}
 
             //- Occupancy per Month
-            .d-flex.justify-content-between.align-items-center.mt-5
+            .d-flex.justify-content-between.align-items-center.mt-3
                 .col 
                     h5 Occupancy per Month
-            .row.mt-4.p-3.bg-white.shadow
+            .row.mt-1.p-2
                 table.table
                     //- thead
                     thead 
@@ -103,10 +103,10 @@ html(lang="en")
                                 td(class='text-center') #{r.checkin_count}
 
             //- All Guests
-            .d-flex.justify-content-between.align-items-center.mt-5
+            .d-flex.justify-content-between.align-items-center.mt-3
                 .col 
                     h5 Guests History
-            .row.mt-4.p-3.bg-white.shadow
+            .row.mt-1.p-2
                 .table-scroll
                     table.table
                         //- thead
