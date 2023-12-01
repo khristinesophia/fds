@@ -623,6 +623,45 @@ router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(re
 
 
 
+//- "/ga/info/:id"
+router.get('/info/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
+    const hotelid = req.session.hotelID
+    const { id } = req.params
+
+    const q1 = `
+        SELECT * FROM guestaccounts t1
+        JOIN guestaccounts_guestdetails t2
+            ON t1.accountid = t2.accountid
+        JOIN room_type t3 
+            ON t1.typeid = t3.typeid
+        JOIN rooms t4 
+            ON t1.roomid = t4.roomid 
+        LEFT JOIN promos t5
+            ON t1.promoid = t5.id
+        WHERE t1.accountid = $1 AND
+            t1.hotelid = $2
+    `
+    const q1result = await pool.query(q1, [id, hotelid])
+
+    q1result.rows.forEach((ga)=>{
+        if(ga.checkindate){
+            ga.checkindate = formatDateWithTime(ga.checkindate)
+        }
+        if(ga.checkoutdate){
+            ga.checkoutdate = formatDateWithTime(ga.checkoutdate)
+        }
+    })
+
+    res.render('receptionist/guestaccounts/info', {
+        hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
+        ga: q1result.rows[0]
+    })
+})
+
+
+
+
 
 //- extend
 router.post('/extend/:id', isAuthenticated, async(req, res)=>{
