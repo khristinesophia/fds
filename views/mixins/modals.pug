@@ -90,6 +90,9 @@ mixin addHSA
                     label.col-form-label(for="username") Username:
                     input.form-control(type="text", id="username", name="username", required)
 
+                    label.col-form-label(for="email") Email:
+                    input.form-control(type="text", id="email", name="email", required)
+
                     label.col-form-label.mt-3(for='password') Password:
                     .input-group.showpass
                         input#password.form-control(type='password' name='password' pattern='.{8,}' title='Password must be at least 8 characters' required)
@@ -297,6 +300,9 @@ mixin editAdminHSA
                 form(action='', method="POST")
                     label.col-form-label(for="username") Username:
                     input.form-control(type="text", name="username", value=`${ha.username}`, required)
+
+                    label.col-form-label(for="email") Email:
+                    input.form-control(type="text", name="email", value=`${ha.email}`, required)
 
                     .modal-footer
                         button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Admin_User()") Cancel

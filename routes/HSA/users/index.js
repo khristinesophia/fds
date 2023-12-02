@@ -133,11 +133,12 @@ router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
 router.post("/edit/manager/:id", isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
-        const { username } = req.body
+        const { username, email } = req.body
         const editHotelAdmin = await pool.query(`UPDATE hoteladmin_login
-            SET username = $1
-            WHERE userid = $2`,
-            [username, id]
+            SET username = $1,
+                email = $2
+            WHERE userid = $3`,
+            [username, email, id]
         )
 
         res.redirect('/users')

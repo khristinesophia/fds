@@ -352,12 +352,17 @@ function confirmDelete() {
     // Get the super admin data from data attributes
     var userId = clickedElement.getAttribute('data-userid');
     var username = clickedElement.getAttribute('data-username');
+    var email = clickedElement.getAttribute('data-email');
 
     // Populate the form fields with the data from data attributes
     var usernameInput = document.querySelector('#editadminhsa input[name="username"]');
+    var emailInput = document.querySelector('#editadminhsa input[name="email"]');
 
     if (usernameInput) {
       usernameInput.value = username || '';
+    }
+    if (emailInput) {
+      emailInput.value = email || '';
     }
     // Set the form action in the modal
     var editForm = document.querySelector('#editadminhsa form');

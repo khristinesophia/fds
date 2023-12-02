@@ -37,6 +37,7 @@ html(lang="en")
             thead
               tr
                 th Username
+                th Email
                 th Date Created
                 th Actions
 
@@ -44,11 +45,17 @@ html(lang="en")
               each ha in allHSAdminsArray
                 tr
                   td #{ha.username}
+                  td #{ha.email}
                   td #{ha.datecreated}
                   td
                     .d-flex.justify-content-start
                       //- Edit
-                      a.sa-icon.sa-edit.ms-2(data-userid=ha.userid data-username=ha.username onclick="Edit_Admin_User(this)" role='button')
+                      a.sa-icon.sa-edit.ms-2(
+                        data-userid=ha.userid 
+                        data-username=ha.username 
+                        data-email=ha.email
+                        onclick="Edit_Admin_User(this)" 
+                        role='button')
                         i.fa-solid.fa-pen-to-square.fa-lg  
                       include ../../mixins/modals.pug
                       
