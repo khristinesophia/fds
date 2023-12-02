@@ -390,6 +390,9 @@ mixin addR
                     label.col-form-label(for="username") Username:
                     input.form-control(type="text", id="username", name="username", required)
 
+                    label.col-form-label(for="email") Email
+                    input.form-control(type="text", id="email", name="email", required)
+
                     label.col-form-label(for="password") Password:
                     .input-group.showpass
                         input.form-control(type="password", id="password", name="password" pattern='.{8,}' title='Password must be at least 8 characters' required)
@@ -452,6 +455,9 @@ mixin editReceptionistHSA
 
                     label.col-form-label(for="username") Username:
                     input.form-control(type="text", name="username", value=`${r.username}`, required)
+
+                    label.col-form-label(for="email") Email:
+                    input.form-control(type="text", name="email", value=`${r.email}`, required)
 
                     .modal-footer
                         button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Receptionist_User()") Cancel
@@ -920,3 +926,50 @@ mixin cancelreservation()
                     p.err.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before Proceeding.                    
 
 
+//- add shift
+mixin addShift
+    #addShift.modal  
+            .modal-content
+                .modal-header
+                    h5.modal-title(id='') Add Shift
+                    button.btn-close(type='button' onclick='closeModalAddShift()' aria-label='Close')
+                .modal-body.mb-3 
+                    form(id="", action="/users/addshift", method="POST")
+                    
+                        label.col-form-label(for="shiftname") Shift Name:
+                        input.form-control(type="text", id="shiftname", name="shiftname", required)
+
+                        label.col-form-label(for="starthour") Start Hour:
+                        input.form-control(type="time", id="starthour", name="starthour", required)
+
+                        label.col-form-label(for="endhour") End Hour:
+                        input.form-control(type="time", id="endhour", name="endhour", required)
+
+                        //- ganto talaga indentation ng .modal-footer
+                        .modal-footer.mt-3
+                            button.btn.btn-secondary(type="button", onclick="closeModalAddShift()") Cancel
+                            input.btn(type="submit", value="Submit") 
+
+//- edit shift
+mixin editShift()
+    #editShift.modal  
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit Shift
+                button.btn-close(type='button' onclick='closeModalEditShift()' aria-label='Close')
+            .modal-body.mb-3 
+                form(id='editShiftForm', method="POST")
+                
+                    label.col-form-label(for="shiftname") Shift Name:
+                    input.form-control(type="text", id="shiftname", name="shiftname", value=`${shift.shiftname}` required)
+
+                    label.col-form-label(for="starthour") Start Hour:
+                    input.form-control(type="time", id="starthour", name="starthour", value=`${shift.starthour}` required)
+
+                    label.col-form-label(for="endhour") End Hour:
+                    input.form-control(type="time", id="endhour", name="endhour", value=`${shift.endhour}` required)
+
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer.mt-3
+                        button.btn.btn-secondary(type="button", onclick="closeModalEditShift()") Cancel
+                        input.btn(type="submit", value="Submit") 

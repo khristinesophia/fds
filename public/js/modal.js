@@ -465,16 +465,21 @@ function Close_ChangePass_Admin_User() {
     var userId = clickedElement.getAttribute('data-userid');
     var fullName = clickedElement.getAttribute('data-fullname');
     var username = clickedElement.getAttribute('data-username');
+    var email = clickedElement.getAttribute('data-email');
 
     // Populate the form fields with the data from data attributes
     var nameInput = document.querySelector('#editreceptionisthsa input[name="name"]');
     var usernameInput = document.querySelector('#editreceptionisthsa input[name="username"]');
+    var emailInput = document.querySelector('#editreceptionisthsa input[name="email"]');
 
     if (nameInput) {
       nameInput.value = fullName || '';
     }
     if (usernameInput) {
       usernameInput.value = username || '';
+    }
+    if (emailInput) {
+      emailInput.value = email || '';
     }
     // Set the form action in the modal
     var editForm = document.querySelector('#editreceptionisthsa form');
@@ -798,3 +803,56 @@ function closeroomModal() {
 
 }
 
+
+
+
+
+
+//- open Add Shift
+function openModalAddShift() {
+  var modal = document.getElementById('addShift')
+  modal.classList.add('modal-active')
+}
+
+//- close Add Shift
+function closeModalAddShift() {
+  var modal = document.getElementById('addShift')
+  modal.classList.remove('modal-active')
+}
+
+//- open Edit Shift
+function openModalEditShift(clickedElement) {
+  var modal = document.getElementById('editShift')
+  modal.classList.add('modal-active')
+
+  var shiftid = clickedElement.getAttribute('data-shiftid')
+  var shiftname = clickedElement.getAttribute('data-shiftname')
+  var starthour = clickedElement.getAttribute('data-starthour')
+  var endhour = clickedElement.getAttribute('data-endhour')
+
+  var shiftnameInput = document.querySelector('#editShift input[name="shiftname"]')
+  var starthourInput = document.querySelector('#editShift input[name="starthour"]')
+  var endhourInput = document.querySelector('#editShift input[name="endhour"]')
+
+  if (shiftnameInput) {
+    shiftnameInput.value = shiftname || '';
+  }
+  if (starthourInput) {
+    starthourInput.value = starthour || '';
+  }
+  if (endhourInput) {
+    endhourInput.value = endhour || '';
+  }
+
+  const form = document.querySelector('#editShiftForm')
+  // console.log(form)
+  if (form) {
+    form.action = `/users/shift/edit/${shiftid}`
+  }
+}
+
+//- close Edit Shift
+function closeModalEditShift() {
+  var modal = document.getElementById('editShift')
+  modal.classList.remove('modal-active')
+}
