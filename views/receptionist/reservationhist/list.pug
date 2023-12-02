@@ -63,6 +63,20 @@ html(lang="en")
                                         a.sa-icon.sa-view(href=`/rhist/detail/${r.reservationid}`)
                                             i.fa-solid.fa-eye.fa-lg
 
+                    script.
+                        // Update current date and time every second
+                        setInterval(() => {
+                            const currentDateTime = new Date();
+                            const currentHour = currentDateTime.getHours();
+                            const currentMinutes = currentDateTime.getMinutes();
+                            const currentSeconds = currentDateTime.getSeconds();
+
+                            // Check if it's 2:02:05 PM
+                            if (currentHour === 14 && currentMinutes === 1 && currentSeconds === 5) {
+                                // Reload the page at 2:02:05 PM
+                                location.reload();
+                            }
+                        }, 1000);
 
     //-Table
     script(src='https://cdn.datatables.net/1.10.16/js/jquery.dataTables.min.js')
