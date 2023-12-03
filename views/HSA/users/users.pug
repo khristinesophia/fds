@@ -17,7 +17,11 @@ html(lang="en")
     link(rel='stylesheet', href='/css/modal.css')
     link(rel='stylesheet', href='/css/table.css')
 
-    script(src="https://cdn.jsdelivr.net/npm/pug@3.0.2/lib/index.min.js")
+    //- script(src="https://cdn.jsdelivr.net/npm/pug@3.0.2/lib/index.min.js")
+
+    //-Full Calendar
+    link(href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.css", rel="stylesheet")
+    script(src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.9/index.global.min.js")
     
 
     //- sa head lagi nakalagay ang color.pug
@@ -102,6 +106,26 @@ html(lang="en")
                 td
                 td
                 td
+      
+      .container
+        div#calendar 
+        script.
+          document.addEventListener('DOMContentLoaded', function() {
+            var today = new Date(); // Get today's date
+            var sevenDaysFromNow = new Date();
+            sevenDaysFromNow.setDate(today.getDate() + 7); // Get date 7 days from now
+
+            var calendarEl = document.getElementById('calendar');
+            var calendar = new FullCalendar.Calendar(calendarEl, {
+              initialView: 'dayGridWeek',
+              defaultDate: today, // Set the initial date to today
+              //- validRange: { // Set the valid range of dates to display
+              //-   start: '2023-12-02',
+              //-   end: '2023-12-09'
+              //- }
+            });
+            calendar.render();
+          });
 
 
       // Header Title for page

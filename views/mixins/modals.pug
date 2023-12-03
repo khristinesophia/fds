@@ -763,42 +763,6 @@ mixin deleteRoom(roomnum)
 
 
 
-mixin approvalcode 
-    #modal.modal  
-        .modal-content
-            .modal-header
-                h5.modal-title(id='') Approval Code
-                button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
-            .modal-body.mb-3 
-                form(id="", action=`/ga/cardpayment/${ga.accountid}`, method="POST")
-
-                    input(type="hidden" id="subtotal2" name="subtotal2")
-                    input(type="hidden" id="totalamount2" name="totalamount2")
-                    input(type="hidden" id="paidtodate2" name="paidtodate2")
-                    input(type="hidden" id="balance2" name="balance2")
-                    input.form-control(type="text", id="approvalcode", name="approvalcode", required)
-
-                    script.
-                        document.addEventListener('DOMContentLoaded', ()=>{
-                            
-                            const subtotal = parseInt(document.querySelector('#subtotal').innerText)
-                            document.querySelector('#subtotal2').value = subtotal
-
-                            const totalamount = parseInt(document.querySelector('#totalamount').innerText)
-                            document.querySelector('#totalamount2').value = totalamount
-
-                            const paidtodate = parseInt(document.querySelector('#paidtodate').innerText)
-                            document.querySelector('#paidtodate2').value = paidtodate
-
-                            const balance = parseInt(document.querySelector('#balance').innerText)
-                            document.querySelector('#balance2').value = balance
-                        })
-
-                    //- ganto talaga indentation ng .modal-footer
-                    .modal-footer.mt-3
-                        button.btn.mod_btn_sec(type="button", onclick="closeModal()") Cancel
-                        input.btn.mod_btn(type="submit", value="Submit")
-
 //- DELETE Promo
 mixin deletePromo(roomnum)
     #deletepromo.modal
@@ -826,83 +790,7 @@ mixin deletePromo(roomnum)
 
 
 
-//- extendStay
-mixin extendStay(ga) 
-    #extendStay.modal 
-        .modal-content.text-dark
-            form(action='' method='POST' id='extendStayForm') 
-                .modal-header
-                    h5.text-center Extend Stay
-                    button.btn-close(type='button' onclick='closeExtendStay()' aria-label='Close')
-                .modal-body
-                    .row
-                        .col-4 
-                            p.fw-bold Account ID
-                            p.fw-bold Account Name
-                            p.fw-bold Room Number
-                            p.fw-bold Room Type
-                            p.fw-bold Extension Rate
-                        .col-8
-                            p.fw-normal#accountidSpan
-                            p.fw-normal#fullnameSpan
-                            p.fw-normal#roomnumSpan
-                            p.fw-normal#roomtypeSpan
-                            p.fw-normal#rate_perhourSpan
-                    .mt-4
-                        input(type="hidden" id="rate_perhour" name="rate_perhour")
-                        input(type="hidden" id="roomid" name="roomid")
-                        input(type="hidden" id="folioid" name="folioid")
-                        label.form-label.fw-bold Number of Hours 
-                        input.form-control(
-                            type="number" 
-                            id="hoursno" 
-                            name="hoursno" 
-                            onkeyup="updateCost(this)"
-                        )
-                    .mt-2
-                        label.form-label.fw-bold Cost
-                        input.form-control(
-                            type="number" 
-                            id="cost" 
-                            name="cost"
-                        )
-                    script.
-                        function updateCost(clickedElement){
-                            //- get rate_perhour and hoursno
-                            const rate_perhour = clickedElement.getAttribute('data-rate_perhour')
-                            const hoursno = clickedElement.value
 
-                            //- calculation
-                            const cost = rate_perhour * hoursno
-                            const costFinal = cost.toFixed(2)
-
-                            //- assign cost
-                            document.getElementById('cost').value = costFinal
-                        }
-                .modal-footer
-                    button.btn.mod_btn_sec(type='button' onclick='closeExtendStay()') Cancel
-                    input.btn.mod_btn(type='submit' value='Submit')
-
-//- Cash Payment
-mixin cashpay()
-    #modalcash.modal
-        .modal-content
-            .modal-header
-                h5.modal-title(id='') Cash Payment
-                button.btn-close(type='button' onclick='closeModalcash()' aria-label='Close')
-            .modal-body
-                p.mb-3
-                    | This is a Cash payment Method
-                .form-check.mt-3
-                    input.form-check-input#confirm-checkbox(type="checkbox")
-                    label.form-check-label(for="confirm-checkbox") I Agree
-                    
-            .modal-footer.mt-3.modalcash
-                form(action='', method="POST")
-                    .ms
-                        button.btn.mod_btn_sec.me-3(type="button", onclick="closeModalcash()") Cancel
-                        input.btn.mod_btn(type="submit" value="Proceed" onclick="confirmDelete()")
-                    p.err.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before Proceeding.
 
 
 mixin cancelreservation()

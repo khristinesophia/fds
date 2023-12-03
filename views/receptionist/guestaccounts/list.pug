@@ -63,17 +63,12 @@ html(lang="en")
                                         td #{ga.checkindate}
                                         td #{ga.checkoutdate}
                                         td 
-                                            a.sa-icon.sa-view(
-                                                href=`/ga/detail/${ga.accountid}` 
-                                                role='button'
-                                            ) 
-                                                i.fa-solid.fa-eye.fa-lg
 
                                             a.sa-icon.sa-view(
                                                 href=`/ga/info/${ga.accountid}` 
                                                 role='button'
                                             ) 
-                                                i.fa-solid.fa-tag.fa-lg
+                                                i.fa-solid.fa-eye.fa-lg
 
                                             a.sa-icon.sa-edit.ms-2(
                                                 onclick="openExtendStay(this)" 
@@ -81,13 +76,13 @@ html(lang="en")
                                                 data-fullname=ga.fullname
                                                 data-roomnum=ga.roomnum
                                                 data-roomtype=ga.roomtype
-                                                data-rate_perhour=ga.rate_perhour
+                                                data-price=ga.price
                                                 data-roomid=ga.roomid
                                                 data-folioid=ga.folioid
                                                 role='button'
                                             ) 
                                                 i.fa-solid.fa-clock.fa-lg
-                                            include ../../mixins/modals.pug
+                                            include ../../mixins/modals/ga.pug
                                             +extendStay(ga)
 
 
@@ -112,3 +107,4 @@ html(lang="en")
     //-Customize JS
     script(src='/js/nav-active.js')    
     script(src='/js/modal.js')    
+    script(src='/js/modals/ga.js')    
