@@ -118,11 +118,11 @@ html(lang="en")
                                     //- number of adults
                                     .mb-3.col-md-6
                                         label.form-label.fw-bold(for='adultno') Number of Adults
-                                        input#adultno.form-control(type='number' name='adultno' placeholder='' value=0)
+                                        input#adultno.form-control(type='number' name='adultno' placeholder='' value=0 min="1")
                                     //- number of children
                                     .mb-5.col-md-6
                                         label.form-label.fw-bold(for='childno') Number of Children
-                                        input#childno.form-control(type='number' name='childno' placeholder='' value=0)
+                                        input#childno.form-control(type='number' name='childno' placeholder='' value=0 min="1")
                                 //- room type
                                 .mb-3
                                     label.form-label.fw-bold(for='roomtype') Room Types

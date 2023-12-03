@@ -572,15 +572,15 @@ mixin addRoomType
                             
                         .form-group
                             label(for="price") Price:
-                            input.form-control(type="number", name="price", min="0", required)
+                            input.form-control(type="number", name="price", min="1", required)
 
                         .form-group
                             label(for="capacity") Capacity:
-                            input.form-control(type="number", name="capacity", min="0", required)
+                            input.form-control(type="number", name="capacity", min="1", required)
 
                         .form-group
                             label(for="rate_perhour") Rate per Hour:
-                            input.form-control(type="number", name="rate_perhour", min="0", required)
+                            input.form-control(type="number", name="rate_perhour", min="1", required)
 
                         .form-group
                             label(for="free_breakfast") Free Breakfast:
@@ -639,13 +639,13 @@ mixin editRoomType(typeid, roomtype, roomdescription, roomprice, roomcapacity, r
             textarea.form-control(name="description", value=roomdescription, required)
 
             label.form-label.fw-bold(for="capacity") Room Capacity:
-            input.form-control(type="text", name="capacity", value=roomcapacity, required)
+            input.form-control(type="number", name="capacity",min="1", value=roomcapacity, required)
 
             label.form-label.fw-bold(for="price") Room Price:
-            input.form-control(type="text", name="price", value=roomprice, required)
+            input.form-control(type="number", name="price",min="1", value=roomprice, required)
 
             label.form-label.fw-bold(for="rateperhour") Rate per Hour:
-            input.form-control(type="text", name="rate_perhour", value=rateperhour, required)
+            input.form-control(type="number", name="rate_perhour",min="1", value=rateperhour, required)
 
             label.form-label.fw-bold(for="rateperhour") Free Breakfast:
             input.form-check-input(type="checkbox", name="free_breakfast")
@@ -676,7 +676,7 @@ mixin addRoom
                         .form-group
 
                             label(for="roomnum") Room Number:
-                            input.form-control(type="text", name="roomnum", pattern="[0-9]+", title="Please enter a valid room number", required)
+                            input.form-control(type="number", name="roomnum", pattern="[0-9]+", title="Please enter a valid room number", required)
 
                         .form-group
                             label(for="") Room Type:
