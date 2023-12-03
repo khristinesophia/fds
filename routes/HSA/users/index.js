@@ -55,6 +55,19 @@ router.post('/shift/edit/:id', isAuthenticated, async(req,res)=>{
     res.redirect('/users')
 })
 
+//- delete shift
+//- 'users/shift/delete/:id'
+router.post('/shift/delete/:id', isAuthenticated, async(req,res)=>{
+    try {
+        const { id } = req.params
+        const dq1result = await pool.query('DELETE FROM shifts WHERE shiftid = $1', [id])
+
+        res.redirect('/users')
+    } catch (error) {
+        console.error(error.message)
+    }
+})
+
 
 
 
@@ -65,7 +78,7 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
         const allHSAdmins = await pool.query('SELECT * FROM hoteladmin_login WHERE hotelid = $1', [hotelid])
         const allReceptionists = await pool.query('SELECT * FROM user_login WHERE hotelid = $1', [hotelid])
 
-        const allShifts = await pool.query('SELECT * FROM shifts WHERE hotelid = $1', [hotelid])
+        const allShifts = await pool.query('SELECT * FROM shifts WHERE hotelid = $1 ORDER BY starthour ASC', [hotelid])
 
         res.render('HSA/users/users', {
             allHSAdminsArray: allHSAdmins.rows,

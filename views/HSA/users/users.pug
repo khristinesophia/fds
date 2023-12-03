@@ -53,7 +53,13 @@ html(lang="en")
                 data-endhour=shift.endhour
               ) Edit
               include ../../mixins/modals.pug
-              +editShift()
+              +editShift
+
+              button(onClick='openModalDeleteShift(this)'
+                data-shiftid=shift.shiftid
+              ) Delete
+              include ../../mixins/modals.pug
+              +deleteShift
         
         
         .container.shadow.mt-3.pt-3.pb-3.bg-white

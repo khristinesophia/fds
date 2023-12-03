@@ -797,7 +797,7 @@ function openModalEditShift(clickedElement) {
   }
 
   const form = document.querySelector('#editShiftForm')
-  // console.log(form)
+
   if (form) {
     form.action = `/users/shift/edit/${shiftid}`
   }
@@ -806,5 +806,25 @@ function openModalEditShift(clickedElement) {
 //- close Edit Shift
 function closeModalEditShift() {
   var modal = document.getElementById('editShift')
+  modal.classList.remove('modal-active')
+}
+
+//- open Add Shift
+function openModalDeleteShift(clickedElement) {
+  var modal = document.getElementById('deleteShift')
+  modal.classList.add('modal-active')
+
+  var shiftid = clickedElement.getAttribute('data-shiftid')
+
+  const form = document.querySelector('#deleteShiftForm')
+
+  if (form) {
+    form.action = `/users/shift/delete/${shiftid}`
+  }
+}
+
+//- close Add Shift
+function closeModalDeleteShift() {
+  var modal = document.getElementById('deleteShift')
   modal.classList.remove('modal-active')
 }

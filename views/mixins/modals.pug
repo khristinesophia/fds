@@ -839,7 +839,7 @@ mixin addShift
                             input.btn(type="submit", value="Submit") 
 
 //- edit shift
-mixin editShift()
+mixin editShift
     #editShift.modal  
         .modal-content
             .modal-header
@@ -860,4 +860,18 @@ mixin editShift()
                     //- ganto talaga indentation ng .modal-footer
                     .modal-footer.mt-3
                         button.btn.btn-secondary(type="button", onclick="closeModalEditShift()") Cancel
+                        input.btn(type="submit", value="Submit") 
+
+mixin deleteShift
+    #deleteShift.modal  
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Delete Shift
+                button.btn-close(type='button' onclick='closeModalDeleteShift()' aria-label='Close')
+            .modal-body.mb-3 
+                form(id='deleteShiftForm', action= ``, method="POST")
+
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer.mt-3
+                        button.btn.btn-secondary(type="button", onclick="closeModalDeleteShift()") Cancel
                         input.btn(type="submit", value="Submit") 
