@@ -15,7 +15,7 @@ const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 // add hsadmin
 router.post('/', isAuthenticated, async (req, res) => {
     try {
-        const { username, password, hotelid } = req.body;
+        const { username, email, password, hotelid } = req.body;
 
         // Check password length
         if (password.length < 8) {
@@ -26,8 +26,8 @@ router.post('/', isAuthenticated, async (req, res) => {
         const datecreated = getCurrentDate();
 
         const newHotelAdmin = await pool.query(
-            `INSERT INTO hoteladmin_login(username, hashpassword, hotelid, datecreated) VALUES($1, $2, $3, $4) RETURNING *`,
-            [username, hashedPassword, hotelid, datecreated]
+            `INSERT INTO hoteladmin_login(username, email, hashpassword, hotelid, datecreated) VALUES($1, $2, $3, $4, $5) RETURNING *`,
+            [username, email, hashedPassword, hotelid, datecreated]
         );
 
         res.redirect('/hsadmins');

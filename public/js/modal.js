@@ -20,16 +20,6 @@ function closeModaladdR() {
 }
 
 
-function openModalcash() {
-  var modal = document.getElementById('modalcash');
-  modal.classList.add('modal-active');
-}
-
-function closeModalcash() {
-  var modal = document.getElementById('modalcash');
-  modal.classList.remove('modal-active');
-}
-
 function openDeleteHotelModal(clickedElement) {
   var modal = document.getElementById('deletehotel');
   modal.classList.add('modal-active');
@@ -285,6 +275,7 @@ function confirmDelete() {
 }
 
 
+
 //- Hotel System Admin JS for Modal
   //- Edit Profile
     //- Open Edit Modal for Profile
@@ -352,12 +343,17 @@ function confirmDelete() {
     // Get the super admin data from data attributes
     var userId = clickedElement.getAttribute('data-userid');
     var username = clickedElement.getAttribute('data-username');
+    var email = clickedElement.getAttribute('data-email');
 
     // Populate the form fields with the data from data attributes
     var usernameInput = document.querySelector('#editadminhsa input[name="username"]');
+    var emailInput = document.querySelector('#editadminhsa input[name="email"]');
 
     if (usernameInput) {
       usernameInput.value = username || '';
+    }
+    if (emailInput) {
+      emailInput.value = email || '';
     }
     // Set the form action in the modal
     var editForm = document.querySelector('#editadminhsa form');
@@ -460,16 +456,21 @@ function Close_ChangePass_Admin_User() {
     var userId = clickedElement.getAttribute('data-userid');
     var fullName = clickedElement.getAttribute('data-fullname');
     var username = clickedElement.getAttribute('data-username');
+    var email = clickedElement.getAttribute('data-email');
 
     // Populate the form fields with the data from data attributes
     var nameInput = document.querySelector('#editreceptionisthsa input[name="name"]');
     var usernameInput = document.querySelector('#editreceptionisthsa input[name="username"]');
+    var emailInput = document.querySelector('#editreceptionisthsa input[name="email"]');
 
     if (nameInput) {
       nameInput.value = fullName || '';
     }
     if (usernameInput) {
       usernameInput.value = username || '';
+    }
+    if (emailInput) {
+      emailInput.value = email || '';
     }
     // Set the form action in the modal
     var editForm = document.querySelector('#editreceptionisthsa form');
@@ -705,46 +706,7 @@ function Edit_RoomType(clickedElement) {
 
 
 
-function openExtendStay(clickedElement) {
-  var modal = document.getElementById('extendStay')
-  modal.classList.add('modal-active')
 
-  //- get data from clicked element
-  var accountid = clickedElement.getAttribute('data-accountid')
-  var fullname = clickedElement.getAttribute('data-fullname')
-  var roomnum = clickedElement.getAttribute('data-roomnum')
-  var roomtype = clickedElement.getAttribute('data-roomtype')
-  var rate_perhour = clickedElement.getAttribute('data-rate_perhour')
-  var roomid = clickedElement.getAttribute('data-roomid')
-  var folioid = clickedElement.getAttribute('data-folioid')
-
-  //- set data inside modal
-  document.getElementById('accountidSpan').innerText = accountid
-  document.getElementById('fullnameSpan').innerText = fullname
-  document.getElementById('roomnumSpan').innerText = roomnum
-  document.getElementById('roomtypeSpan').innerText = roomtype
-  document.getElementById('rate_perhourSpan').innerText = rate_perhour
-
-  document.getElementById('hoursno').setAttribute('data-rate_perhour', rate_perhour)
-
-  //- set hidden data
-  document.getElementById('rate_perhour').value = rate_perhour
-  document.getElementById('roomid').value = roomid
-  document.getElementById('folioid').value = folioid
-
-  //- set form action in modal
-  var form = document.getElementById('extendStayForm')
-  form.action = `/ga/extend/${accountid}`;
-}
-function closeExtendStay() {
-  //- clear fields
-  document.getElementById('hoursno').value = ''
-  document.getElementById('cost').value = ''
-
-  //- remove 'modal-active' class
-  var modal = document.getElementById('extendStay')
-  modal.classList.remove('modal-active')
-}
   
 
 
@@ -793,3 +755,76 @@ function closeroomModal() {
 
 }
 
+
+
+
+
+
+//- open Add Shift
+function openModalAddShift() {
+  var modal = document.getElementById('addShift')
+  modal.classList.add('modal-active')
+}
+
+//- close Add Shift
+function closeModalAddShift() {
+  var modal = document.getElementById('addShift')
+  modal.classList.remove('modal-active')
+}
+
+//- open Edit Shift
+function openModalEditShift(clickedElement) {
+  var modal = document.getElementById('editShift')
+  modal.classList.add('modal-active')
+
+  var shiftid = clickedElement.getAttribute('data-shiftid')
+  var shiftname = clickedElement.getAttribute('data-shiftname')
+  var starthour = clickedElement.getAttribute('data-starthour')
+  var endhour = clickedElement.getAttribute('data-endhour')
+
+  var shiftnameInput = document.querySelector('#editShift input[name="shiftname"]')
+  var starthourInput = document.querySelector('#editShift input[name="starthour"]')
+  var endhourInput = document.querySelector('#editShift input[name="endhour"]')
+
+  if (shiftnameInput) {
+    shiftnameInput.value = shiftname || '';
+  }
+  if (starthourInput) {
+    starthourInput.value = starthour || '';
+  }
+  if (endhourInput) {
+    endhourInput.value = endhour || '';
+  }
+
+  const form = document.querySelector('#editShiftForm')
+
+  if (form) {
+    form.action = `/users/shift/edit/${shiftid}`
+  }
+}
+
+//- close Edit Shift
+function closeModalEditShift() {
+  var modal = document.getElementById('editShift')
+  modal.classList.remove('modal-active')
+}
+
+//- open Add Shift
+function openModalDeleteShift(clickedElement) {
+  var modal = document.getElementById('deleteShift')
+  modal.classList.add('modal-active')
+
+  var shiftid = clickedElement.getAttribute('data-shiftid')
+
+  const form = document.querySelector('#deleteShiftForm')
+
+  if (form) {
+    form.action = `/users/shift/delete/${shiftid}`
+  }
+}
+
+//- close Add Shift
+function closeModalDeleteShift() {
+  var modal = document.getElementById('deleteShift')
+  modal.classList.remove('modal-active')
+}
