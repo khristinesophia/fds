@@ -14,6 +14,7 @@ html(lang="en")
         link(rel='stylesheet', href='/css/font.css')
         link(rel='stylesheet', href='/css/modal.css')
         link(rel='stylesheet', href='/css/table.css')
+        link(rel='stylesheet', href='/css/action_button.css')
 
         //- title
         title Info
@@ -149,7 +150,7 @@ html(lang="en")
 
                             if ga.roomstatus === "Occupied"
                                 form(action=`/ga/tco/${ga.accountid}` method="POST").text-center
-                                    input.btn.mod_btn.mt-4(type="submit" value="Change") 
+                                    input.btn.chc_out.mt-4(type="submit" value="Check-Out") 
 
                             if ga.roomstatus === "Inspected" && ga.settled === true
                                 form(action=`/ga/rco/${ga.accountid}` method="POST").text-center
@@ -157,7 +158,7 @@ html(lang="en")
                                     
                             if ga.roomstatus === "Vacant"
                                 form(action=`/ga/archive/${ga.accountid}` method='POST').text-center 
-                                    input.btn.mod_btn.mt-4(type="submit" value="Archive")
+                                    input.btn.arc.mt-4(type="submit" value="Archive")
                     
                     //- Payment
                     if ga.roomstatus === "Inspected" && ga.settled === false

@@ -178,6 +178,18 @@ a.sa-cash {
     flex-direction: none;
   }
 
+.chc_out{
+  background-color: #dd1129;
+}
+.chc_out:hover{
+  background-color: #ff6c7d;
+}
+.arc{
+  background-color: #019c3f;
+}
+.arc:hover{
+  background-color: #49fc90;
+}        
   
   
 
