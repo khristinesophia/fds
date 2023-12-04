@@ -36,6 +36,7 @@ html(lang="en")
               tr
                 th Hotel
                 th Username
+                th Email
                 th Date Created
             tbody
               each ha in allHotelAdminsArray
@@ -44,6 +45,8 @@ html(lang="en")
                     span #{ha.hotelname}
                   td
                     span #{ha.username}
+                  td
+                    span #{ha.email}
                   td  
                     span #{ha.datecreated}  
 

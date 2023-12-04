@@ -1,4 +1,4 @@
-doctype html
+    doctype html
 html(lang="en")
     head
         meta(charset="UTF-8")
@@ -27,31 +27,24 @@ html(lang="en")
 
         //- main content
         .content
-            //- page title
-            .row.mx-5
-                //- Guest Details
-                .col-12.col-md-12.col-lg-4.d-flex.align-items-center
-
-                    .card.bg-white.shadow.px-4.py-4.mt-3
-                        .bg.bg-round
-                            .row.mt-3 
-                                h4.text-center.fw-bold.mb-0.p-0
-                                    if ga.fullname
-                                        span #{ga.fullname}
-                                h6.text-center
-                                    p (Guest)        
+            .row.mx-5 
+                .col-12.col-md-12.col-lg-4
+                    .container.shadow.mt-3.p-0.bg-white.rounded
+                        .px-5.py-3.mb-3.bg.rounded-top
+                            p.text-center.fs-1
+                                if ga.fullname
+                                    span #{ga.fullname}
+                            h6.text-center
+                                p (Guest)  
                             .row
-                                h4.text-center
+                                h5.text-center
                                     if ga.roomtype
-                                        span #{ga.roomtype} -  
+                                        span #{ga.roomtype} -
                                     if ga.roomnum
-                                        span Rm#{ga.roomnum}                                       
 
-                        h4.m-0.mt-3 Guest Details
-
-                        //- card body
-                        .card-body.text-dark
-                            
+                                        span Room #{ga.roomnum}                                       
+                        .px-5.py-3
+                            h4.m-0.mb-3 Guest Details
                             .row.mb-3 
                                 .col-md-5.fw-bold Home Address:
                                 .col-md-7
@@ -62,15 +55,15 @@ html(lang="en")
                                 .col-md-7
                                     if ga.email
                                         span #{ga.email}
-                            .row.mb-3 
+                            .row.mb-5
                                 .col-md-5.fw-bold Contact Number:
                                 .col-md-7
                                     if ga.contactno
                                         span #{ga.contactno}
+                                
                             
-                        
-                        h4.m-0 Stay Details
-                        .card-body.text-dark
+
+                            h4.mb-3 Stay Details
                             .row.mb-3
                                 .col-md-5.fw-bold Check-In Date:
                                 .col-md-7
@@ -96,74 +89,345 @@ html(lang="en")
                                 .col-md-7
                                     if ga.childno
                                         span #{ga.childno}
-                            .row.mb-3
+                            .row.mb-5
                                 .col-md-5.fw-bold Promo Code:
                                 .col-md-7
                                     if ga.promoid
                                         span #{ga.code}     
 
-                        h4.m-0 Room Payment
-                        .card-body.text-dark
+
+                            h4.mb-3 Room Payment
                             .row.mb-3
                                 .col-md-5.fw-bold Mode of Payment:
                                 .col-md-7
                                     if ga.modeofpayment
                                         span #{ga.modeofpayment}
 
-                //- Room Status
+                
                 .col-12.col-md-12.col-lg-8
-                    include ../../partials/navRga.pug
-                    //- card start
-                    .card.bg-white.shadow.px-4.py-3.mt-3
-                        h2.text.mb-3 Room Status
-                        //- card body
-                        .card-body.text-dark.d-flex.justify-content-center.my-4
-                            .room_box
-                                h5.bg(style='padding: 1rem 2rem; margin-right: 2rem;') Room #{ga.roomnum}
-                            .room_box 
-                                - let statusStyles = ''
-                                if ga.status === "Occupied"
-                                    - statusStyles = `background-color: #FFDDE1; color: #CC0000`
-                                if ga.status === "To check-out"
-                                    - statusStyles = `background-color: #FFFDB8; color: #FFA852`
-                                if ga.status === "Inspected"
-                                    - statusStyles = `background-color: #FFE4B9; color: #FF6600`
-                                if ga.status === "Recently checked-out"
-                                    - statusStyles = `background-color: #CCEDFF; color: #336699`
-                                if ga.status === "Vacant"
-                                    - statusStyles = `background-color: #CAFFDF; color: #339933`
+                    //- Check-Out
+                    .container.shadow.mt-3.p-0.bg-white.rounded
+                        .px-5.py-2.mb-3.bg.rounded-top
+                            h5.m-0 Check-Out
+                        .px-5.py-3
+                            .d-flex.justify-content-center.my-4
+                                .room_box
+                                    h6.rounded.bg(
+                                        style=`padding: 1rem 2rem; 
+                                        margin-right: 2rem;`
+                                    ) Room #{ga.roomnum}
 
-                                h5(style=`${statusStyles}; padding: 1rem 2rem;`) #{ga.status}
-                        if ga.status === "Occupied"
-                            p.text-center This room is currently occupied by the guest.<br>Alert housekeeping. Change room status when guest checks out.
-                        if ga.status === "To check-out"
-                            p.text-center This room is currently ready for inspection.<br>Housekeeping will handle this. Wait for room status to change to “Inspected”.
-                        if ga.status === "Inspected" && ga.settled === false
-                            p.text-center This room is already inspected.<br>Process the payment.
-                        if ga.status === "Inspected" && ga.settled === true
-                            p.text-center This account is already settled.<br>Change the room status to "Recently checked-out"
-                        if ga.status === "Recently checked-out"
-                            p.text-center This account is already checked-out.<br>Print or download the invoice
-                        if ga.status === "Vacant"
-                            p.text-center This account is already cleaned by the housekeeping.<br>Archive this account.
+                                .room_box 
+                                    - let statusStyles = ''
+                                    if ga.roomstatus === "Occupied"
+                                        - statusStyles = `background-color: #FFDDE1; color: #CC0000`
+                                    if ga.roomstatus === "To check-out"
+                                        - statusStyles = `background-color: #FFFDB8; color: #FFA852`
+                                    if ga.roomstatus === "Inspected"
+                                        - statusStyles = `background-color: #FFE4B9; color: #FF6600`
+                                    if ga.roomstatus === "Recently checked-out"
+                                        - statusStyles = `background-color: #CCEDFF; color: #336699`
+                                    if ga.roomstatus === "Vacant"
+                                        - statusStyles = `background-color: #CAFFDF; color: #339933`
 
-                        if ga.status === "Occupied"
-                            form(action=`/ga/tco/${ga.accountid}` method="POST").text-center
-                                input.btn.mod_btn.mt-4(type="submit" value="Change") 
-                        if ga.status === "Inspected" && ga.settled === false
-                            form(action=`/ga/folio/${ga.accountid}`).text-center
-                                input.btn.mod_btn.mt-4(type="submit" value="Folio")
-                        if ga.status === "Inspected" && ga.settled === true
-                            form(action=`/ga/rco/${ga.accountid}` method="POST").text-center
-                                input.btn.mod_btn.mt-4(type="submit" value="Change")
-                        if ga.status === "Recently checked-out"
-                            form(action=`/ga/folio/${ga.accountid}`).text-center
-                                input.btn.mod_btn.mt-4(type="submit" value="Folio")
-                        if ga.status === "Vacant"
-                            form(action=`/ga/archive/${ga.accountid}` method='POST').text-center 
-                                input.btn.mod_btn.mt-4(type="submit" value="Archive")
+                                    h6.rounded(
+                                        style=`${statusStyles}; 
+                                        padding: 1rem 2rem;`
+                                    ) #{ga.roomstatus}
+                            if ga.roomstatus === "Occupied"
+                                p.text-center This room is currently occupied by the guest.<br>Alert housekeeping. Change room status when guest checks out.
+                            if ga.roomstatus === "To check-out"
+                                p.text-center This room is currently ready for inspection.<br>Housekeeping will handle this. Wait for room status to change to “Inspected”.
+                            if ga.roomstatus === "Inspected" && ga.settled === false
+                                p.text-center This room is already inspected.<br>Process the payment.
+                            if ga.roomstatus === "Inspected" && ga.settled === true
+                                p.text-center This account is already settled.<br>Change the room status to "Recently checked-out"
+                            if ga.roomstatus === "Recently checked-out"
+                                p.text-center This account is already checked-out.<br>Print or download the invoice
+                            if ga.roomstatus === "Vacant"
+                                p.text-center This account is already cleaned by the housekeeping.<br>Archive this account.
 
+                            if ga.roomstatus === "Occupied"
+                                form(action=`/ga/tco/${ga.accountid}` method="POST").text-center
+                                    input.btn.mod_btn.mt-4(type="submit" value="Change") 
+
+                            if ga.roomstatus === "Inspected" && ga.settled === true
+                                form(action=`/ga/rco/${ga.accountid}` method="POST").text-center
+                                    input.btn.mod_btn.mt-4(type="submit" value="Change")
+                                    
+                            if ga.roomstatus === "Vacant"
+                                form(action=`/ga/archive/${ga.accountid}` method='POST').text-center 
+                                    input.btn.mod_btn.mt-4(type="submit" value="Archive")
+                    
+                    //- Payment
+                    if ga.roomstatus === "Inspected" && ga.settled === false
+                        .container.shadow.mt-3.p-0.bg-white.rounded
+                            .px-5.py-2.mb-3.bg.rounded-top
+                                h5.m-0 Payment
+                            .px-5.py-3
+                                .d-flex.justify-content-center.text-align-center 
+                                    .row.me-3
+                                        a.sa-credit(
+                                            onclick="openModal_CardPayment()" 
+                                            role='button'
+                                        ) 
+                                            i.fa-solid.fa-credit-card
+                                            h6 Credit Card     
+                                    .row.me-3
+                                        a.sa-debit(
+                                            onclick="openModal_CardPayment()" 
+                                            role='button'
+                                        ) 
+                                            i.fa-solid.fa-credit-card
+                                            h6 Debit Card
+                                    include ../../mixins/modals/ga.pug
+                                    +cardpayment                                       
+                                    .row.me-3 
+                                        a.sa-cash(
+                                            onclick="openModal_CashPayment()" 
+                                            role='button'
+                                        ) 
+                                            i.fa-solid.fa-money-bills
+                                            h6 Cash
+                                    include ../../mixins/modals/ga.pug
+                                    +cashpayment
+                    
+                    //- Invoice
+                    if ga.settled === true
+                        .container.shadow.mt-3.p-0.bg-white.rounded
+                            .px-5.py-2.mb-3.bg.rounded-top
+                                h5.m-0 Invoice
+                            .px-5.py-3
+                                .d-flex.justify-content-center 
+                                    .row
+                                        form(action=`/ga/invoice/${ga.accountid}` method="GET") 
+                                            input.btn.mod_btn(type="submit" value="Download")
+                    
+                    //- Folio
+                    .container.shadow.mt-3.p-0.bg-white.rounded
+                        .px-5.py-2.mb-3.bg.rounded-top
+                            h5.m-0 Folio
+                        .px-5.py-3
+                            table.table.table-borderless(style="font-size:0.9rem!important")
+                                //- ROOM ACCOMMODATION SECTION --------------------------------------------------
+                                if(t1.length > 0)
+                                    thead
+                                        tr
+                                            td.fw-bold(colspan=7) Room
+                                        tr
+                                            td
+                                            td.fw-bold Code
+                                            td.fw-bold Paid
+                                            td.fw-bold Description
+                                            td.fw-bold Price
+                                            td.fw-bold Days
+                                            td.fw-bold Amount
+                                    tbody
+                                        each t in t1
+                                            tr
+                                                td
+                                                td #{t.transactionid}
+                                                if t.paid
+                                                    td Paid
+                                                if t.paid === false 
+                                                    td Not paid
+                                                td #{t.description}
+                                                td #{t.price}
+                                                td #{t.qty}
+                                                td.amount #{t.amount}
+                                        tr 
+                                            td.fw-bold(colspan=6) Total
+                                            td.fw-bold(id='roomtotal')
+                                //- ANCILLARY SERVICES SECTION --------------------------------------------------
+                                if(t2.length > 0)
+                                    thead
+                                        tr
+                                            td.fw-bold(colspan=7) Ancillary Services
+                                        tr
+                                            td 
+                                            td.fw-bold Code
+                                            td.fw-bold Paid
+                                            td.fw-bold Description
+                                            td.fw-bold Price
+                                            td.fw-bold Usage
+                                            td.fw-bold Amount
+                                    tbody
+                                        each t in t2
+                                            tr
+                                                td
+                                                td #{t.ps_code}
+                                                if t.paid
+                                                    td Paid
+                                                if t.paid === false 
+                                                    td Not paid
+                                                td #{t.ancillary_desc}
+                                                td #{t.price}
+                                                td #{t.quantity}
+                                                td.amount #{t.amount}
+                                        tr 
+                                            td.fw-bold(colspan=6) Total
+                                            td.fw-bold(id='anctotal')
+                                //- HOUSEKEEPING SECTION --------------------------------------------------
+                                if(t3.length > 0)
+                                    thead
+                                        tr 
+                                            td.fw-bold(colspan=7) Housekeeping
+                                        tr
+                                            td
+                                            td.fw-bold Code
+                                            td.fw-bold Paid
+                                            td.fw-bold Description
+                                            td.fw-bold Price
+                                            td.fw-bold Quantity
+                                            td.fw-bold Amount
+                                    tbody
+                                        each t in t3
+                                            tr
+                                                td
+                                                td #{t.transactionid}
+                                                if t.paid
+                                                    td Paid
+                                                if t.paid === false 
+                                                    td Not paid
+                                                td #{t.description}
+                                                td #{t.price}
+                                                td #{t.qty}
+                                                td.amount #{t.amount}
+                                        tr 
+                                            td.fw-bold(colspan=6) Total
+                                            td.fw-bold(id='hsktotal')
+                                //- SUMMARY --------------------------------------------------
+                                thead
+                                    tr 
+                                        td.fw-bold(colspan=7) Summary
+                                tbody
+                                    tr
+                                        td(style='width:200px;')
+                                        td 
+                                        td 
+                                        td 
+                                        td
+                                        td Subtotal
+                                        td#subtotal
+                                    tr
+                                        td(style='width:200px;')
+                                        td 
+                                        td 
+                                        td 
+                                        td
+                                        td Discount
+                                        td#discount #{ga.foliodiscount}%
+                                    tr
+                                        td(style='width:200px;')
+                                        td 
+                                        td 
+                                        td 
+                                        td
+                                        td Tax
+                                        td#tax #{ga.foliotax}%
+                                    tr
+                                        td(style='width:200px;')
+                                        td 
+                                        td 
+                                        td 
+                                        td
+                                        td.fw-bold Total Amount
+                                        td#totalamount 
+                                    tr
+                                        td(style='width:200px;')
+                                        td 
+                                        td 
+                                        td 
+                                        td
+                                        td.fw-bold Paid to Date
+                                        td#paidtodate
+                                    tr
+                                        td(style='width:200px;')
+                                        td 
+                                        td 
+                                        td 
+                                        td
+                                        td.fw-bold Balance
+                                        td#balance 
+                            p.mt-5.text-center Discounts and taxes are already applied on the room accommodation.
                         
+                        script.
+                            const t1 = !{JSON.stringify(t1)}
+                            const t2 = !{JSON.stringify(t2)}
+                            const t3 = !{JSON.stringify(t3)}
+                            const amounts = document.querySelectorAll('td.amount')
+                            const subtotalTD = document.querySelector('#subtotal')
+                            const totalamountTD = document.querySelector('#totalamount')
+                            const paidtodateTD = document.querySelector('#paidtodate')
+                            const balanceTD = document.querySelector('#balance')
+
+                            const roomtotalTD = document.querySelector('#roomtotal')
+                            const anctotalTD = document.querySelector('#anctotal')
+                            const hsktotalTD = document.querySelector('#hsktotal')
+
+                            function calculatePercentageOfAmount(amount, percent) {
+                                return (percent / 100) * amount
+                            }
+                            function formatNumber(num) {
+                                return num.toFixed(2)
+                            }
+
+                            document.addEventListener('DOMContentLoaded', ()=>{
+
+                                let roomtotal = 0
+                                let anctotal = 0
+                                let hsktotal = 0
+                                let subtotal = 0
+                                let totalamount = 0
+                                let paidtodate = 0
+
+                                t1.forEach(t => {
+                                        subtotal += parseInt(t.amount)
+                                        totalamount += parseInt(t.amount)
+                                        roomtotal += parseInt(t.amount)
+                                        if(t.paid === true){
+                                            paidtodate += parseInt(t.amount)
+                                        }
+                                })
+                                if(t2.length > 0){
+                                    t2.forEach(t => {
+                                        subtotal += parseInt(t.amount)
+                                        totalamount += parseInt(t.amount)
+                                        anctotal += parseInt(t.amount)
+                                        if(t.paid === true){
+                                            paidtodate += parseInt(t.amount)
+                                        }
+                                })
+                                }
+                                if(t3.length > 0){
+                                    t3.forEach(t => {
+                                        subtotal += parseInt(t.amount)
+                                        totalamount += parseInt(t.amount)
+                                        hsktotal += parseInt(t.amount)
+                                        if(t.paid === true){
+                                            paidtodate += parseInt(t.amount)
+                                        }
+                                })
+                                }
+
+                                if(roomtotalTD){
+                                    roomtotalTD.innerText = formatNumber(roomtotal)
+                                }
+                                if(anctotalTD){
+                                    anctotalTD.innerText = formatNumber(anctotal)
+                                }
+                                if(hsktotalTD){
+                                    hsktotalTD.innerText = formatNumber(hsktotal)
+                                }
+
+                                if(subtotalTD){
+                                    subtotalTD.innerText = formatNumber(subtotal)
+                                }
+                                totalamountTD.innerText = formatNumber(totalamount)
+                                paidtodateTD.innerText = formatNumber(paidtodate)
+                                balanceTD.innerText = formatNumber(totalamount - paidtodate)
+                            })
+
 
     //-Bootstrap Js
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')
@@ -172,3 +436,5 @@ html(lang="en")
     //-Customize JS
     script(src='/js/nav-active.js')
     script(src='/js/room_nav.js')     
+    script(src='/js/modal.js')     
+    script(src='/js/modals/ga.js')     
