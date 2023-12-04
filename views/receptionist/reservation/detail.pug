@@ -102,25 +102,24 @@ html(lang="en")
                             if r.promocode
                                 span.col-md-10 #{r.promocode}
 
-            script.
-                document.addEventListener('DOMContentLoaded', function() {
-                    var checkinDate = "#{r.checkindate}"; // Get the check-in date from the server
+                script.
+                    document.addEventListener('DOMContentLoaded', function() {
+                        var checkinDate = "#{r.checkindate}"; // Get the check-in date from the server
 
-                    // Convert checkinDate to a JavaScript Date object
-                    var checkinDateObj = new Date(checkinDate);
+                        // Convert checkinDate to a JavaScript Date object
+                        var checkinDateObj = new Date(checkinDate);
 
-                    // Get today's date
-                    var today = new Date();
+                        // Get today's date
+                        var today = new Date();
 
-                    // Compare the dates
-                    if (checkinDateObj.getFullYear() != today.getFullYear() || 
-                        checkinDateObj.getMonth() != today.getMonth() || 
-                        checkinDateObj.getDate() != today.getDate()) {
-                        // If check-in date is in the future, disable the buttons
-                        document.getElementById('cancelReservationButton').onclick = "";
-                        document.getElementById('checkInButton').disabled = true;
-                    }
-                });
+                        // Compare the dates
+                        if (checkinDateObj.getFullYear() != today.getFullYear() || 
+                            checkinDateObj.getMonth() != today.getMonth() || 
+                            checkinDateObj.getDate() != today.getDate()) {
+                            // If check-in date is in the future, disable the buttons
+                            document.getElementById('checkInButton').disabled = true;
+                        }
+                    });
 
 
     //-Bootstrap Js
