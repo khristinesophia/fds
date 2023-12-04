@@ -9,6 +9,8 @@ const pool = new Pool({
     database: 'fds'
 })
 /*
+
+>>>>>>> main
 const pool = new Pool({
     user: 'acis',
     password: 'Ofdvpi7BxtIJ9KwisfYOc6nGb5HWAbLN',

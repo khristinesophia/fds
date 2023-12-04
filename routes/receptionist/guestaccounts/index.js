@@ -24,6 +24,7 @@ const { createInvoice } = require(path.join(__basedir, 'services', 'pdf-invoice'
 
 
 
+
 //- render "new" form/page
 //- "/ga/new"
 router.use('/new', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
@@ -150,6 +151,8 @@ router.post('/register', async(req,res)=>{
 })
 
 
+
+
 //- render "list" page
 //- "/ga"
 router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
@@ -187,41 +190,9 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
 })
 
 
-//- render "check-out" page
-//- "/ga/checkout/:id"
-router.get('/checkout/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
 
-    const hotelid = req.session.hotelID
-    const { id } = req.params
 
-    //- select ga room num and status
-    const q1 = `
-        SELECT 
-            t1.accountid,
-            t2.fullname,
-            t4.roomnum,
-            t4.status,
-            t3.settled
-        FROM guestaccounts t1
-        JOIN guestaccounts_guestdetails t2
-            ON t1.accountid = t2.accountid
-        JOIN folios t3
-            ON t1.accountid = t3.accountid
-        JOIN rooms t4
-            ON t1.roomid = t4.roomid
-        WHERE t1.hotelid = $1 AND
-            t1.accountid = $2
-    `
-
-    const q1result = await pool.query(q1, [hotelid, id])
-
-    res.render('receptionist/guestaccounts/checkout', {
-        hotelColor: req.hotelColor,
-        ga: q1result.rows[0]
-    })
-})
-
-//- room status 'Occupied' to 'To check out'
+//- room status 'Occupied' to 'To check-out'
 //- "/ga/tco/:id"
 router.post('/tco/:id', isAuthenticated, async(req,res)=>{
 
@@ -250,17 +221,75 @@ router.post('/tco/:id', isAuthenticated, async(req,res)=>{
     `
     const q2result = await pool.query(q2, [hotelid, id])
 
-    res.redirect(`/ga/checkout/${q2result.rows[0].accountid}`)
+    res.redirect(`/ga/info/${id}`)
 })
 
-//- room status 'Inspected' to 'Recently checked-out'
-//- "/ga/rco/:id"
-router.post('/rco/:id', isAuthenticated, async(req, res)=>{
+
+//- store approval code for credit/debit card payments
+//- "/ga/cardpayment/:id"
+router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
+
+
 
     const hotelid = req.session.hotelID
     const { id } = req.params
+    const { approvalcode, subtotal2, totalamount2, paidtodate2, balance2 } = req.body
 
-    const q1 = `
+
+
+    //- update fds transactions
+    const q1result = await pool.query(`
+        UPDATE transactions
+        SET paid = $1,
+            approvalcode = $2
+        WHERE hotelid = $3 AND
+            accountid = $4
+    `, [true, approvalcode, hotelid, id])
+
+    //- update ancillary transactions
+    const q2result = await pool.query(`
+        UPDATE ancillary_transactions
+        SET paid = $1,
+            approvalcode = $2
+        WHERE hotelid = $3 AND
+            accountid = $4
+    `, [true, approvalcode, hotelid, id])
+
+    //- update housekeeping transactions
+    const q3result = await pool.query(`
+        UPDATE housekeeping_transactions
+        SET paid = $1,
+            approvalcode = $2
+        WHERE hotelid = $3 AND
+            accountid = $4
+    `, [true, approvalcode, hotelid, id])
+
+
+
+    //- update folio's "settled column"
+    const q4result = await pool.query(`
+        UPDATE folios
+        SET settled = $1,
+            subtotal = $2,
+            totalamount = $3,
+            paid = $4,
+            balance = $5
+        WHERE hotelid = $6 AND
+            accountid = $7
+    `, [true, subtotal2, totalamount2, totalamount2, 0, hotelid, id])
+
+    //- update ga "settled column"
+    const q5result = await pool.query(`
+        UPDATE guestaccounts
+        SET settled = $1
+        WHERE hotelid = $2 AND
+            accountid = $3
+    `, [true,hotelid, id])
+
+
+
+    //- room status 'Inspected' to 'Recently checked-out'
+    const q6result = await pool.query(`
         UPDATE 
             rooms 
         SET 
@@ -271,186 +300,53 @@ router.post('/rco/:id', isAuthenticated, async(req, res)=>{
             rooms.roomid = guestaccounts.roomid AND
             guestaccounts.hotelid = $1 AND 
             guestaccounts.accountid = $2
-    `
-    const q1result = await pool.query(q1, [hotelid, id])
+    `, [hotelid, id])
 
-    const q2 = `
-        SELECT *
-        FROM guestaccounts
-        WHERE hotelid = $1 AND
-        accountid = $2
-    `
-    const q2result = await pool.query(q2, [hotelid, id])
 
-    res.redirect(`/ga/checkout/${q2result.rows[0].accountid}`)
+
+    res.redirect(`/ga/invoice/${id}`)
 })
 
-//- render "folio" page
-//- "/ga/folio/:id"
-router.get('/folio/:id', getHotelColor, getHotelLogo, async(req, res)=>{
-
-    const hotelid = req.session.hotelID
-    const { id } = req.params
-
-
-    //- select from "transactions" table (fds)
-    const q1 = `
-        SELECT * FROM transactions
-        WHERE hotelid = $1
-        AND accountid = $2
-    `
-    const q1result = await pool.query(q1, [hotelid, id])
-
-
-    //- select from "ancillary_transactions" table (ancillary)
-    const q2 = `
-        SELECT 
-            t1.ancillary_desc,
-            t2.ps_code,
-            t2.price,
-            t3.transaction_id,
-            t3.accountid,
-            t3.quantity,
-            t3.amount,
-            t3.paid
-        FROM ancillaries t1
-        JOIN product_service t2
-            ON t1.ancillary_id = t2.ancillary_id
-        JOIN ancillary_transactions t3
-            ON t2.ps_id = t3.ps_id
-        WHERE t3.hotelid = $1
-        AND t3.accountid = $2
-    `
-    const q2result = await pool.query(q2, [hotelid, id])
-
-
-    //- select from "housekeeping_transactions" table (housekeeping)
-    const q3 = `
-        SELECT 
-            t1.transactionid,
-            t1.paid,
-            t2.description,
-            t1.price,
-            t1.qty,
-            t1.amount
-        FROM housekeeping_transactions t1
-        JOIN ref_items t2
-            ON t1.ref_itemid = t2.ref_itemid
-        WHERE t1.hotelid = $1 AND
-            t1.accountid = $2
-    `
-    const q3result = await pool.query(q3, [hotelid, id])
-
-
-    //- select from "ga" and "ga_gd" table (fds)
-    const q4 = `
-        SELECT *
-        FROM guestaccounts t1
-            JOIN guestaccounts_guestdetails t2
-                ON t1.accountid = t2.accountid
-            JOIN folios t3
-                ON t1.accountid = t3.accountid
-            JOIN rooms t4
-                ON t1.roomid = t4.roomid
-        WHERE t1.hotelid = $1 AND 
-            t1.accountid = $2
-    `
-    const q4result = await pool.query(q4, [hotelid, id])
-
-
-    res.render('receptionist/guestaccounts/folio', {
-        hotelColor: req.hotelColor,
-        hotelLogo: req.hotelImage, 
-        t1: q1result.rows,
-        t2: q2result.rows,
-        t3: q3result.rows,
-        ga: q4result.rows[0]
-    })
-
-})
-
-//- store approval code for credit/debit card payments
-//- "/ga/cardpayment/:id"
-router.post('/cardpayment/:id', isAuthenticated, async(req,res)=>{
-
-    const hotelid = req.session.hotelID
-    const { id } = req.params
-    const { approvalcode, subtotal2, totalamount2, paidtodate2, balance2 } = req.body
-
-    //- update ancillary transactions
-    const q1 = `
-        UPDATE ancillary_transactions
-        SET paid = $1,
-            approvalcode = $2
-        WHERE hotelid = $3 AND
-            accountid = $4
-    `
-    const q1result = await pool.query(q1, [true, approvalcode, hotelid, id])
-
-    //- update housekeeping transactions
-    const q2 = `
-        UPDATE housekeeping_transactions
-        SET paid = $1,
-            approvalcode = $2
-        WHERE hotelid = $3 AND
-            accountid = $4
-    `
-    const q2result = await pool.query(q2, [true, approvalcode, hotelid, id])
-
-    //- update folio's "settled column"
-    const q3 = `
-        UPDATE folios
-        SET settled = $1,
-            subtotal = $2,
-            totalamount = $3,
-            paid = $4,
-            balance = $5
-        WHERE hotelid = $6 AND
-            accountid = $7
-    `
-    const q3result = await pool.query(q3, [true, subtotal2, totalamount2, totalamount2, 0, hotelid, id])
-
-    //- update ga "settled column"
-    const q4 = `
-        UPDATE guestaccounts
-        SET settled = $1
-        WHERE hotelid = $2 AND
-            accountid = $3
-    `
-    const q4result = await pool.query(q4, [true,hotelid, id])
-
-    res.redirect(`/ga/checkout/${id}`)
-})
 
 //- set paid to true for all transactions, update ga "settled" column
 //- "/ga/cashpayment/:id"
 router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
+
+
 
     const hotelid = req.session.hotelID
     const { id } = req.params
     const { subtotal3, totalamount3, paidtodate3, balance3 } = req.body
 
 
+    //- update fds transactions
+    const q1result = await pool.query(`
+        UPDATE transactions
+        SET paid = $1
+        WHERE hotelid = $2 AND
+            accountid = $3
+    `, [true, hotelid, id])
+
     //- update ancillary transactions
-    const q1 = `
+    const q2result = await pool.query(`
         UPDATE ancillary_transactions
         SET paid = $1
         WHERE hotelid = $2 AND
             accountid = $3
-    `
-    const q1result = await pool.query(q1, [true, hotelid, id])
+    `, [true, hotelid, id])
 
     //- update housekeeping transactions
-    const q2 = `
+    const q3result = await pool.query(`
         UPDATE housekeeping_transactions
         SET paid = $1
         WHERE hotelid = $2 AND
             accountid = $3
-    `
-    const q2result = await pool.query(q2, [true, hotelid, id])
+    `, [true, hotelid, id])
+
+
 
     //- update folio's "settled column"
-    const q3 = `
+    const q4result = await pool.query(`
         UPDATE folios
         SET settled = $1,
             subtotal = $2,
@@ -459,19 +355,35 @@ router.post('/cashpayment/:id', isAuthenticated, async(req,res)=>{
             balance = $5
         WHERE hotelid = $6 AND
             accountid = $7
-    `
-    const q3result = await pool.query(q3, [true, subtotal3, totalamount3, totalamount3, 0, hotelid, id])
+    `, [true, subtotal3, totalamount3, totalamount3, 0, hotelid, id])
 
     //- update ga "settled column"
-    const q4 = `
+    const q5result = await pool.query(`
         UPDATE guestaccounts
         SET settled = $1
         WHERE hotelid = $2 AND
             accountid = $3
-    `
-    const q4result = await pool.query(q4, [true,hotelid, id])
+    `, [true,hotelid, id])
 
-    res.redirect(`/ga/checkout/${id}`)
+
+
+    //- room status 'Inspected' to 'Recently checked-out'
+    const q6result = await pool.query(`
+        UPDATE 
+            rooms 
+        SET 
+            status = 'Recently checked-out' 
+        FROM 
+            guestaccounts
+        WHERE 
+            rooms.roomid = guestaccounts.roomid AND
+            guestaccounts.hotelid = $1 AND 
+            guestaccounts.accountid = $2
+    `, [hotelid, id])
+
+
+
+    res.redirect(`/ga/invoice/${id}`)
 })
 
 
@@ -598,46 +510,8 @@ router.get('/invoice/:id', async(req, res)=>{
         () => stream.end(),
         invoice
     )
-
 })
 
-
-//- render "detail" page
-//- "/ga/detail/:id"
-router.get('/detail/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
-    const hotelid = req.session.hotelID
-    const { id } = req.params
-
-    const q1 = `
-        SELECT * FROM guestaccounts t1
-        JOIN guestaccounts_guestdetails t2
-            ON t1.accountid = t2.accountid
-        JOIN room_type t3 
-            ON t1.typeid = t3.typeid
-        JOIN rooms t4 
-            ON t1.roomid = t4.roomid 
-        LEFT JOIN promos t5
-            ON t1.promoid = t5.id
-        WHERE t1.accountid = $1 AND
-            t1.hotelid = $2
-    `
-    const q1result = await pool.query(q1, [id, hotelid])
-
-    q1result.rows.forEach((ga)=>{
-        if(ga.checkindate){
-            ga.checkindate = formatDateWithTime(ga.checkindate)
-        }
-        if(ga.checkoutdate){
-            ga.checkoutdate = formatDateWithTime(ga.checkoutdate)
-        }
-    })
-
-    res.render('receptionist/guestaccounts/detail', {
-        hotelColor: req.hotelColor,
-        hotelLogo: req.hotelImage,
-        ga: q1result.rows[0]
-    })
-})
 
 
 
@@ -646,22 +520,30 @@ router.get('/info/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req,
     const hotelid = req.session.hotelID
     const { id } = req.params
 
-    const q1 = `
-        SELECT * FROM guestaccounts t1
+    const q4 = `
+        SELECT 
+            t4.status AS roomstatus,
+            t6.status AS promostatus,
+            t5.discount AS foliodiscount,
+            t5.tax AS foliotax,
+            * 
+        FROM guestaccounts t1
         JOIN guestaccounts_guestdetails t2
             ON t1.accountid = t2.accountid
         JOIN room_type t3 
             ON t1.typeid = t3.typeid
         JOIN rooms t4 
             ON t1.roomid = t4.roomid 
-        LEFT JOIN promos t5
-            ON t1.promoid = t5.id
+        JOIN folios t5
+            ON t1.accountid = t5.accountid
+        LEFT JOIN promos t6
+            ON t1.promoid = t6.id
         WHERE t1.accountid = $1 AND
             t1.hotelid = $2
     `
-    const q1result = await pool.query(q1, [id, hotelid])
+    const q4result = await pool.query(q4, [id, hotelid])
 
-    q1result.rows.forEach((ga)=>{
+    q4result.rows.forEach((ga)=>{
         if(ga.checkindate){
             ga.checkindate = formatDateWithTime(ga.checkindate)
         }
@@ -670,12 +552,64 @@ router.get('/info/:id', isAuthenticated, getHotelColor, getHotelLogo, async(req,
         }
     })
 
+    //- select from "transactions" table (fds)
+    const q1 = `
+        SELECT * FROM transactions
+        WHERE hotelid = $1
+        AND accountid = $2
+    `
+    const q1result = await pool.query(q1, [hotelid, id])
+
+
+    //- select from "ancillary_transactions" table (ancillary)
+    const q2 = `
+        SELECT 
+            t1.ancillary_desc,
+            t2.ps_code,
+            t2.price,
+            t3.transaction_id,
+            t3.accountid,
+            t3.quantity,
+            t3.amount,
+            t3.paid
+        FROM ancillaries t1
+        JOIN product_service t2
+            ON t1.ancillary_id = t2.ancillary_id
+        JOIN ancillary_transactions t3
+            ON t2.ps_id = t3.ps_id
+        WHERE t3.hotelid = $1
+        AND t3.accountid = $2
+    `
+    const q2result = await pool.query(q2, [hotelid, id])
+
+
+    //- select from "housekeeping_transactions" table (housekeeping)
+    const q3 = `
+        SELECT 
+            t1.transactionid,
+            t1.paid,
+            t2.description,
+            t1.price,
+            t1.qty,
+            t1.amount
+        FROM housekeeping_transactions t1
+        JOIN ref_items t2
+            ON t1.ref_itemid = t2.ref_itemid
+        WHERE t1.hotelid = $1 AND
+            t1.accountid = $2
+    `
+    const q3result = await pool.query(q3, [hotelid, id])
+
     res.render('receptionist/guestaccounts/info', {
         hotelColor: req.hotelColor,
         hotelLogo: req.hotelImage,
-        ga: q1result.rows[0]
+        ga: q4result.rows[0],
+        t1: q1result.rows,
+        t2: q2result.rows,
+        t3: q3result.rows,
     })
 })
+
 
 
 
@@ -687,7 +621,7 @@ router.post('/extend/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
 
     const { roomid, folioid,
-        rate_perhour, hoursno, cost } = req.body
+        price, daysno, cost } = req.body
 
     const description = 'Extension'
     const date = getCurrentDate()
@@ -696,155 +630,9 @@ router.post('/extend/:id', isAuthenticated, async(req, res)=>{
         INSERT INTO transactions(hotelid, accountid, roomid, description, price, qty, amount, date, folioid)
         VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9)
     `
-    const q1result = await pool.query(q1, [hotelID, id, roomid, description, rate_perhour, hoursno, cost, date, folioid])
+    const q1result = await pool.query(q1, [hotelID, id, roomid, description, price, daysno, cost, date, folioid])
 
-    res.redirect(`/ga/folio/${id}`)
-})
-
-
-
-
-
-//- archive ga
-//- "ga/archive/:id"
-router.post('/archive/:id', isAuthenticated, async(req, res)=>{
-    const hotelID = req.session.hotelID
-    const { id } = req.params
-
-    //- get ga record
-    const q1 = `
-        SELECT * FROM guestaccounts t1
-        JOIN guestaccounts_guestdetails t2
-            ON t1.accountid = t2.accountid
-        JOIN folios t3
-            ON t1.accountid = t3.accountid
-        JOIN room_type t4
-            ON t1.typeid = t4.typeid
-        JOIN rooms t5
-            ON t1.roomid = t5.roomid
-        WHERE t1.hotelid = $1 AND
-            t1.accountid = $2
-    `
-    const q1result = await pool.query(q1, [hotelID, id])
-
-    //- destructure
-    const { accountid, hotelid, roomtype, roomnum, adultno, childno, 
-        reservationdate, checkindate, checkoutdate, numofdays, 
-        modeofpayment, promocode, 
-        fullname, email, contactno, address,
-        folioid, subtotal, discount, tax, totalamount, paid, balance, settled } = q1result.rows[0]
-
-    //- insert into hist_guestaccounts
-    const q2 = `
-        INSERT INTO hist_guestaccounts(accountid, hotelid, roomtype, roomnum, adultno, childno, 
-            reservationdate, checkindate, checkoutdate, numofdays, 
-            modeofpayment, promocode, settled)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
-    `
-    const q2result = await pool.query(q2, [accountid, hotelid, roomtype, roomnum, adultno, childno, 
-        reservationdate, checkindate, checkoutdate, numofdays, 
-        modeofpayment, promocode, settled])
-
-    //- insert into hist_guestaccounts_guestdetails
-    const q3 = `
-        INSERT INTO hist_guestaccounts_guestdetails(accountid, hotelid, fullname, email, contactno, address)
-        VALUES($1, $2, $3, $4, $5, $6)
-    `
-    const q3result = await pool.query(q3, [accountid, hotelid, fullname, email, contactno, address])
-    
-    //- insert into hist_folio
-    const q4 = `
-        INSERT INTO hist_folios(folioid, accountid, hotelid, subtotal, discount, tax, totalamount, paid, balance, settled)
-        VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
-    `
-    const q4result = await pool.query(q4, [folioid, accountid, hotelid, subtotal, discount, tax, totalamount, paid, balance, settled])
-
-
-
-
-    //- get t record (fds)
-    const q5 = `
-        SELECT * 
-        FROM transactions t1
-        JOIN rooms t2
-            ON t1.roomid = t2.roomid
-        WHERE t1.accountid = $1 AND
-            t1.hotelid = $2
-    `
-    const q5result = await pool.query(q5, [id, hotelID])
-    const t_fds = q5result.rows
-
-    //- insert into hist_transactions
-    t_fds.forEach(async (t) => {
-        await pool.query(`INSERT INTO hist_transactions(transactionid, hotelid, accountid, roomnum, 
-                        description, price, qty, amount, date, 
-                        approvalcode, paid, folioid)
-                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-            `, [t.transactionid, t.hotelid, t.accountid, t.roomnum, 
-                t.description, t.price, t.qty, t.amount, t.date, 
-                t.approvalcode, t.paid, t.folioid]
-        )
-    })
-
-
-
-    //- get t record (anc)
-    const q6 = `
-        SELECT * 
-        FROM ancillary_transactions
-        WHERE accountid = $1 AND
-            hotelid = $2
-    `
-    const q6result = await pool.query(q6, [id, hotelID])
-    const t_anc = q6result.rows
-
-    //- insert into hist_ancillary_transactions
-    t_anc.forEach(async (t) => {
-        await pool.query(`INSERT INTO hist_ancillary_transactions(transaction_id, transaction_date, ps_id, 
-                        quantity, amount, employeeid, archived_date, 
-                        accountid, hotelid, approvalcode, paid, folioid)
-                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-        `, [t.transaction_id, t.transaction_date, t.ps_id, 
-            t.quantity, t.amount, t.employeeid, t.archived_date, 
-            t.accountid, t.hotelid, t.approvalcode, t.paid, t.folioid])
-    })
-    
-
-
-    //- get t record (hsk)
-    const q7 = `
-        SELECT * 
-        FROM housekeeping_transactions t1
-        JOIN rooms t2
-            ON t1.roomid = t2.roomid
-        WHERE t1.accountid = $1 AND
-            t1.hotelid = $2
-    `
-    const q7result = await pool.query(q7, [id, hotelID])
-    const t_hsk = q7result.rows
-    
-    //- insert into hist_housekeeping_transactions
-    t_hsk.forEach(async (t) => {
-        await pool.query(`INSERT INTO hist_housekeeping_transactions(transactionid, reservationid, description, roomnum,
-                        transaction_type, ref_itemid, transactiondate, employeeid, remarks, 
-                        price, qty, archiveddate, 
-                        accountid, hotelid, amount, paid, approvalcode, folioid)
-                    VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18)
-            `, [t.transactionid, t.reservationid, t.description, t.roomnum,
-                t.transaction_type, t.ref_itemid, t.transactiondate, t.employeeid, t.remarks, 
-                t.price, t.qty, t.archiveddate, 
-                t.accountid, t.hotelid, t.amount, t.paid, t.approvalcode, t.folioid])
-    })
-
-    //- delete ga
-    const q8 = `
-        DELETE FROM guestaccounts
-        WHERE hotelid = $1 AND
-            accountid = $2
-    `
-    const q8result = await pool.query(q8, [hotelID, id])
-
-    res.redirect('/archivedga')
+    res.redirect(`/ga/info/${id}`)
 })
 
 

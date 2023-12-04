@@ -90,6 +90,9 @@ mixin addHSA
                     label.col-form-label(for="username") Username:
                     input.form-control(type="text", id="username", name="username", required)
 
+                    label.col-form-label(for="email") Email:
+                    input.form-control(type="text", id="email", name="email", required)
+
                     label.col-form-label.mt-3(for='password') Password:
                     .input-group.showpass
                         input#password.form-control(type='password' name='password' pattern='.{8,}' title='Password must be at least 8 characters' required)
@@ -292,14 +295,66 @@ mixin editAdminHSA
         .modal-content
             .modal-header
                 h5.modal-title(id='') Edit
-                button.btn-close(type='button' onclick='CLose_Edit_Admin_User()' aria-label='Close')
+                button.btn-close(type='button' onclick='closeModal_EditHSA()' aria-label='Close')
             .modal-body.mb-3
                 form(action='', method="POST")
-                    label.col-form-label(for="username") Username:
-                    input.form-control(type="text", name="username", value=`${ha.username}`, required)
+                    .mb-3
+                        label.col-form-label(for="username") Username:
+                        input.form-control(type="text", name="username", value=`${ha.username}`, required)
+                    
+                    .mb-3
+                        label.col-form-label(for="email") Email:
+                        input.form-control(type="text", name="email", value=`${ha.email}`, required)
+
+                    .mb-3
+                        label.form-label.fw-bold(for="shiftid") Shift:
+                        select.form-select(id='shiftid', name='shiftid')
+                                option(value=null id='nullshiftid_hsa') Choose from the options below...
+                                each shift in allShiftsArray
+                                    option(value=shift.shiftid) #{shift.shiftname}
+
+                    label.form-label.fw-bold(for="") Days of the Week:
+                    .row.mb-5
+                        .row.col-md-6
+                            .row
+                                //- onshift_mon
+                                .col-md-2
+                                    input.form-check-input#onshift_mon(type='checkbox' name='onshift_mon')
+                                label.col-md-10.form-label(for='onshift_mon') Monday
+                            .row
+                                //- onshift_tues
+                                .col-md-2
+                                    input.form-check-input#onshift_tues(type='checkbox' name='onshift_tues')
+                                label.col-md-10.form-label(for='onshift_tues') Tuesday
+                            .row
+                                //- onshift_wed
+                                .col-md-2
+                                    input.form-check-input#onshift_wed(type='checkbox' name='onshift_wed')
+                                label.col-md-10.form-label(for='onshift_wed') Wednesday
+                            .row
+                                //- onshift_thurs
+                                .col-md-2
+                                    input.form-check-input#onshift_thurs(type='checkbox' name='onshift_thurs')
+                                label.col-md-10.form-label(for='onshift_thurs') Thursday
+                        .row.col-md-6
+                            .row
+                                //- onshift_fri
+                                .col-md-2
+                                    input.form-check-input#onshift_fri(type='checkbox' name='onshift_fri')
+                                label.col-md-10.form-label(for='onshift_fri') Friday
+                            .row
+                                //- onshift_sat
+                                .col-md-2
+                                    input.form-check-input#onshift_sat(type='checkbox' name='onshift_sat')
+                                label.col-md-10.form-label(for='onshift_sat') Saturday
+                            .row
+                                //- onshift_sun
+                                .col-md-2
+                                    input.form-check-input#onshift_sun(type='checkbox' name='onshift_sun')
+                                label.col-md-10.form-label(for='onshift_sun') Sunday
 
                     .modal-footer
-                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Admin_User()") Cancel
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="closeModal_EditHSA()") Cancel
                         input.btn.mod_btn(type="submit", value="Submit") 
 
 //-Hotel System Admin CHANGE PASSWORD ADMIN HSA
@@ -384,6 +439,9 @@ mixin addR
                     label.col-form-label(for="username") Username:
                     input.form-control(type="text", id="username", name="username", required)
 
+                    label.col-form-label(for="email") Email
+                    input.form-control(type="text", id="email", name="email", required)
+
                     label.col-form-label(for="password") Password:
                     .input-group.showpass
                         input.form-control(type="password", id="password", name="password" pattern='.{8,}' title='Password must be at least 8 characters' required)
@@ -433,22 +491,75 @@ mixin addR
 
 
 //- EDIT Receptionist in HSA
-mixin editReceptionistHSA
-    #editreceptionisthsa.modal
+mixin editReceptionist()
+    #editReceptionist.modal
         .modal-content
             .modal-header
                 h5.modal-title(id='') Edit
-                button.btn-close(type='button' onclick='CLose_Edit_Receptionist_User()' aria-label='Close')
+                button.btn-close(type='button' onclick='closeModal_EditReceptionist()' aria-label='Close')
             .modal-body.mb-3
                 form(action='', method="POST")
-                    label.col-form-label(for="name") Name:
-                    input.form-control(type="text", name="name", value=`${r.fullname}`, required)
+                    .mb-3
+                        label.form-label.fw-bold(for="name") Name:
+                        input.form-control(type="text", name="name", value=`${r.fullname}`, required)
+                    .mb-3
 
-                    label.col-form-label(for="username") Username:
-                    input.form-control(type="text", name="username", value=`${r.username}`, required)
+                        label.form-label.fw-bold(for="username") Username:
+                        input.form-control(type="text", name="username", value=`${r.username}`, required)
+                    .mb-3
+
+                        label.form-label.fw-bold(for="email") Email:
+                        input.form-control(type="text", name="email", value=`${r.email}`, required)
+                    
+                    .mb-3
+                        label.form-label.fw-bold(for="shiftid") Shift:
+                        select.form-select(id='shiftid', name='shiftid')
+                                option(value=null id='nullshiftid_receptionist') Choose from the options below...
+                                each shift in allShiftsArray
+                                    option(value=shift.shiftid) #{shift.shiftname}
+
+                    label.form-label.fw-bold(for="") Days of the Week:
+                    .row.mb-5
+                        .row.col-md-6
+                            .row
+                                //- onshift_mon
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_mon')
+                                label.col-md-10.form-label(for='onshift_mon') Monday
+                            .row
+                                //- onshift_tues
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_tues')
+                                label.col-md-10.form-label(for='onshift_tues') Tuesday
+                            .row
+                                //- onshift_wed
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_wed')
+                                label.col-md-10.form-label(for='onshift_wed') Wednesday
+                            .row
+                                //- onshift_thurs
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_thurs')
+                                label.col-md-10.form-label(for='onshift_thurs') Thursday
+                        .row.col-md-6
+                            .row
+                                //- onshift_fri
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_fri')
+                                label.col-md-10.form-label(for='onshift_fri') Friday
+                            .row
+                                //- onshift_sat
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_sat')
+                                label.col-md-10.form-label(for='onshift_sat') Saturday
+                            .row
+                                //- onshift_sun
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_sun')
+                                label.col-md-10.form-label(for='onshift_sun') Sunday
 
                     .modal-footer
-                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Receptionist_User()") Cancel
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="closeModal_EditReceptionist()") Cancel
                         input.btn.mod_btn(type="submit", value="Submit") 
 
 //- DELETE Receptionist in HSA
@@ -751,42 +862,6 @@ mixin deleteRoom(roomnum)
 
 
 
-mixin approvalcode 
-    #modal.modal  
-        .modal-content
-            .modal-header
-                h5.modal-title(id='') Approval Code
-                button.btn-close(type='button' onclick='closeModal()' aria-label='Close')
-            .modal-body.mb-3 
-                form(id="", action=`/ga/cardpayment/${ga.accountid}`, method="POST")
-
-                    input(type="hidden" id="subtotal2" name="subtotal2")
-                    input(type="hidden" id="totalamount2" name="totalamount2")
-                    input(type="hidden" id="paidtodate2" name="paidtodate2")
-                    input(type="hidden" id="balance2" name="balance2")
-                    input.form-control(type="text", id="approvalcode", name="approvalcode", required)
-
-                    script.
-                        document.addEventListener('DOMContentLoaded', ()=>{
-                            
-                            const subtotal = parseInt(document.querySelector('#subtotal').innerText)
-                            document.querySelector('#subtotal2').value = subtotal
-
-                            const totalamount = parseInt(document.querySelector('#totalamount').innerText)
-                            document.querySelector('#totalamount2').value = totalamount
-
-                            const paidtodate = parseInt(document.querySelector('#paidtodate').innerText)
-                            document.querySelector('#paidtodate2').value = paidtodate
-
-                            const balance = parseInt(document.querySelector('#balance').innerText)
-                            document.querySelector('#balance2').value = balance
-                        })
-
-                    //- ganto talaga indentation ng .modal-footer
-                    .modal-footer.mt-3
-                        button.btn.mod_btn_sec(type="button", onclick="closeModal()") Cancel
-                        input.btn.mod_btn(type="submit", value="Submit")
-
 //- DELETE Promo
 mixin deletePromo(roomnum)
     #deletepromo.modal
@@ -814,85 +889,7 @@ mixin deletePromo(roomnum)
 
 
 
-//- extendStay
-mixin extendStay(ga) 
-    #extendStay.modal 
-        .modal-content.text-dark
-            form(action='' method='POST' id='extendStayForm') 
-                .modal-header
-                    h5.text-center Extend Stay
-                    button.btn-close(type='button' onclick='closeExtendStay()' aria-label='Close')
-                .modal-body
-                    .row
-                        .col-4 
-                            p.fw-bold Account ID
-                            p.fw-bold Account Name
-                            p.fw-bold Room Number
-                            p.fw-bold Room Type
-                            p.fw-bold Extension Rate
-                        .col-8
-                            p.fw-normal#accountidSpan
-                            p.fw-normal#fullnameSpan
-                            p.fw-normal#roomnumSpan
-                            p.fw-normal#roomtypeSpan
-                            p.fw-normal#rate_perhourSpan
-                    .mt-4
-                        input(type="hidden" id="rate_perhour" name="rate_perhour")
-                        input(type="hidden" id="roomid" name="roomid")
-                        input(type="hidden" id="folioid" name="folioid")
-                        label.form-label.fw-bold Number of Hours 
-                        input.form-control(
-                            type="number" 
-                            id="hoursno" 
-                            name="hoursno" 
-                            onkeyup="updateCost(this)"
-                            min="1"
-                        )
-                    .mt-2
-                        label.form-label.fw-bold Cost
-                        input.form-control(
-                            type="number" 
-                            id="cost" 
-                            name="cost"
-                            min="1"
-                        )
-                    script.
-                        function updateCost(clickedElement){
-                            //- get rate_perhour and hoursno
-                            const rate_perhour = clickedElement.getAttribute('data-rate_perhour')
-                            const hoursno = clickedElement.value
 
-                            //- calculation
-                            const cost = rate_perhour * hoursno
-                            const costFinal = cost.toFixed(2)
-
-                            //- assign cost
-                            document.getElementById('cost').value = costFinal
-                        }
-                .modal-footer
-                    button.btn.mod_btn_sec(type='button' onclick='closeExtendStay()') Cancel
-                    input.btn.mod_btn(type='submit' value='Submit')
-
-//- Cash Payment
-mixin cashpay()
-    #modalcash.modal
-        .modal-content
-            .modal-header
-                h5.modal-title(id='') Cash Payment
-                button.btn-close(type='button' onclick='closeModalcash()' aria-label='Close')
-            .modal-body
-                p.mb-3
-                    | This is a Cash payment Method
-                .form-check.mt-3
-                    input.form-check-input#confirm-checkbox(type="checkbox")
-                    label.form-check-label(for="confirm-checkbox") I Agree
-                    
-            .modal-footer.mt-3.modalcash
-                form(action='', method="POST")
-                    .ms
-                        button.btn.mod_btn_sec.me-3(type="button", onclick="closeModalcash()") Cancel
-                        input.btn.mod_btn(type="submit" value="Proceed" onclick="confirmDelete()")
-                    p.err.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before Proceeding.
 
 
 mixin cancelreservation()
@@ -916,3 +913,64 @@ mixin cancelreservation()
                     p.err.mt-3#checkbox-error-message(style="color: red; display: none;") Please check the checkbox before Proceeding.                    
 
 
+//- add shift
+mixin addShift
+    #addShift.modal  
+            .modal-content
+                .modal-header
+                    h5.modal-title(id='') Add Shift
+                    button.btn-close(type='button' onclick='closeModalAddShift()' aria-label='Close')
+                .modal-body.mb-3 
+                    form(id="", action="/users/addshift", method="POST")
+                    
+                        label.col-form-label(for="shiftname") Shift Name:
+                        input.form-control(type="text", id="shiftname", name="shiftname", required)
+
+                        label.col-form-label(for="starthour") Start Hour:
+                        input.form-control(type="time", id="starthour", name="starthour", required)
+
+                        label.col-form-label(for="endhour") End Hour:
+                        input.form-control(type="time", id="endhour", name="endhour", required)
+
+                        //- ganto talaga indentation ng .modal-footer
+                        .modal-footer.mt-3
+                            button.btn.btn-secondary(type="button", onclick="closeModalAddShift()") Cancel
+                            input.btn(type="submit", value="Submit") 
+
+//- edit shift
+mixin editShift
+    #editShift.modal  
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Edit Shift
+                button.btn-close(type='button' onclick='closeModalEditShift()' aria-label='Close')
+            .modal-body.mb-3 
+                form(id='editShiftForm', method="POST")
+                
+                    label.col-form-label(for="shiftname") Shift Name:
+                    input.form-control(type="text", id="shiftname", name="shiftname", value=`${shift.shiftname}` required)
+
+                    label.col-form-label(for="starthour") Start Hour:
+                    input.form-control(type="time", id="starthour", name="starthour", value=`${shift.starthour}` required)
+
+                    label.col-form-label(for="endhour") End Hour:
+                    input.form-control(type="time", id="endhour", name="endhour", value=`${shift.endhour}` required)
+
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer.mt-3
+                        button.btn.btn-secondary(type="button", onclick="closeModalEditShift()") Cancel
+                        input.btn(type="submit", value="Submit") 
+
+mixin deleteShift
+    #deleteShift.modal  
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Delete Shift
+                button.btn-close(type='button' onclick='closeModalDeleteShift()' aria-label='Close')
+            .modal-body.mb-3 
+                form(id='deleteShiftForm', action= ``, method="POST")
+
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer.mt-3
+                        button.btn.btn-secondary(type="button", onclick="closeModalDeleteShift()") Cancel
+                        input.btn(type="submit", value="Submit") 
