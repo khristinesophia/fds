@@ -9,6 +9,8 @@ const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthentica
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
 const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 
+const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
+
 // read room type
 router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
@@ -87,9 +89,18 @@ router.get('/arcPromos', isAuthenticated, getHotelColor, getHotelLogo, async(req
         // Convert binary data to base64 string
         allPromos.rows.forEach(row => {
             if (row.poster) {
-                row.poster = 'data:' + row.poster + ';base64,' + row.poster.toString('base64');
+                row.poster = 'data:' + row.imagetype + ';base64,' + row.poster.toString('base64');
             }
         });
+
+        allPromos.rows.forEach((r)=>{
+            if(r.startdate){
+                r.startdate = formatDate(r.startdate)
+            }
+            if(r.enddate){
+                r.enddate = formatDate(r.enddate)
+            }
+        })
 
         res.render('HSA/archived/arcPromos', {
             allPromosArray: allPromos.rows,

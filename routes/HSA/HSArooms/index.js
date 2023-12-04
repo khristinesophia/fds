@@ -347,9 +347,25 @@ router.post('/delete/:id', isAuthenticated, async(req,res)=>{
         const { id } = req.params
         const hotelid = req.session.hotelID
 
-        const deleteSuperAdmin = await pool.query('DELETE FROM rooms WHERE roomnum = $1 AND hotelid = $2', [id, hotelid])
+        const rooms = await pool.query('SELECT * FROM rooms WHERE roomnum = $1 AND hotelid = $2', [id, hotelid]);
+        const r = rooms.rows[0];
+
+        const roomtype = await pool.query('SELECT roomtype FROM room_type WHERE typeid = $1 AND hotelid = $2', [r.typeid, hotelid]);
+        const rt = roomtype.rows[0].roomtype;
+
+        //- insert in hist_rooms T for archive
+        const q3 = `
+            INSERT INTO hist_rooms(roomid, roomnum, hotelid, roomtype, roomfloor)
+            VALUES ($1, $2, $3, $4, $5)
+        `
+        const q3result = await pool.query(q3, [r.roomid, id, r.hotelid, rt, r.roomfloor])
+
+        //- delete the room
+        const deleteRoom = await pool.query('DELETE FROM rooms WHERE roomnum = $1 AND hotelid = $2', [id, hotelid])
         console.log(`Room Number ${id} Successfully Deleted!`);
+
         res.redirect('/HSArooms')
+
     } catch (error) {
         console.error(error.message)
     }
