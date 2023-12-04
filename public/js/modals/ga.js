@@ -47,6 +47,8 @@ function openModal_CardPayment() {
     var modal = document.getElementById('modal_CardPayment')
     modal.classList.add('modal-active')
   
+    document.getElementById('approvalcode').value = '';
+    
     const subtotal = parseInt(document.querySelector('#subtotal').innerText)
     document.querySelector('#subtotal2').value = subtotal
 
@@ -69,6 +71,8 @@ function closeModal_CardPayment() {
 function openModal_CashPayment() {
     var modal = document.getElementById('modal_CashPayment')
     modal.classList.add('modal-active')
+
+    document.getElementById('confirm-checkbox').checked = false
   
     const subtotal = parseInt(document.querySelector('#subtotal').innerText)
     document.querySelector('#subtotal3').value = subtotal
@@ -81,6 +85,8 @@ function openModal_CashPayment() {
   
     const balance = parseInt(document.querySelector('#balance').innerText)
     document.querySelector('#balance3').value = balance
+
+
 }
   
 function closeModal_CashPayment() {
