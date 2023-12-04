@@ -13,9 +13,13 @@ const bcrypt = require('bcrypt');
 
 //- middleware
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
-const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
+
 const getHotelColor = require(path.join(__basedir, 'middleware', 'getHotelColor'))
 const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
+
+//- utils
+const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
+const {formatTime} = require(path.join(__basedir, 'utils', 'formatTime'))
 
 
 
@@ -75,10 +79,31 @@ router.post('/shift/delete/:id', isAuthenticated, async(req,res)=>{
 router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
-        const allHSAdmins = await pool.query('SELECT * FROM hoteladmin_login WHERE hotelid = $1', [hotelid])
-        const allReceptionists = await pool.query('SELECT * FROM user_login WHERE hotelid = $1', [hotelid])
+        const allHSAdmins = await pool.query(`
+            SELECT * 
+            FROM hoteladmin_login t1
+            LEFT JOIN shifts t2
+                ON t1.shiftid = t2.shiftid
+            WHERE t1.hotelid = $1
+        `, [hotelid])
+
+        const allReceptionists = await pool.query(`
+            SELECT * 
+            FROM user_login t1
+            LEFT JOIN shifts t2
+                ON t1.shiftid = t2.shiftid
+            WHERE t1.hotelid = $1
+        `, [hotelid])
 
         const allShifts = await pool.query('SELECT * FROM shifts WHERE hotelid = $1 ORDER BY starthour ASC', [hotelid])
+        allShifts.rows.forEach(row=>{
+            if(row.starthour){
+                row.starthour = formatTime(row.starthour)
+            }
+            if(row.endhour){
+                row.endhour = formatTime(row.endhour)
+            }
+        })
 
         res.render('HSA/users/users', {
             allHSAdminsArray: allHSAdmins.rows,
@@ -115,17 +140,75 @@ router.post('/', isAuthenticated, async(req, res)=>{
     }
 })
 
-//- update receptionist
+//- edit receptionist
 router.post("/edit/receptionist/:id", isAuthenticated, async(req, res)=>{
     try {
         const { id } = req.params
-        const { name, email, username } = req.body
+        const { name, email, username, shiftid} = req.body
+
+        let { onshift_mon, onshift_tues, onshift_wed, onshift_thurs, onshift_fri, onshift_sat, onshift_sun } = req.body
+
+        //- mon
+        if(onshift_mon === 'on'){
+            onshift_mon = true
+        } else{
+            onshift_mon = false
+        }
+        //- tues
+        if(onshift_tues === 'on'){
+            onshift_tues = true
+        } else{
+            onshift_tues = false
+        }
+        //- wed
+        if(onshift_wed === 'on'){
+            onshift_wed = true
+        } else{
+            onshift_wed = false
+        }
+        //- thurs
+        if(onshift_thurs === 'on'){
+            onshift_thurs = true
+        } else{
+            onshift_thurs = false
+        }
+        //- fri
+        if(onshift_fri === 'on'){
+            onshift_fri = true
+        } else{
+            onshift_fri = false
+        }
+        //- sat
+        if(onshift_sat === 'on'){
+            onshift_sat = true
+        } else{
+            onshift_sat = false
+        }
+        //- sun
+        if(onshift_sun === 'on'){
+            onshift_sun = true
+        } else{
+            onshift_sun = false
+        }
+
         const editReceptionist = await pool.query(`UPDATE user_login
             SET fullname = $1, 
                 username = $2,
-                email = $3
-            WHERE userid = $4`,
-            [name, username, email, id]
+                email = $3,
+                shiftid = $4,
+                onshift_mon = $5,
+                onshift_tues = $6,
+                onshift_wed = $7,
+                onshift_thurs = $8,
+                onshift_fri = $9,
+                onshift_sat = $10,
+                onshift_sun = $11
+            WHERE userid = $12`,
+            [   
+                name, username, email, shiftid,
+                onshift_mon, onshift_tues, onshift_wed, onshift_thurs, onshift_fri, onshift_sat, onshift_sun,
+                id
+            ]
         )
 
         res.redirect('/users')
@@ -187,13 +270,72 @@ router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
 //- update hsa
 router.post("/edit/manager/:id", isAuthenticated, async(req, res)=>{
     try {
+
         const { id } = req.params
-        const { username, email } = req.body
+        const { email, username, shiftid} = req.body
+
+        let { onshift_mon, onshift_tues, onshift_wed, onshift_thurs, onshift_fri, onshift_sat, onshift_sun } = req.body
+
+        //- mon
+        if(onshift_mon === 'on'){
+            onshift_mon = true
+        } else{
+            onshift_mon = false
+        }
+        //- tues
+        if(onshift_tues === 'on'){
+            onshift_tues = true
+        } else{
+            onshift_tues = false
+        }
+        //- wed
+        if(onshift_wed === 'on'){
+            onshift_wed = true
+        } else{
+            onshift_wed = false
+        }
+        //- thurs
+        if(onshift_thurs === 'on'){
+            onshift_thurs = true
+        } else{
+            onshift_thurs = false
+        }
+        //- fri
+        if(onshift_fri === 'on'){
+            onshift_fri = true
+        } else{
+            onshift_fri = false
+        }
+        //- sat
+        if(onshift_sat === 'on'){
+            onshift_sat = true
+        } else{
+            onshift_sat = false
+        }
+        //- sun
+        if(onshift_sun === 'on'){
+            onshift_sun = true
+        } else{
+            onshift_sun = false
+        }
+
         const editHotelAdmin = await pool.query(`UPDATE hoteladmin_login
             SET username = $1,
-                email = $2
-            WHERE userid = $3`,
-            [username, email, id]
+                email = $2,
+                shiftid = $3,
+                onshift_mon = $4,
+                onshift_tues = $5,
+                onshift_wed = $6,
+                onshift_thurs = $7,
+                onshift_fri = $8,
+                onshift_sat = $9,
+                onshift_sun = $10
+            WHERE userid = $11`,
+            [   
+                username, email, shiftid,
+                onshift_mon, onshift_tues, onshift_wed, onshift_thurs, onshift_fri, onshift_sat, onshift_sun,
+                id
+            ]
         )
 
         res.redirect('/users')

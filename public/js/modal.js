@@ -446,43 +446,7 @@ function Close_ChangePass_Admin_User() {
 
 
 
-//- Edit Receptionist
-  //- Open Edit Modal for Receptionist
-  function Edit_Receptionist_User(clickedElement) {
-    var modal = document.getElementById('editreceptionisthsa');
-    modal.classList.add('modal-active');
 
-    // Get the super admin data from data attributes
-    var userId = clickedElement.getAttribute('data-userid');
-    var fullName = clickedElement.getAttribute('data-fullname');
-    var username = clickedElement.getAttribute('data-username');
-    var email = clickedElement.getAttribute('data-email');
-
-    // Populate the form fields with the data from data attributes
-    var nameInput = document.querySelector('#editreceptionisthsa input[name="name"]');
-    var usernameInput = document.querySelector('#editreceptionisthsa input[name="username"]');
-    var emailInput = document.querySelector('#editreceptionisthsa input[name="email"]');
-
-    if (nameInput) {
-      nameInput.value = fullName || '';
-    }
-    if (usernameInput) {
-      usernameInput.value = username || '';
-    }
-    if (emailInput) {
-      emailInput.value = email || '';
-    }
-    // Set the form action in the modal
-    var editForm = document.querySelector('#editreceptionisthsa form');
-    if (editForm) {
-      editForm.action = `/users/edit/receptionist/${userId}`;
-    }
-  }
-  //- Close Edit Modal for Receptionist
-  function CLose_Edit_Receptionist_User() {
-    var modal = document.getElementById('editreceptionisthsa');
-    modal.classList.remove('modal-active');
-  }
 
 //- Delete Receptionist
   //- Open Delete Modal for Receptionist

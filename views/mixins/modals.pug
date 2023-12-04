@@ -295,17 +295,66 @@ mixin editAdminHSA
         .modal-content
             .modal-header
                 h5.modal-title(id='') Edit
-                button.btn-close(type='button' onclick='CLose_Edit_Admin_User()' aria-label='Close')
+                button.btn-close(type='button' onclick='closeModal_EditHSA()' aria-label='Close')
             .modal-body.mb-3
                 form(action='', method="POST")
-                    label.col-form-label(for="username") Username:
-                    input.form-control(type="text", name="username", value=`${ha.username}`, required)
+                    .mb-3
+                        label.col-form-label(for="username") Username:
+                        input.form-control(type="text", name="username", value=`${ha.username}`, required)
+                    
+                    .mb-3
+                        label.col-form-label(for="email") Email:
+                        input.form-control(type="text", name="email", value=`${ha.email}`, required)
 
-                    label.col-form-label(for="email") Email:
-                    input.form-control(type="text", name="email", value=`${ha.email}`, required)
+                    .mb-3
+                        label.form-label.fw-bold(for="shiftid") Shift:
+                        select.form-select(id='shiftid', name='shiftid')
+                                option(value=null id='nullshiftid_hsa') Choose from the options below...
+                                each shift in allShiftsArray
+                                    option(value=shift.shiftid) #{shift.shiftname}
+
+                    label.form-label.fw-bold(for="") Days of the Week:
+                    .row.mb-5
+                        .row.col-md-6
+                            .row
+                                //- onshift_mon
+                                .col-md-2
+                                    input.form-check-input#onshift_mon(type='checkbox' name='onshift_mon')
+                                label.col-md-10.form-label(for='onshift_mon') Monday
+                            .row
+                                //- onshift_tues
+                                .col-md-2
+                                    input.form-check-input#onshift_tues(type='checkbox' name='onshift_tues')
+                                label.col-md-10.form-label(for='onshift_tues') Tuesday
+                            .row
+                                //- onshift_wed
+                                .col-md-2
+                                    input.form-check-input#onshift_wed(type='checkbox' name='onshift_wed')
+                                label.col-md-10.form-label(for='onshift_wed') Wednesday
+                            .row
+                                //- onshift_thurs
+                                .col-md-2
+                                    input.form-check-input#onshift_thurs(type='checkbox' name='onshift_thurs')
+                                label.col-md-10.form-label(for='onshift_thurs') Thursday
+                        .row.col-md-6
+                            .row
+                                //- onshift_fri
+                                .col-md-2
+                                    input.form-check-input#onshift_fri(type='checkbox' name='onshift_fri')
+                                label.col-md-10.form-label(for='onshift_fri') Friday
+                            .row
+                                //- onshift_sat
+                                .col-md-2
+                                    input.form-check-input#onshift_sat(type='checkbox' name='onshift_sat')
+                                label.col-md-10.form-label(for='onshift_sat') Saturday
+                            .row
+                                //- onshift_sun
+                                .col-md-2
+                                    input.form-check-input#onshift_sun(type='checkbox' name='onshift_sun')
+                                label.col-md-10.form-label(for='onshift_sun') Sunday
 
                     .modal-footer
-                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Admin_User()") Cancel
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="closeModal_EditHSA()") Cancel
                         input.btn.mod_btn(type="submit", value="Submit") 
 
 //-Hotel System Admin CHANGE PASSWORD ADMIN HSA
@@ -442,25 +491,75 @@ mixin addR
 
 
 //- EDIT Receptionist in HSA
-mixin editReceptionistHSA
-    #editreceptionisthsa.modal
+mixin editReceptionist()
+    #editReceptionist.modal
         .modal-content
             .modal-header
                 h5.modal-title(id='') Edit
-                button.btn-close(type='button' onclick='CLose_Edit_Receptionist_User()' aria-label='Close')
+                button.btn-close(type='button' onclick='closeModal_EditReceptionist()' aria-label='Close')
             .modal-body.mb-3
                 form(action='', method="POST")
-                    label.col-form-label(for="name") Name:
-                    input.form-control(type="text", name="name", value=`${r.fullname}`, required)
+                    .mb-3
+                        label.form-label.fw-bold(for="name") Name:
+                        input.form-control(type="text", name="name", value=`${r.fullname}`, required)
+                    .mb-3
 
-                    label.col-form-label(for="username") Username:
-                    input.form-control(type="text", name="username", value=`${r.username}`, required)
+                        label.form-label.fw-bold(for="username") Username:
+                        input.form-control(type="text", name="username", value=`${r.username}`, required)
+                    .mb-3
 
-                    label.col-form-label(for="email") Email:
-                    input.form-control(type="text", name="email", value=`${r.email}`, required)
+                        label.form-label.fw-bold(for="email") Email:
+                        input.form-control(type="text", name="email", value=`${r.email}`, required)
+                    
+                    .mb-3
+                        label.form-label.fw-bold(for="shiftid") Shift:
+                        select.form-select(id='shiftid', name='shiftid')
+                                option(value=null id='nullshiftid_receptionist') Choose from the options below...
+                                each shift in allShiftsArray
+                                    option(value=shift.shiftid) #{shift.shiftname}
+
+                    label.form-label.fw-bold(for="") Days of the Week:
+                    .row.mb-5
+                        .row.col-md-6
+                            .row
+                                //- onshift_mon
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_mon')
+                                label.col-md-10.form-label(for='onshift_mon') Monday
+                            .row
+                                //- onshift_tues
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_tues')
+                                label.col-md-10.form-label(for='onshift_tues') Tuesday
+                            .row
+                                //- onshift_wed
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_wed')
+                                label.col-md-10.form-label(for='onshift_wed') Wednesday
+                            .row
+                                //- onshift_thurs
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_thurs')
+                                label.col-md-10.form-label(for='onshift_thurs') Thursday
+                        .row.col-md-6
+                            .row
+                                //- onshift_fri
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_fri')
+                                label.col-md-10.form-label(for='onshift_fri') Friday
+                            .row
+                                //- onshift_sat
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_sat')
+                                label.col-md-10.form-label(for='onshift_sat') Saturday
+                            .row
+                                //- onshift_sun
+                                .col-md-2
+                                    input.form-check-input(type='checkbox' name='onshift_sun')
+                                label.col-md-10.form-label(for='onshift_sun') Sunday
 
                     .modal-footer
-                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="CLose_Edit_Receptionist_User()") Cancel
+                        button.btn.mod_btn_sec.me-3.closeAddModalBtn(type="button", onclick="closeModal_EditReceptionist()") Cancel
                         input.btn.mod_btn(type="submit", value="Submit") 
 
 //- DELETE Receptionist in HSA
