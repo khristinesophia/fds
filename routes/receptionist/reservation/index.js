@@ -3,6 +3,15 @@ const path = require('path')
 const express = require('express')
 const router = express.Router()
 
+const http = require('http');
+const socketIo = require('socket.io');
+
+const app = express();
+const server = http.createServer(app);
+const io = socketIo(server);
+
+const cron = require('node-cron')
+
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
 const isAuthenticated = require(path.join(__basedir, 'middleware', 'isAuthenticated'))
@@ -14,11 +23,6 @@ const getCurrentDate = require(path.join(__basedir, 'utils', 'getCurrentDate'))
 
 const hotelid = 'H0T1L3D7';
 const date = getCurrentDate()
-
-//- Route for rendering the view
-//router.get('/', async(req, res) => {
-//    res.render('receptionist/reservation1/reservation1');
-//});
 
 router.get('/', isAuthenticated, getHotelLogo, getHotelColor, async(req, res)=>{
     try {
@@ -39,27 +43,6 @@ router.get('/', isAuthenticated, getHotelLogo, getHotelColor, async(req, res)=>{
                 r.hotelid = $1;
         `;
 
-                /*
-            function getRandomColor() {
-                const letters = '0123456789ABCDEF';
-                let color = '#';
-                for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-                }
-                return color;
-            }
-
-            const allReservation = await pool.query(reservationQuery, [hotelid])
-
-            const events = allReservation.rows.map(reservation => ({
-                title: `Name: ${reservation.fullname} - ReservationID: ${reservation.reservationid} | Room: ${reservation.roomnum}`,
-                start: `${reservation.checkindate}T00:00:00`, // Include time information
-                end: `${reservation.checkoutdate}T23:59:59`, // Include time information
-                id: reservation.reservationid,
-                color: getRandomColor(),
-                allDay: false,
-                displayEventTime: false,
-            })); */
         const allReservation = await pool.query(reservationQuery, [hotelid]);
 
         const colors = [
@@ -78,7 +61,6 @@ router.get('/', isAuthenticated, getHotelLogo, getHotelColor, async(req, res)=>{
             displayEventTime: false,
         }));
 
-
         res.render('receptionist/reservation/reservation', { 
             events: JSON.stringify(events),
             hotelLogo: req.hotelImage,
@@ -86,7 +68,62 @@ router.get('/', isAuthenticated, getHotelLogo, getHotelColor, async(req, res)=>{
         });
 
     } catch (error) {
-        console.error(error.message) 
+        console.error(error.message);
+    }
+});
+
+
+// Schedule task to run every day at 2:01 PM
+cron.schedule('1 14 * * *', async () => {
+    try {
+        const currentDate = new Date();
+        const currentHour = currentDate.getHours();
+        const currentMinutes = currentDate.getMinutes();
+
+        // Select reservationids with checkindate equal to the current date
+        const checkinReservationsQuery = `
+            SELECT
+                r.reservationid
+            FROM
+                reservations r
+            WHERE
+                r.hotelid = $1
+                AND checkindate <= CURRENT_DATE;
+        `;
+
+        const checkinReservations = await pool.query(checkinReservationsQuery, [hotelid]);
+
+        // Loop through each reservationid and check the time conditions
+        for (const reservationRow of checkinReservations.rows) {
+            const reservationid = reservationRow.reservationid;
+
+            if (currentHour >= 14 && currentMinutes >= 1) {
+                const reservation = await pool.query('SELECT * FROM reservations WHERE reservationid = $1', [reservationid]);
+                const r = reservation.rows[0];
+
+                const reservationd = await pool.query('SELECT * FROM reservation_guestdetails WHERE reservationid = $1', [reservationid]);
+                const rd = reservationd.rows[0];
+
+                // Insert into history tables
+                const q3 = `
+                    INSERT INTO hist_reservations(reservationid, hotelid, typeid, roomid, adultno, childno, reservationdate, checkindate, checkoutdate, numofdays, promocode, status)
+                    VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+                    RETURNING *
+                `;
+                const q3result = await pool.query(q3, [reservationid, hotelid, r.typeid, r.roomid, r.adultno, r.childno, r.reservationdate, r.checkindate, r.checkoutdate, r.numofdays, r.promocode, 'Cancelled']);
+
+                const q4 = `
+                    INSERT INTO hist_reservation_guestdetails(reservationid, hotelid, fullname, email, contactno, address)
+                    VALUES ($1, $2, $3, $4, $5, $6);
+                `;
+                const q4result = await pool.query(q4, [reservationid, hotelid, rd.fullname, rd.email, rd.contactno, rd.address]);
+
+                // Delete reservation based on reservationid
+                await pool.query('DELETE FROM reservations WHERE reservationid = $1', [reservationid]);
+            }
+        }
+    } catch (error) {
+        console.error(error.message);
     }
 });
 
