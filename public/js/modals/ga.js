@@ -34,7 +34,7 @@ function openExtendStay(clickedElement) {
 
 function closeExtendStay() {
     //- clear fields
-    document.getElementById('hoursno').value = ''
+    document.getElementById('daysno').value = ''
     document.getElementById('cost').value = ''
 
     //- remove 'modal-active' class
