@@ -1,0 +1,24 @@
+.container.shadow.mt-3.pt-3.pb-3.bg-white
+  .d-flex.justify-content-between.align-items-stretch
+    ul.nav.nav-pills.justify-content-between.flex-shrink-0.mb-sm-auto.mb-0.align-items-center.align-items-sm-stretch
+      //- all rooms
+      li.nav_room.me-3.p-2
+        a.nav-roomlink.align-middle.nav_text.har(href='/archived')
+          i.fa-solid.fa-house.me-sm-1
+          span Archived Room Types
+      //- vacant rooms
+      li.nav_room.me-3.p-2
+        a.nav-roomlink.align-middle.nav_text(href='/archived/arcRooms')
+          i.fa-solid.fa-bed.me-sm-1
+          span Archived Rooms
+      //- reserved rooms
+      li.nav_room.me-3.p-2
+        a.nav-roomlink.align-middle.nav_text(href='/archived/arcPromos')
+          i.fa-solid.fa-tags.me-sm-1
+          span Archived Promos   
+      //- occupied rooms
+      li.nav_room.me-3.p-2
+        a.nav-roomlink.align-middle.nav_text(href='/archived/arcUsers')
+          i.fa-solid.fa-user.me-sm-1
+          span Former Employees
+

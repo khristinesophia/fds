@@ -221,6 +221,20 @@ router.post("/edit/receptionist/:id", isAuthenticated, async(req, res)=>{
 router.post('/delete/:id', isAuthenticated,async(req,res)=>{
     try {
         const { id } = req.params
+
+        const hotelid = req.session.hotelID
+
+        const users = await pool.query('SELECT * FROM user_login WHERE userid = $1 AND hotelid = $2', [id, hotelid]);
+        const r = users.rows[0];
+
+
+        //- insert in hist_rooms T for archive 
+        const q3 = `
+            INSERT INTO hist_users(userid, hotelid, fullname, username, hashpassword, datecreated, email, emptype)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+        `
+        const q3result = await pool.query(q3, [id, r.hotelid, r.fullname, r.username, r.hashpassword, r.datecreated, r.email, 'Receptionist'])
+
         const deleteReceptionist = await pool.query('DELETE FROM user_login WHERE userid = $1', [id])
 
         res.redirect('/users')

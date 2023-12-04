@@ -9,9 +9,30 @@ const app = express()
 //- pool import
 const pool = require(path.join(__basedir, 'config', 'db-config'))
 
+const generateOTP = require(path.join(__basedir, 'utils', 'generateOTP'))
+
 //- packages
 const bcrypt = require('bcrypt')
 const rateLimit = require('express-rate-limit');
+
+const nodemailer = require('nodemailer');
+const { google } = require('googleapis');
+const { OAuth2Client } = require('google-auth-library');
+
+//- OAuth Credentials for email confirmation
+const CLIENT_ID = "179230253575-l6kh9dr95m9rjgbqmjbi4j93brpju79t.apps.googleusercontent.com";
+const CLIENT_SECRET = "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";
+const REFRESH_TOKEN = "1//04yt49iI0AgNPCgYIARAAGAQSNwF-L9IruW-AO56kltD8aFLOKnPc-aMAe2EFk6zYeQRqr2FPQHin-XLQX_hAfaxDEMAGlPHOaE8";
+const REDIRECT_URI = "https://developers.google.com/oauthplayground"; //DONT EDIT THIS
+const MY_EMAIL = "acisfds@gmail.com";
+
+//- Set up the OAuth2 client
+const oAuth2Client = new google.auth.OAuth2(
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI
+);
+oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 
 //login limiter
@@ -24,6 +45,11 @@ const loginRateLimit = rateLimit({
 }) 
 
 //app.use('/', loginRateLimit) 
+
+
+const otp = generateOTP();
+
+let emailid;
 
 
 //- "/login" route
@@ -135,5 +161,165 @@ router.post('/', loginRateLimit, async(req, res)=>{
     }
 })
 
+
+
+router.get('/forgotpass', async(req, res)=>{
+    try {
+        res.render('login/forgotpass');
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+
+router.get('/otp', async(req, res)=>{
+    try {
+        res.render('login/otp');
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+router.get('/changepass', async(req, res)=>{
+    try {
+        res.render('login/changepass');
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+
+router.post('/forgotpass', async(req, res)=>{
+    const { email } = req.body;
+    emailid = email
+    try {
+        // Check if the email exists in any of the three tables
+        const adminQuery = 'SELECT email FROM hoteladmin_login WHERE email = $1';
+        const userQuery = 'SELECT email FROM user_login WHERE email = $1';
+        const superadminQuery = 'SELECT email FROM superadmin_login WHERE email = $1';
+
+        const adminResult = await pool.query(adminQuery, [email]);
+        const userResult = await pool.query(userQuery, [email]);
+        const superadminResult = await pool.query(superadminQuery, [email]);
+
+        if (adminResult.rows.length === 0 && userResult.rows.length === 0 && superadminResult.rows.length === 0) {
+        // Email doesn't match any registered user
+        console.log("The email you entered doesn't match to any registered user");
+        res.status(400).send('The email you entered does not match to any registered user');
+        return;
+        }
+
+        // Get the current access token
+        const accessToken = oAuth2Client.credentials.access_token;
+
+        const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            type: 'OAuth2',
+            user: MY_EMAIL,
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            refreshToken: REFRESH_TOKEN,
+            accessToken,
+        },
+        tls: {
+            rejectUnauthorized: true,
+        },
+        });
+
+        const htmlContent = `
+                <html>
+                    <body>
+                    <h1>One Time Password</h1>
+                    <p>
+                    This is your OTP: <strong>${otp}</strong>  
+                    </body>
+                </html>
+                `;
+
+        const mailOptions = {
+        from: 'acisfds@gmail.com',
+        to: email,
+        subject: 'Password Reset',
+        html: htmlContent,
+        };
+
+        transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+            console.error('Email could not be sent: ' + error);
+            res.status(500).send('Email could not be sent');
+        } else {
+            console.log('Email sent: ' + info.response);
+            res.redirect('/login/otp');
+        }
+        });
+
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+
+
+router.post('/otp', async(req, res)=>{
+    const { otpinput } = req.body 
+    try {
+        if (otpinput === otp) {
+            // OTP is valid, render the changepass page
+            res.redirect('/login/changepass');
+        } else {
+            // Invalid OTP
+            console.log('Invalid OTP');
+            res.status(400).send('Invalid OTP');
+        }
+    } catch (error) {
+        console.error(error.message);
+    }
+});
+
+
+
+router.post('/changepass', async(req, res)=>{
+    const { pass1, pass2 } = req.body 
+
+    try {
+        // compare new and confirm password
+        if (pass1 !== pass2) {
+            console.log('New password and confirm password do not match')
+            // Send an error response with the message
+            return res.status(400).send('New password and confirm password do not match. Please try again.');
+        }
+
+        // hash new password
+        const hashedNewPassword = bcrypt.hashSync(pass1, 10);
+
+        const adminQuery = 'SELECT * FROM hoteladmin_login WHERE email = $1';
+        const userQuery = 'SELECT * FROM user_login WHERE email = $1';
+        const superadminQuery = 'SELECT * FROM superadmin_login WHERE email = $1';
+
+        const adminResult = await pool.query(adminQuery, [emailid]);
+        const userResult = await pool.query(userQuery, [emailid]);
+        const superadminResult = await pool.query(superadminQuery, [emailid]);
+
+        if (adminResult.rows.length > 0) {
+            await pool.query('UPDATE hoteladmin_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
+            console.log('Password updated successfully.');
+            res.render('login/loginSA');
+        }
+        if (userResult.rows.length > 0) {
+            await pool.query('UPDATE user_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
+            console.log('Password updated successfully.');
+            res.render('login/loginSA');
+        }
+        if (superadminResult.rows.length > 0) {
+            await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
+            console.log('Password updated successfully.');
+            res.render('login/loginSA');
+        }
+
+    } catch (error) {
+        console.error(error.message);
+    }
+});
 
 module.exports = router

@@ -415,6 +415,22 @@ router.post('/delete/:id', isAuthenticated, async(req, res)=>{
     const { id } = req.params
     const hotelID = req.session.hotelID
 
+    const promos = await pool.query('SELECT * FROM promos WHERE id = $1 AND hotelid = $2', [id, hotelID]);
+    const r = promos.rows[0]; 
+
+    const roomtype = await pool.query('SELECT roomtype FROM room_type WHERE typeid = $1 AND hotelid = $2', [r.typeid, hotelID]);
+    const rt = roomtype.rows[0].roomtype;
+
+    const username = await pool.query('SELECT username FROM hoteladmin_login WHERE userid = $1 AND hotelid = $2', [r.userid, hotelID]);
+    const u = username.rows[0].username;
+
+    //- insert in hist_rooms T for archive
+    const q3 = `
+        INSERT INTO hist_promos(id, hotelid, code, name, description, poster, discount, startdate, enddate, isavailable_mon, isavailable_tues, isavailable_wed, isavailable_thurs, isavailable_fri, isavailable_sat, isavailable_sun, roomtype, status, username, dateadded, timesavailed)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21)
+    `
+    const q3result = await pool.query(q3, [id, r.hotelid, r.code, r.name, r.description, r.poster, r.discount, r.startdate, r.enddate, r.isavailable_mon, r.isavailable_tues, r.isavailable_wed, r.isavailable_thurs, r.isavailable_fri, r.isavailable_sat, r.isavailable_sun, rt, r.status, u, r.dateadded, r.timesavailed])
+
     const q1 = `
         DELETE FROM promos
         WHERE id = $1 AND 
