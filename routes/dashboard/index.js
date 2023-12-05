@@ -239,6 +239,29 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         const newBookCount = q14result.rows[0].new_book_count;
 
 
+        //- q15
+        //- get shifts and assigned manager
+        const q15 = `
+        SELECT
+            ul.fullname AS "empname",
+            s.shiftname AS "shift",
+            TO_CHAR(s.starthour, 'HH:MI AM') AS "starthour",
+            TO_CHAR(s.endhour, 'HH:MI AM') AS "endhour",
+            ha.username AS "assignman"
+        FROM
+            public.user_login ul
+        JOIN
+            public.shifts s ON ul.shiftid = s.shiftid
+        LEFT JOIN
+            public.hoteladmin_login ha ON ul.shiftid = ha.shiftid
+                AND ul.hotelid = ha.hotelid
+        WHERE ul.hotelid = $1
+        ORDER BY
+            s.starthour;
+        `
+        const q15result = await pool.query(q15, [hotelid])
+
+
         res.render('dashboard/hsadmin', {
             hotelColor: req.hotelColor,
             hotelLogo: req.hotelImage,
@@ -254,7 +277,8 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             reservationAllCount: reservationAllCount,
             rooms: q9result.rows,
             arrivalArray: q10result.rows,
-            newBookCount: newBookCount
+            newBookCount: newBookCount,
+            shiftArray: q15result.rows
         })
     } catch (error) {
         console.error("Error fetching data for the receptionist dashboard", error)
@@ -479,6 +503,28 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
         const q14result = await pool.query(q14, [hotelid]);
         const newBookCount = q14result.rows[0].new_book_count;
 
+        //- q15
+        //- get shifts and assigned manager
+        const q15 = `
+        SELECT
+            ul.fullname AS "empname",
+            s.shiftname AS "shift",
+            TO_CHAR(s.starthour, 'HH:MI AM') AS "starthour",
+            TO_CHAR(s.endhour, 'HH:MI AM') AS "endhour",
+            ha.username AS "assignman"
+        FROM
+            public.user_login ul
+        JOIN
+            public.shifts s ON ul.shiftid = s.shiftid
+        LEFT JOIN
+            public.hoteladmin_login ha ON ul.shiftid = ha.shiftid
+                AND ul.hotelid = ha.hotelid
+        WHERE ul.hotelid = $1
+        ORDER BY
+            s.starthour;
+        `
+        const q15result = await pool.query(q15, [hotelid])
+
 
 
         res.render('dashboard/receptionist', {
@@ -496,7 +542,8 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
             reservationAllCount: reservationAllCount,
             rooms: q9result.rows,
             arrivalArray: q10result.rows,
-            newBookCount: newBookCount
+            newBookCount: newBookCount,
+            shiftArray: q15result.rows
         })
     } catch (error) {
         console.error("Error fetching data for the receptionist dashboard", error)
