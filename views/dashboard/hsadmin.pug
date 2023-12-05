@@ -120,6 +120,9 @@ html(lang="en")
                                     td #{x.endhour}
                                     td #{x.assignman}
 
+              .col-6.col-md-6.mt-4
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
 
               //- script.
               //-   var adultNoCount = #{adultNoCount};
@@ -185,6 +188,59 @@ html(lang="en")
                                     td #{x.onchangecount}
                                     td #{x.outofordercount}
                                     td #{x.totalcount}
+            //-fourth row                        
+            .row.mx-5
+              .col-12.col-md-12.mt-4            
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
+                    .d-flex.justify-content-between.align-items-center
+                      .col 
+                        h4 Revenue by Room Type
+
+                      form(id="promoFilterForm" action="")
+                        .d-flex
+                          .row.g-3.align-items-center
+                            .col-auto
+                              h4 Range
+                            .col-auto
+                              select.form-select.form-select-sm(id='range')
+                                option(value="Daily" id='dailyOption') Daily
+                                option(value="Weekly") Weekly
+                                option(value="Monthly") Monthly
+                                option(value="Yearly") Yearly
+
+                      .col.text-end
+                        a(href="#" id="downloadAnchor") 
+                          h2.fa-solid.fa-download
+                    .d-flex.flex-column.align-items-start
+                        .table-scroll
+                          table.table.table-striped.table-hover
+                            //- thead
+                            thead 
+                              //- trow
+                              tr 
+                                th Room Type
+                                th Number of Rooms
+                                th Number of Check-Ins
+                                th Occupancy Rate
+                                th Revenue
+                                th Percentage of Revenue
+                            tbody
+                              each data in dataArray
+                                tr 
+                                  td #{data.roomtype}
+                                  td #{data.room_count}
+                                  td #{data.guestaccount_count}
+                                  td #{data.occupancy_rate}
+                                  td #{data.revenue}
+                                  td #{data.percentage_of_revenue}
+                              tr 
+                                th.fw-bold Total
+                                th 
+                                th 
+                                th 
+                                th.fw-bold #{summary.totalRevenue}
+                                th.fw-bold #{summary.totalPercentageOfRevenue}
 
             //-Fourth Row
             //- .row.mx-5
@@ -236,5 +292,6 @@ html(lang="en")
     script(src='/js/modal.js') 
     script(src='/js/nav-active.js') 
     script(src='/js/reschart.js')
+    script(src='/js/reports/revenuefilter.js')
  
 
