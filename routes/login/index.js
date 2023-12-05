@@ -125,6 +125,7 @@ router.post('/', loginRateLimit, async(req, res)=>{
                 req.session.userID = user.userid
                 req.session.username = user.username
                 req.session.hotelID = user.hotelid
+                req.session.managerRole = user.role
 
                 // redirect 
                 if(user.firstlogin === false){

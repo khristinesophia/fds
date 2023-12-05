@@ -308,8 +308,8 @@ mixin editAdminHSA
 
                     .mb-3
                         label.form-label.fw-bold(for="shiftid") Shift:
-                        select.form-select(id='shiftid', name='shiftid')
-                                option(value=null id='nullshiftid_hsa') Choose from the options below...
+                        select.form-select(id='shiftid', name='shiftid', required)
+                                option(value=null id='nullshiftid_hsa')
                                 each shift in allShiftsArray
                                     option(value=shift.shiftid) #{shift.shiftname}
 
@@ -513,10 +513,12 @@ mixin editReceptionist()
                     
                     .mb-3
                         label.form-label.fw-bold(for="shiftid") Shift:
-                        select.form-select(id='shiftid', name='shiftid')
-                                option(value=null id='nullshiftid_receptionist') Choose from the options below...
-                                each shift in allShiftsArray
-                                    option(value=shift.shiftid) #{shift.shiftname}
+                        select.form-select(id='shiftid', name='shiftid', required)
+                            option(value=null id='nullshiftid_receptionist')
+                            each shift in allShiftsArray
+                                option(value=shift.shiftid) #{shift.shiftname}
+
+
 
                     label.form-label.fw-bold(for="") Days of the Week:
                     .row.mb-5
