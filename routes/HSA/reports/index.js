@@ -951,7 +951,7 @@ router.get('/dlGuestInHouse', isAuthenticated, async(req, res)=>{
 
 
 //- revenue
-router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
+router.get('/revenue_old', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
     const hotelID = req.session.hotelID
     const { range } = req.query
 
@@ -1368,6 +1368,182 @@ router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         hotelLogo: req.hotelImage,
         dataArray: data,
         summary: summary
+    })
+})
+
+//- revenue
+router.get('/revenue', isAuthenticated, getHotelColor, getHotelLogo, async(req,res)=>{
+    const hotelID = req.session.hotelID
+    const { range } = req.query
+
+    let data
+    let totalRevenue = 0
+    let roomTypeCount = 0
+
+    const q2result = await pool.query(`
+        SELECT * FROM room_type
+        WHERE hotelid = $1
+    `, [hotelID])
+
+    //- range is YEARLY
+    if(range === 'Yearly'){
+        startdate = getDate365DaysAgo()
+
+        const q1result = await pool.query(`
+            SELECT 
+                t4.roomtype,
+                t1.accountid,
+                t2.fullname,
+                t1.checkoutdate,
+                t3.paid
+            FROM hist_guestaccounts t1
+            JOIN hist_guestaccounts_guestdetails t2
+                ON t1.accountid = t2.accountid
+            JOIN hist_folios t3
+                ON t1.accountid = t3.accountid
+            JOIN room_type t4
+                ON t1.roomtype = t4.roomtype
+            WHERE t1.hotelid = $1
+                AND t1.checkoutdate >= $2
+            ORDER BY t4.roomtype ASC
+        `, [hotelID, startdate])
+
+        q1result.rows.forEach(row=>{
+            if(row.checkoutdate){
+                row.checkoutdate = formatDate(row.checkoutdate)
+            }
+        })
+
+        data = q1result.rows
+
+        q1result.rows.forEach(row=>{
+            if(row.paid){
+                totalRevenue += parseFloat(row.paid)
+            }
+        })
+    } 
+
+    //- range is MONTHLY
+    else if(range === 'Monthly'){
+        startdate = getDate30DaysAgo()
+
+        const q1result = await pool.query(`
+            SELECT 
+                t4.roomtype,
+                t1.accountid,
+                t2.fullname,
+                t1.checkoutdate,
+                t3.paid
+            FROM hist_guestaccounts t1
+            JOIN hist_guestaccounts_guestdetails t2
+                ON t1.accountid = t2.accountid
+            JOIN hist_folios t3
+                ON t1.accountid = t3.accountid
+            JOIN room_type t4
+                ON t1.roomtype = t4.roomtype
+            WHERE t1.hotelid = $1
+                AND t1.checkoutdate >= $2
+            ORDER BY t4.roomtype ASC
+        `, [hotelID, startdate])
+
+        q1result.rows.forEach(row=>{
+            if(row.checkoutdate){
+                row.checkoutdate = formatDate(row.checkoutdate)
+            }
+        })
+
+        data = q1result.rows
+
+        q1result.rows.forEach(row=>{
+            if(row.paid){
+                totalRevenue += parseFloat(row.paid)
+            }
+        })
+    }
+
+    //- range is WEEKLY
+    else if(range === 'Weekly'){
+        startdate = getDate7DaysAgo()
+
+        const q1result = await pool.query(`
+            SELECT 
+                t4.roomtype,
+                t1.accountid,
+                t2.fullname,
+                t1.checkoutdate,
+                t3.paid
+            FROM hist_guestaccounts t1
+            JOIN hist_guestaccounts_guestdetails t2
+                ON t1.accountid = t2.accountid
+            JOIN hist_folios t3
+                ON t1.accountid = t3.accountid
+            JOIN room_type t4
+                ON t1.roomtype = t4.roomtype
+            WHERE t1.hotelid = $1
+                AND t1.checkoutdate >= $2
+            ORDER BY t4.roomtype ASC
+        `, [hotelID, startdate])
+
+        q1result.rows.forEach(row=>{
+            if(row.checkoutdate){
+                row.checkoutdate = formatDate(row.checkoutdate)
+            }
+        })
+
+        data = q1result.rows
+
+        q1result.rows.forEach(row=>{
+            if(row.paid){
+                totalRevenue += parseFloat(row.paid)
+            }
+        })
+    }
+
+    //- there is NO filter
+    else {
+        startdate = getDate1DayAgo()
+
+        const q1result = await pool.query(`
+            SELECT 
+                t4.roomtype,
+                t1.accountid,
+                t2.fullname,
+                t1.checkoutdate,
+                t3.paid
+            FROM hist_guestaccounts t1
+            JOIN hist_guestaccounts_guestdetails t2
+                ON t1.accountid = t2.accountid
+            JOIN hist_folios t3
+                ON t1.accountid = t3.accountid
+            JOIN room_type t4
+                ON t1.roomtype = t4.roomtype
+            WHERE t1.hotelid = $1
+                AND t1.checkoutdate >= $2
+            ORDER BY t4.roomtype ASC
+        `, [hotelID, startdate])
+
+        q1result.rows.forEach(row=>{
+            if(row.checkoutdate){
+                row.checkoutdate = formatDate(row.checkoutdate)
+            }
+        })
+
+        data = q1result.rows
+
+        q1result.rows.forEach(row=>{
+            if(row.paid){
+                totalRevenue += parseFloat(row.paid)
+            }
+        })
+    }
+
+    res.render('HSA/reports/revenue', {
+        hotelColor: req.hotelColor,
+        hotelLogo: req.hotelImage,
+        dataArray: data,
+        totalRevenue: totalRevenue,
+        roomtypeArray: q2result.rows,
+        roomTypeCount: q2result.rowCount,
     })
 })
 
