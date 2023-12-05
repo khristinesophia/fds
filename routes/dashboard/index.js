@@ -255,7 +255,8 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
 
         const hotelID = req.session.hotelID
         const { range } = req.query
-
+        
+        //- filter for revenue
         let startdate
 
         let data = []
