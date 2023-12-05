@@ -765,7 +765,7 @@ function openModalEditShift(clickedElement) {
   }
 
   if (shiftnameInput) {
-    shiftnameInput.value = shiftname || '';
+    shiftnameInput.value = shiftname || ''
   }
   if (starthourInput) {
     starthourInput.value = convertTo24HourFormat(starthour) || '';

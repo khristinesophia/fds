@@ -17,7 +17,11 @@ const getHotelLogo = require(path.join(__basedir, 'middleware', 'getHotelLogo'))
 //- utils
 const formatDateWithTime = require(path.join(__basedir, 'utils', 'formatDateWithTime'))
 const formatDate = require(path.join(__basedir, 'utils', 'formatDate'))
-
+const { formatCurrency } = require(path.join(__basedir, 'utils', 'formatCurrency'))
+const { getDate365DaysAgo, 
+    getDate30DaysAgo, 
+    getDate7DaysAgo, 
+    getDate1DayAgo } = require(path.join(__basedir, 'utils', 'getDateDaysAgo'))
 
 
 
@@ -157,18 +161,6 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
 
         //- q10
         //- get first 3 arrival
-        /*const q10 = `
-            SELECT 
-                t1.reservationid,
-                t2.fullname,
-                t1.checkindate
-            FROM reservations t1
-            JOIN reservation_guestdetails t2
-                ON t1.reservationid = t2.reservationid
-            WHERE t1.hotelid = $1
-            ORDER BY checkindate ASC
-            LIMIT 5
-        `*/
         const q10 = `
             SELECT 
                 t1.reservationid,
@@ -238,6 +230,417 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
         const q14result = await pool.query(q14, [hotelid]);
         const newBookCount = q14result.rows[0].new_book_count;
 
+        const hotelID = req.session.hotelID
+        const { range } = req.query
+
+        let startdate
+
+        let data = []
+        let summary = {
+            totalRevenue: 0,
+            totalPercentageOfRevenue: 100.0,
+            highestOccupancyRate: 0,
+            highestOccupancyRateRoomType: null,
+            highestPercentageOfRevenue: 0,
+            highestPercentageOfRevenueRoomType: null,
+        }
+
+        //- format total percentage of revenue
+        summary.totalPercentageOfRevenue = `${summary.totalPercentageOfRevenue}%`
+
+
+        //- range is YEARLY
+        if(range === 'Yearly'){
+            startdate = getDate365DaysAgo()
+
+            const result = await pool.query(`
+            SELECT 
+                t1.roomtype,
+                COALESCE(t2.room_count, 0) AS room_count, 
+                COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+                ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+                COALESCE(t4.revenue, 0) AS revenue,
+                ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+            FROM room_type t1
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    COUNT(t2.roomid) AS room_count
+                FROM room_type t1
+                JOIN rooms t2
+                    ON t1.typeid = t2.typeid
+                GROUP BY t1.typeid
+                ) t2
+            ON t1.typeid = t2.typeid
+            LEFT JOIN (
+                SELECT 
+                    t1.roomtype,
+                    COUNT(t3.accountid) AS guestaccount_count
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t3
+                    ON t1.roomtype = t3.roomtype
+                WHERE t3.checkoutdate >= $1
+                GROUP BY t1.roomtype
+                ) t3
+            ON t1.roomtype = t3.roomtype
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    SUM(t3.paid) AS revenue
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t2
+                    ON t1.roomtype = t2.roomtype
+                LEFT JOIN hist_folios t3
+                    ON t2.accountid = t3.accountid
+                WHERE t2.checkoutdate >= $2
+                GROUP BY t1.typeid
+                ) t4
+            ON t1.typeid = t4.typeid
+            WHERE t1.hotelid = $3
+            `, [startdate, startdate, hotelID])
+
+            //- get TOTAL REVENUE
+            result.rows.forEach(row=>{
+                if(row.revenue){
+                    summary.totalRevenue += parseFloat(row.revenue)
+                }
+            })
+            summary.totalRevenue = formatCurrency(summary.totalRevenue)
+
+            //- get room type with HIGHEST OCCUPANCY RATE
+            result.rows.forEach(row => {
+                if(row.occupancy_rate > summary.highestOccupancyRate) {
+                    summary.highestOccupancyRate = row.occupancy_rate
+                    summary.highestOccupancyRateRoomType = row.roomtype
+                }
+            })
+
+            //- get room type with HIGHEST PERCENTAGE OF REVENUE
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                    summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                    summary.highestPercentageOfRevenueRoomType = row.roomtype
+                }
+            })
+
+            //- format occupancy rate per room type
+            result.rows.forEach(row => {
+                if(row.occupancy_rate) {
+                    row.occupancy_rate = `${row.occupancy_rate}%`
+                }
+            })
+
+            //- format revenue per room type
+            result.rows.forEach(row => {
+                if(row.revenue) {
+                    row.revenue = formatCurrency(row.revenue)
+                }
+            })
+
+            //- format percentage of revenue per room type
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue) {
+                    row.percentage_of_revenue = `${row.percentage_of_revenue}%`
+                }
+            })
+
+            data = result.rows
+        } 
+
+        //- range is MONTHLY
+        else if(range === 'Monthly'){
+            startdate = getDate30DaysAgo()
+
+            const result = await pool.query(`
+            SELECT 
+                t1.roomtype,
+                COALESCE(t2.room_count, 0) AS room_count, 
+                COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+                ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+                COALESCE(t4.revenue, 0) AS revenue,
+                ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+            FROM room_type t1
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    COUNT(t2.roomid) AS room_count
+                FROM room_type t1
+                JOIN rooms t2
+                    ON t1.typeid = t2.typeid
+                GROUP BY t1.typeid
+                ) t2
+            ON t1.typeid = t2.typeid
+            LEFT JOIN (
+                SELECT 
+                    t1.roomtype,
+                    COUNT(t3.accountid) AS guestaccount_count
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t3
+                    ON t1.roomtype = t3.roomtype
+                WHERE t3.checkoutdate >= $1
+                GROUP BY t1.roomtype
+                ) t3
+            ON t1.roomtype = t3.roomtype
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    SUM(t3.paid) AS revenue
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t2
+                    ON t1.roomtype = t2.roomtype
+                LEFT JOIN hist_folios t3
+                    ON t2.accountid = t3.accountid
+                WHERE t2.checkoutdate >= $2
+                GROUP BY t1.typeid
+                ) t4
+            ON t1.typeid = t4.typeid
+            WHERE t1.hotelid = $3
+            `, [startdate, startdate, hotelID])
+
+            //- get TOTAL REVENUE
+            result.rows.forEach(row=>{
+                if(row.revenue){
+                    summary.totalRevenue += parseFloat(row.revenue)
+                }
+            })
+            summary.totalRevenue = formatCurrency(summary.totalRevenue)
+
+            //- get room type with HIGHEST OCCUPANCY RATE
+            result.rows.forEach(row => {
+                if(row.occupancy_rate > summary.highestOccupancyRate) {
+                    summary.highestOccupancyRate = row.occupancy_rate
+                    summary.highestOccupancyRateRoomType = row.roomtype
+                }
+            })
+
+            //- get room type with HIGHEST PERCENTAGE OF REVENUE
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                    summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                    summary.highestPercentageOfRevenueRoomType = row.roomtype
+                }
+            })
+
+            //- format occupancy rate per room type
+            result.rows.forEach(row => {
+                if(row.occupancy_rate) {
+                    row.occupancy_rate = `${row.occupancy_rate}%`
+                }
+            })
+
+            //- format revenue per room type
+            result.rows.forEach(row => {
+                if(row.revenue) {
+                    row.revenue = formatCurrency(row.revenue)
+                }
+            })
+
+            //- format percentage of revenue per room type
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue) {
+                    row.percentage_of_revenue = `${row.percentage_of_revenue}%`
+                }
+            })
+
+            data = result.rows
+        }
+
+        //- range is WEEKLY
+        else if(range === 'Weekly'){
+            startdate = getDate7DaysAgo()
+
+            const result = await pool.query(`
+            SELECT 
+                t1.roomtype,
+                COALESCE(t2.room_count, 0) AS room_count, 
+                COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+                ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+                COALESCE(t4.revenue, 0) AS revenue,
+                ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+            FROM room_type t1
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    COUNT(t2.roomid) AS room_count
+                FROM room_type t1
+                JOIN rooms t2
+                    ON t1.typeid = t2.typeid
+                GROUP BY t1.typeid
+                ) t2
+            ON t1.typeid = t2.typeid
+            LEFT JOIN (
+                SELECT 
+                    t1.roomtype,
+                    COUNT(t3.accountid) AS guestaccount_count
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t3
+                    ON t1.roomtype = t3.roomtype
+                WHERE t3.checkoutdate >= $1
+                GROUP BY t1.roomtype
+                ) t3
+            ON t1.roomtype = t3.roomtype
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    SUM(t3.paid) AS revenue
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t2
+                    ON t1.roomtype = t2.roomtype
+                LEFT JOIN hist_folios t3
+                    ON t2.accountid = t3.accountid
+                WHERE t2.checkoutdate >= $2
+                GROUP BY t1.typeid
+                ) t4
+            ON t1.typeid = t4.typeid
+            WHERE t1.hotelid = $3
+            `, [startdate, startdate, hotelID])
+
+            //- get TOTAL REVENUE
+            result.rows.forEach(row=>{
+                if(row.revenue){
+                    summary.totalRevenue += parseFloat(row.revenue)
+                }
+            })
+            summary.totalRevenue = formatCurrency(summary.totalRevenue)
+
+            //- get room type with HIGHEST OCCUPANCY RATE
+            result.rows.forEach(row => {
+                if(row.occupancy_rate > summary.highestOccupancyRate) {
+                    summary.highestOccupancyRate = row.occupancy_rate
+                    summary.highestOccupancyRateRoomType = row.roomtype
+                }
+            })
+
+            //- get room type with HIGHEST PERCENTAGE OF REVENUE
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                    summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                    summary.highestPercentageOfRevenueRoomType = row.roomtype
+                }
+            })
+
+            //- format occupancy rate per room type
+            result.rows.forEach(row => {
+                if(row.occupancy_rate) {
+                    row.occupancy_rate = `${row.occupancy_rate}%`
+                }
+            })
+
+            //- format revenue per room type
+            result.rows.forEach(row => {
+                if(row.revenue) {
+                    row.revenue = formatCurrency(row.revenue)
+                }
+            })
+
+            //- format percentage of revenue per room type
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue) {
+                    row.percentage_of_revenue = `${row.percentage_of_revenue}%`
+                }
+            })
+
+            data = result.rows
+        }
+
+        //- there is NO filter
+        else {
+            startdate = getDate1DayAgo()
+
+            const result = await pool.query(`
+            SELECT 
+                t1.roomtype,
+                COALESCE(t2.room_count, 0) AS room_count, 
+                COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+                ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+                COALESCE(t4.revenue, 0) AS revenue,
+                ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+            FROM room_type t1
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    COUNT(t2.roomid) AS room_count
+                FROM room_type t1
+                JOIN rooms t2
+                    ON t1.typeid = t2.typeid
+                GROUP BY t1.typeid
+                ) t2
+            ON t1.typeid = t2.typeid
+            LEFT JOIN (
+                SELECT 
+                    t1.roomtype,
+                    COUNT(t3.accountid) AS guestaccount_count
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t3
+                    ON t1.roomtype = t3.roomtype
+                WHERE t3.checkoutdate >= $1
+                GROUP BY t1.roomtype
+                ) t3
+            ON t1.roomtype = t3.roomtype
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    SUM(t3.paid) AS revenue
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t2
+                    ON t1.roomtype = t2.roomtype
+                LEFT JOIN hist_folios t3
+                    ON t2.accountid = t3.accountid
+                WHERE t2.checkoutdate >= $2
+                GROUP BY t1.typeid
+                ) t4
+            ON t1.typeid = t4.typeid
+            WHERE t1.hotelid = $3
+            `, [startdate, startdate, hotelID])
+
+            //- get TOTAL REVENUE
+            result.rows.forEach(row=>{
+                if(row.revenue){
+                    summary.totalRevenue += parseFloat(row.revenue)
+                }
+            })
+            summary.totalRevenue = formatCurrency(summary.totalRevenue)
+
+            //- get room type with HIGHEST OCCUPANCY RATE
+            result.rows.forEach(row => {
+                if(row.occupancy_rate > summary.highestOccupancyRate) {
+                    summary.highestOccupancyRate = row.occupancy_rate
+                    summary.highestOccupancyRateRoomType = row.roomtype
+                }
+            })
+
+            //- get room type with HIGHEST PERCENTAGE OF REVENUE
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                    summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                    summary.highestPercentageOfRevenueRoomType = row.roomtype
+                }
+            })
+
+            //- format occupancy rate per room type
+            result.rows.forEach(row => {
+                if(row.occupancy_rate) {
+                    row.occupancy_rate = `${row.occupancy_rate}%`
+                }
+            })
+
+            //- format revenue per room type
+            result.rows.forEach(row => {
+                if(row.revenue) {
+                    row.revenue = formatCurrency(row.revenue)
+                }
+            })
+
+            //- format percentage of revenue per room type
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue) {
+                    row.percentage_of_revenue = `${row.percentage_of_revenue}%`
+                }
+            })
+
+            data = result.rows
+        }
+
 
         res.render('dashboard/hsadmin', {
             hotelColor: req.hotelColor,
@@ -254,7 +657,9 @@ router.get('/hsadmin', isAuthenticated, getHotelColor, getHotelLogo, async(req,r
             reservationAllCount: reservationAllCount,
             rooms: q9result.rows,
             arrivalArray: q10result.rows,
-            newBookCount: newBookCount
+            newBookCount: newBookCount,
+            dataArray: data,
+            summary: summary
         })
     } catch (error) {
         console.error("Error fetching data for the receptionist dashboard", error)
@@ -479,6 +884,417 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
         const q14result = await pool.query(q14, [hotelid]);
         const newBookCount = q14result.rows[0].new_book_count;
 
+        const hotelID = req.session.hotelID
+        const { range } = req.query
+
+        let startdate
+
+        let data = []
+        let summary = {
+            totalRevenue: 0,
+            totalPercentageOfRevenue: 100.0,
+            highestOccupancyRate: 0,
+            highestOccupancyRateRoomType: null,
+            highestPercentageOfRevenue: 0,
+            highestPercentageOfRevenueRoomType: null,
+        }
+
+        //- format total percentage of revenue
+        summary.totalPercentageOfRevenue = `${summary.totalPercentageOfRevenue}%`
+
+
+        //- range is YEARLY
+        if(range === 'Yearly'){
+            startdate = getDate365DaysAgo()
+
+            const result = await pool.query(`
+            SELECT 
+                t1.roomtype,
+                COALESCE(t2.room_count, 0) AS room_count, 
+                COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+                ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+                COALESCE(t4.revenue, 0) AS revenue,
+                ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+            FROM room_type t1
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    COUNT(t2.roomid) AS room_count
+                FROM room_type t1
+                JOIN rooms t2
+                    ON t1.typeid = t2.typeid
+                GROUP BY t1.typeid
+                ) t2
+            ON t1.typeid = t2.typeid
+            LEFT JOIN (
+                SELECT 
+                    t1.roomtype,
+                    COUNT(t3.accountid) AS guestaccount_count
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t3
+                    ON t1.roomtype = t3.roomtype
+                WHERE t3.checkoutdate >= $1
+                GROUP BY t1.roomtype
+                ) t3
+            ON t1.roomtype = t3.roomtype
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    SUM(t3.paid) AS revenue
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t2
+                    ON t1.roomtype = t2.roomtype
+                LEFT JOIN hist_folios t3
+                    ON t2.accountid = t3.accountid
+                WHERE t2.checkoutdate >= $2
+                GROUP BY t1.typeid
+                ) t4
+            ON t1.typeid = t4.typeid
+            WHERE t1.hotelid = $3
+            `, [startdate, startdate, hotelID])
+
+            //- get TOTAL REVENUE
+            result.rows.forEach(row=>{
+                if(row.revenue){
+                    summary.totalRevenue += parseFloat(row.revenue)
+                }
+            })
+            summary.totalRevenue = formatCurrency(summary.totalRevenue)
+
+            //- get room type with HIGHEST OCCUPANCY RATE
+            result.rows.forEach(row => {
+                if(row.occupancy_rate > summary.highestOccupancyRate) {
+                    summary.highestOccupancyRate = row.occupancy_rate
+                    summary.highestOccupancyRateRoomType = row.roomtype
+                }
+            })
+
+            //- get room type with HIGHEST PERCENTAGE OF REVENUE
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                    summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                    summary.highestPercentageOfRevenueRoomType = row.roomtype
+                }
+            })
+
+            //- format occupancy rate per room type
+            result.rows.forEach(row => {
+                if(row.occupancy_rate) {
+                    row.occupancy_rate = `${row.occupancy_rate}%`
+                }
+            })
+
+            //- format revenue per room type
+            result.rows.forEach(row => {
+                if(row.revenue) {
+                    row.revenue = formatCurrency(row.revenue)
+                }
+            })
+
+            //- format percentage of revenue per room type
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue) {
+                    row.percentage_of_revenue = `${row.percentage_of_revenue}%`
+                }
+            })
+
+            data = result.rows
+        } 
+
+        //- range is MONTHLY
+        else if(range === 'Monthly'){
+            startdate = getDate30DaysAgo()
+
+            const result = await pool.query(`
+            SELECT 
+                t1.roomtype,
+                COALESCE(t2.room_count, 0) AS room_count, 
+                COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+                ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+                COALESCE(t4.revenue, 0) AS revenue,
+                ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+            FROM room_type t1
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    COUNT(t2.roomid) AS room_count
+                FROM room_type t1
+                JOIN rooms t2
+                    ON t1.typeid = t2.typeid
+                GROUP BY t1.typeid
+                ) t2
+            ON t1.typeid = t2.typeid
+            LEFT JOIN (
+                SELECT 
+                    t1.roomtype,
+                    COUNT(t3.accountid) AS guestaccount_count
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t3
+                    ON t1.roomtype = t3.roomtype
+                WHERE t3.checkoutdate >= $1
+                GROUP BY t1.roomtype
+                ) t3
+            ON t1.roomtype = t3.roomtype
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    SUM(t3.paid) AS revenue
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t2
+                    ON t1.roomtype = t2.roomtype
+                LEFT JOIN hist_folios t3
+                    ON t2.accountid = t3.accountid
+                WHERE t2.checkoutdate >= $2
+                GROUP BY t1.typeid
+                ) t4
+            ON t1.typeid = t4.typeid
+            WHERE t1.hotelid = $3
+            `, [startdate, startdate, hotelID])
+
+            //- get TOTAL REVENUE
+            result.rows.forEach(row=>{
+                if(row.revenue){
+                    summary.totalRevenue += parseFloat(row.revenue)
+                }
+            })
+            summary.totalRevenue = formatCurrency(summary.totalRevenue)
+
+            //- get room type with HIGHEST OCCUPANCY RATE
+            result.rows.forEach(row => {
+                if(row.occupancy_rate > summary.highestOccupancyRate) {
+                    summary.highestOccupancyRate = row.occupancy_rate
+                    summary.highestOccupancyRateRoomType = row.roomtype
+                }
+            })
+
+            //- get room type with HIGHEST PERCENTAGE OF REVENUE
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                    summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                    summary.highestPercentageOfRevenueRoomType = row.roomtype
+                }
+            })
+
+            //- format occupancy rate per room type
+            result.rows.forEach(row => {
+                if(row.occupancy_rate) {
+                    row.occupancy_rate = `${row.occupancy_rate}%`
+                }
+            })
+
+            //- format revenue per room type
+            result.rows.forEach(row => {
+                if(row.revenue) {
+                    row.revenue = formatCurrency(row.revenue)
+                }
+            })
+
+            //- format percentage of revenue per room type
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue) {
+                    row.percentage_of_revenue = `${row.percentage_of_revenue}%`
+                }
+            })
+
+            data = result.rows
+        }
+
+        //- range is WEEKLY
+        else if(range === 'Weekly'){
+            startdate = getDate7DaysAgo()
+
+            const result = await pool.query(`
+            SELECT 
+                t1.roomtype,
+                COALESCE(t2.room_count, 0) AS room_count, 
+                COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+                ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+                COALESCE(t4.revenue, 0) AS revenue,
+                ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+            FROM room_type t1
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    COUNT(t2.roomid) AS room_count
+                FROM room_type t1
+                JOIN rooms t2
+                    ON t1.typeid = t2.typeid
+                GROUP BY t1.typeid
+                ) t2
+            ON t1.typeid = t2.typeid
+            LEFT JOIN (
+                SELECT 
+                    t1.roomtype,
+                    COUNT(t3.accountid) AS guestaccount_count
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t3
+                    ON t1.roomtype = t3.roomtype
+                WHERE t3.checkoutdate >= $1
+                GROUP BY t1.roomtype
+                ) t3
+            ON t1.roomtype = t3.roomtype
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    SUM(t3.paid) AS revenue
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t2
+                    ON t1.roomtype = t2.roomtype
+                LEFT JOIN hist_folios t3
+                    ON t2.accountid = t3.accountid
+                WHERE t2.checkoutdate >= $2
+                GROUP BY t1.typeid
+                ) t4
+            ON t1.typeid = t4.typeid
+            WHERE t1.hotelid = $3
+            `, [startdate, startdate, hotelID])
+
+            //- get TOTAL REVENUE
+            result.rows.forEach(row=>{
+                if(row.revenue){
+                    summary.totalRevenue += parseFloat(row.revenue)
+                }
+            })
+            summary.totalRevenue = formatCurrency(summary.totalRevenue)
+
+            //- get room type with HIGHEST OCCUPANCY RATE
+            result.rows.forEach(row => {
+                if(row.occupancy_rate > summary.highestOccupancyRate) {
+                    summary.highestOccupancyRate = row.occupancy_rate
+                    summary.highestOccupancyRateRoomType = row.roomtype
+                }
+            })
+
+            //- get room type with HIGHEST PERCENTAGE OF REVENUE
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                    summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                    summary.highestPercentageOfRevenueRoomType = row.roomtype
+                }
+            })
+
+            //- format occupancy rate per room type
+            result.rows.forEach(row => {
+                if(row.occupancy_rate) {
+                    row.occupancy_rate = `${row.occupancy_rate}%`
+                }
+            })
+
+            //- format revenue per room type
+            result.rows.forEach(row => {
+                if(row.revenue) {
+                    row.revenue = formatCurrency(row.revenue)
+                }
+            })
+
+            //- format percentage of revenue per room type
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue) {
+                    row.percentage_of_revenue = `${row.percentage_of_revenue}%`
+                }
+            })
+
+            data = result.rows
+        }
+
+        //- there is NO filter
+        else {
+            startdate = getDate1DayAgo()
+
+            const result = await pool.query(`
+            SELECT 
+                t1.roomtype,
+                COALESCE(t2.room_count, 0) AS room_count, 
+                COALESCE(t3.guestaccount_count, 0) AS guestaccount_count,
+                ROUND(COALESCE(t3.guestaccount_count * 100.0 / NULLIF(t2.room_count, 0), 0), 1) AS occupancy_rate,
+                COALESCE(t4.revenue, 0) AS revenue,
+                ROUND(COALESCE(t4.revenue * 100.0 / NULLIF(SUM(t4.revenue) OVER(), 0), 0), 1) AS percentage_of_revenue
+            FROM room_type t1
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    COUNT(t2.roomid) AS room_count
+                FROM room_type t1
+                JOIN rooms t2
+                    ON t1.typeid = t2.typeid
+                GROUP BY t1.typeid
+                ) t2
+            ON t1.typeid = t2.typeid
+            LEFT JOIN (
+                SELECT 
+                    t1.roomtype,
+                    COUNT(t3.accountid) AS guestaccount_count
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t3
+                    ON t1.roomtype = t3.roomtype
+                WHERE t3.checkoutdate >= $1
+                GROUP BY t1.roomtype
+                ) t3
+            ON t1.roomtype = t3.roomtype
+            LEFT JOIN (
+                SELECT 
+                    t1.typeid,
+                    SUM(t3.paid) AS revenue
+                FROM room_type t1
+                LEFT JOIN hist_guestaccounts t2
+                    ON t1.roomtype = t2.roomtype
+                LEFT JOIN hist_folios t3
+                    ON t2.accountid = t3.accountid
+                WHERE t2.checkoutdate >= $2
+                GROUP BY t1.typeid
+                ) t4
+            ON t1.typeid = t4.typeid
+            WHERE t1.hotelid = $3
+            `, [startdate, startdate, hotelID])
+
+            //- get TOTAL REVENUE
+            result.rows.forEach(row=>{
+                if(row.revenue){
+                    summary.totalRevenue += parseFloat(row.revenue)
+                }
+            })
+            summary.totalRevenue = formatCurrency(summary.totalRevenue)
+
+            //- get room type with HIGHEST OCCUPANCY RATE
+            result.rows.forEach(row => {
+                if(row.occupancy_rate > summary.highestOccupancyRate) {
+                    summary.highestOccupancyRate = row.occupancy_rate
+                    summary.highestOccupancyRateRoomType = row.roomtype
+                }
+            })
+
+            //- get room type with HIGHEST PERCENTAGE OF REVENUE
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue > summary.highestPercentageOfRevenue) {
+                    summary.highestPercentageOfRevenue = row.percentage_of_revenue
+                    summary.highestPercentageOfRevenueRoomType = row.roomtype
+                }
+            })
+
+            //- format occupancy rate per room type
+            result.rows.forEach(row => {
+                if(row.occupancy_rate) {
+                    row.occupancy_rate = `${row.occupancy_rate}%`
+                }
+            })
+
+            //- format revenue per room type
+            result.rows.forEach(row => {
+                if(row.revenue) {
+                    row.revenue = formatCurrency(row.revenue)
+                }
+            })
+
+            //- format percentage of revenue per room type
+            result.rows.forEach(row => {
+                if(row.percentage_of_revenue) {
+                    row.percentage_of_revenue = `${row.percentage_of_revenue}%`
+                }
+            })
+
+            data = result.rows
+        }
+
 
 
         res.render('dashboard/receptionist', {
@@ -496,7 +1312,9 @@ router.get('/receptionist', isAuthenticated, getHotelColor, getHotelLogo, async 
             reservationAllCount: reservationAllCount,
             rooms: q9result.rows,
             arrivalArray: q10result.rows,
-            newBookCount: newBookCount
+            newBookCount: newBookCount,
+            dataArray: data,
+            summary: summary
         })
     } catch (error) {
         console.error("Error fetching data for the receptionist dashboard", error)
