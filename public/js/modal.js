@@ -750,30 +750,28 @@ function openModalEditShift(clickedElement) {
   var starthourInput = document.querySelector('#editShift input[name="starthour"]')
   var endhourInput = document.querySelector('#editShift input[name="endhour"]')
 
-  function convert12To24(time12h) {
-    const [time, modifier] = time12h.split(' ')
+  function convertTo24HourFormat(timeString) {
+    const [time, period] = timeString.split(' ')
+    let [hour, minute] = time.split(':')
+    let formattedHour = parseInt(hour)
 
-    let [hours, minutes] = time.split(':')
-
-    if (hours === '12') {
-      hours = '00'
+    if (period === 'PM' && formattedHour !== 12) {
+      formattedHour += 12
+    } else if (period === 'AM' && formattedHour === 12) {
+      formattedHour = 0
     }
 
-    if (modifier === 'PM') {
-      hours = parseInt(hours, 10) + 12
-    }
-
-    return `${hours}:${minutes}`
+    return `${formattedHour.toString().padStart(2, '0')}:${minute}`
   }
 
   if (shiftnameInput) {
     shiftnameInput.value = shiftname || '';
   }
   if (starthourInput) {
-    starthourInput.value = convert12To24(starthour) || '';
+    starthourInput.value = convertTo24HourFormat(starthour) || '';
   }
   if (endhourInput) {
-    endhourInput.value = convert12To24(endhour) || '';
+    endhourInput.value = convertTo24HourFormat(endhour) || '';
   }
 
   const form = document.querySelector('#editShiftForm')
@@ -789,18 +787,29 @@ function closeModalEditShift() {
   modal.classList.remove('modal-active')
 }
 
-//- open Add Shift
+//- open Delete Shift
 function openModalDeleteShift(clickedElement) {
-  var modal = document.getElementById('deleteShift')
-  modal.classList.add('modal-active')
+  var modal = document.getElementById('deleteShift');
+  modal.classList.add('modal-active');
 
-  var shiftid = clickedElement.getAttribute('data-shiftid')
+  var shiftid = clickedElement.getAttribute('data-shiftid');
+  const form = document.querySelector('#deleteShiftForm');
+  const checkbox = document.getElementById('confirmCheckbox');
+  const submitButton = document.getElementById('deleteShiftSubmit');
 
-  const form = document.querySelector('#deleteShiftForm')
+  // Reset the checkbox state and enable the submit button
+  checkbox.checked = false;
+  submitButton.disabled = false;
 
   if (form) {
-    form.action = `/users/shift/delete/${shiftid}`
+      form.action = `/users/shift/delete/${shiftid}`;
   }
+
+  // Add an event listener to the checkbox
+  checkbox.addEventListener('change', function () {
+      // Enable or disable the submit button based on the checkbox state
+      submitButton.disabled = !checkbox.checked;
+  });
 }
 
 //- close Add Shift

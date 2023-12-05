@@ -294,26 +294,3 @@ function closeModal_EditReceptionist() {
   var modal = document.getElementById('editReceptionist')
   modal.classList.remove('modal-active')
 }
-
-
-function Delete_Receptionist_User(clickedElement) {
-  var modal = document.getElementById('deletereceptionisthsa');
-  modal.classList.add('modal-active');
-
-  // Get the hotel ID and hotel name from data attributes
-  var userId = clickedElement.getAttribute('data-userid');
-  var fullName = clickedElement.getAttribute('data-fullname');
-
-  // Set the hotel name in the modal
-  var fullNameElement = document.getElementById('full-name-in-modal');
-  fullNameElement.value = fullName; 
-
-  // Set the form action in the modal
-  var deleteForm = document.getElementById('delete-user-form');
-  deleteForm.action = `/users/delete/${userId}`;
-}
-//- Close Delete Modal for Receptionist
-function CLose_Delete_Receptionist_User() {
-  var modal = document.getElementById('deletereceptionisthsa');
-  modal.classList.remove('modal-active');
-}

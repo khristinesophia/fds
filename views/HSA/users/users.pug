@@ -37,26 +37,29 @@ html(lang="en")
 
         .d-flex
           each shift in allShiftsArray
-            .card.me-3.info_shift.shadow
+            .card.me-3.info_shift.shadow(style='width: 200px;')
               .card-body
                 .col 
                   p #{shift.shiftname}
                   p #{shift.starthour}
                   p #{shift.endhour}
-                  button(onClick='openModalEditShift(this)'
-                    data-shiftid=shift.shiftid
-                    data-shiftname=shift.shiftname
-                    data-starthour=shift.starthour
-                    data-endhour=shift.endhour
-                  ) Edit
-                  include ../../mixins/modals.pug
-                  +editShift
+              .card-footer.d-flex.justify-content-end
+                a.sa-icon.sa-edit.ms-2(onClick='openModalEditShift(this)'
+                  data-shiftid=shift.shiftid
+                  data-shiftname=shift.shiftname
+                  data-starthour=shift.starthour
+                  data-endhour=shift.endhour
+                )
+                  i.fa-solid.fa-pen-to-square.fa-lg  
+                include ../../mixins/modals.pug
+                +editShift
 
-                  button(onClick='openModalDeleteShift(this)'
-                    data-shiftid=shift.shiftid
-                  ) Delete
-                  include ../../mixins/modals.pug
-                  +deleteShift
+                a.delete-icon.ms-2(onClick='openModalDeleteShift(this)'
+                  data-shiftid=shift.shiftid
+                ) 
+                  i.fa-solid.fa-trash-can.fa-xl
+                include ../../mixins/modals.pug
+                +deleteShift
 
 
         

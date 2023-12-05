@@ -962,10 +962,15 @@ mixin deleteShift
             .modal-header
                 h5.modal-title(id='') Delete Shift
                 button.btn-close(type='button' onclick='closeModalDeleteShift()' aria-label='Close')
-            .modal-body.mb-3 
-                form(id='deleteShiftForm', action= ``, method="POST")
+            form(id='deleteShiftForm', action='', method='POST')
+                .modal-body.mb-3 
+                    //- Add the checkbox
+                    input(type='checkbox', id='confirmCheckbox', required='true')
+                    label(for='confirmCheckbox') I confirm that I want to delete this shift
 
-                    //- ganto talaga indentation ng .modal-footer
+                    //- Rest of your modal content
+
                     .modal-footer.mt-3
-                        button.btn.btn-secondary(type="button", onclick="closeModalDeleteShift()") Cancel
-                        input.btn(type="submit", value="Submit") 
+                        button.btn.btn-secondary(type='button', onclick='closeModalDeleteShift()') Cancel
+                        //- Disable the submit button initially
+                        input.btn(type='submit', value='Submit', id='deleteShiftSubmit', disabled='true')
