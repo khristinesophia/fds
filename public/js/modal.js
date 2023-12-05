@@ -750,14 +750,28 @@ function openModalEditShift(clickedElement) {
   var starthourInput = document.querySelector('#editShift input[name="starthour"]')
   var endhourInput = document.querySelector('#editShift input[name="endhour"]')
 
+  function convertTo24HourFormat(timeString) {
+    const [time, period] = timeString.split(' ')
+    let [hour, minute] = time.split(':')
+    let formattedHour = parseInt(hour)
+  
+    if (period === 'PM' && formattedHour !== 12) {
+      formattedHour += 12
+    } else if (period === 'AM' && formattedHour === 12) {
+      formattedHour = 0
+    }
+  
+    return `${formattedHour.toString().padStart(2, '0')}:${minute}`
+  }
+
   if (shiftnameInput) {
-    shiftnameInput.value = shiftname || '';
+    shiftnameInput.value = shiftname || ''
   }
   if (starthourInput) {
-    starthourInput.value = starthour || '';
+    starthourInput.value = convertTo24HourFormat(starthour) || ''
   }
   if (endhourInput) {
-    endhourInput.value = endhour || '';
+    endhourInput.value = convertTo24HourFormat(endhour) || ''
   }
 
   const form = document.querySelector('#editShiftForm')
