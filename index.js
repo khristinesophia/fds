@@ -42,6 +42,7 @@ const HSArooms = require('./routes/HSA/HSArooms')
 const roomtype = require('./routes/HSA/roomtype')
 const pd = require('./routes/HSA/pd')
 const reports = require('./routes/HSA/reports')
+const archived = require('./routes/HSA/archived')
 
 const forofor = require('./routes/HSA/404')
 
@@ -50,6 +51,7 @@ const od = require('./routes/HSA/od')
     // receptionist user routes
 const Rrooms = require('./routes/receptionist/Rrooms')
 const reservation = require('./routes/receptionist/reservation')
+
 const guestaccounts = require(path.join(__basedir, 'routes', 'receptionist', 'guestaccounts'))
 const archivedga = require(path.join(__basedir, 'routes', 'receptionist', 'archivedga'))
 const reservationhist = require(path.join(__basedir, 'routes', 'receptionist', 'reservationhist'))
@@ -73,6 +75,7 @@ app.use('/roomtype', roomtype)
 app.use('/pd', pd)
 app.use('/reports', reports)
 app.use('/od', od)
+app.use('/archived', archived)
     // receptionist user routes
 app.use('/Rrooms', Rrooms)
 app.use('/reservation', reservation)

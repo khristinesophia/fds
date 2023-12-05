@@ -60,11 +60,7 @@ html(lang="en")
                   if r.price      
                     h6.hotel-price.mb-3
                         | Price: 
-                        span #{r.price}
-                  if r.rate_perhour      
-                    h6.hotel-rate_perhour.mb-3
-                        | Rate per Hour: 
-                        span #{r.rate_perhour}     
+                        span #{r.price} 
                   h6.hotel-free_breakfast.mb-3
                       | Free Breakfast: 
                       if r.free_breakfast === true
@@ -82,7 +78,6 @@ html(lang="en")
                     data-roomdescription=r.description
                     data-roomprice=r.price 
                     data-roomcapacity=r.capacity
-                    data-rateperhour=r.rate_perhour
                     data-free_breakfast=r.free_breakfast.toString()
                     data-roomimage=r.roomimage
                     onclick="Edit_RoomType(this)"

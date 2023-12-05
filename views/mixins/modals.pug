@@ -308,8 +308,8 @@ mixin editAdminHSA
 
                     .mb-3
                         label.form-label.fw-bold(for="shiftid") Shift:
-                        select.form-select(id='shiftid', name='shiftid')
-                                option(value=null id='nullshiftid_hsa') Choose from the options below...
+                        select.form-select(id='shiftid', name='shiftid', required)
+                                option(value=null id='nullshiftid_hsa')
                                 each shift in allShiftsArray
                                     option(value=shift.shiftid) #{shift.shiftname}
 
@@ -513,10 +513,12 @@ mixin editReceptionist()
                     
                     .mb-3
                         label.form-label.fw-bold(for="shiftid") Shift:
-                        select.form-select(id='shiftid', name='shiftid')
-                                option(value=null id='nullshiftid_receptionist') Choose from the options below...
-                                each shift in allShiftsArray
-                                    option(value=shift.shiftid) #{shift.shiftname}
+                        select.form-select(id='shiftid', name='shiftid', required)
+                            option(value=null id='nullshiftid_receptionist')
+                            each shift in allShiftsArray
+                                option(value=shift.shiftid) #{shift.shiftname}
+
+
 
                     label.form-label.fw-bold(for="") Days of the Week:
                     .row.mb-5
@@ -678,10 +680,6 @@ mixin addRoomType
                             input.form-control(type="number", name="capacity", min="1", required)
 
                         .form-group
-                            label(for="rate_perhour") Rate per Hour:
-                            input.form-control(type="number", name="rate_perhour", min="1", required)
-
-                        .form-group
                             label(for="free_breakfast") Free Breakfast:
                             input.form-check-input(type="checkbox", name="free_breakfast")
                             label.form-check-label(for="free_breakfast") Include a Free Breakfast
@@ -741,10 +739,7 @@ mixin editRoomType(typeid, roomtype, roomdescription, roomprice, roomcapacity, r
             input.form-control(type="number", name="capacity",min="1", value=roomcapacity, required)
 
             label.form-label.fw-bold(for="price") Room Price:
-            input.form-control(type="number", name="price",min="1", value=roomprice, required)
-
-            label.form-label.fw-bold(for="rateperhour") Rate per Hour:
-            input.form-control(type="number", name="rate_perhour",min="1", value=rateperhour, required)
+            input.form-control(type="text", name="price", value=roomprice, required)
 
             label.form-label.fw-bold(for="rateperhour") Free Breakfast:
             input.form-check-input(type="checkbox", name="free_breakfast")
