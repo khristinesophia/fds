@@ -204,10 +204,10 @@ router.post('/forgotpass', async(req, res)=>{
         const superadminResult = await pool.query(superadminQuery, [email]);
 
         if (adminResult.rows.length === 0 && userResult.rows.length === 0 && superadminResult.rows.length === 0) {
-        // Email doesn't match any registered user
-        console.log("The email you entered doesn't match to any registered user");
-        res.status(400).send('The email you entered does not match to any registered user');
-        return;
+            // Email doesn't match any registered user
+            console.log("The email you entered doesn't match to any registered user");
+            const errorMessage = 'The email you entered does not match to any registered user';
+            return res.render('login/forgotpass', { errorMessage });
         }
 
         // Get the current access token
@@ -246,24 +246,28 @@ router.post('/forgotpass', async(req, res)=>{
         };
 
         transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Email could not be sent: ' + error);
-            res.status(500).send('Email could not be sent');
-        } else {
-            console.log('Email sent: ' + info.response);
-            res.redirect('/login/otp');
-        }
+            if (error) {
+                console.error('Email could not be sent: ' + error);
+                const errorMessage = 'Email could not be sent';
+                return res.render('login/forgotpass', { errorMessage });
+            } else {
+                console.log('Email sent: ' + info.response);
+                res.redirect('/login/otp');
+            }
         });
 
     } catch (error) {
         console.error(error.message);
+        // Handle other errors if needed
+        const errorMessage = 'An error occurred';
+        res.render('login/forgotpass', { errorMessage });
     }
 });
 
 
 
-router.post('/otp', async(req, res)=>{
-    const { otpinput } = req.body 
+router.post('/otp', async (req, res) => {
+    const { otpinput } = req.body;
     try {
         if (otpinput === otp) {
             // OTP is valid, render the changepass page
@@ -271,24 +275,27 @@ router.post('/otp', async(req, res)=>{
         } else {
             // Invalid OTP
             console.log('Invalid OTP');
-            res.status(400).send('Invalid OTP');
+            const errorMessageOTP = 'Invalid OTP';
+            res.render('login/otp', { errorMessageOTP });
         }
     } catch (error) {
         console.error(error.message);
+        // Handle other errors if needed
+        const errorMessageOTP = 'An error occurred';
+        res.render('login/otp', { errorMessageOTP });
     }
 });
 
 
-
-router.post('/changepass', async(req, res)=>{
-    const { pass1, pass2 } = req.body 
-
+router.post('/changepass', async (req, res) => {
+    const { pass1, pass2 } = req.body;
     try {
         // compare new and confirm password
         if (pass1 !== pass2) {
-            console.log('New password and confirm password do not match')
+            console.log('New password and confirm password do not match');
             // Send an error response with the message
-            return res.status(400).send('New password and confirm password do not match. Please try again.');
+            const errorMessageChangePass = 'New password and confirm password do not match. Please try again.';
+            return res.render('login/changepass', { errorMessageChangePass });
         }
 
         // hash new password
@@ -305,22 +312,26 @@ router.post('/changepass', async(req, res)=>{
         if (adminResult.rows.length > 0) {
             await pool.query('UPDATE hoteladmin_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
             console.log('Password updated successfully.');
-            res.render('login/loginSA');
+            return res.render('login/loginSA');
         }
         if (userResult.rows.length > 0) {
             await pool.query('UPDATE user_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
             console.log('Password updated successfully.');
-            res.render('login/loginSA');
+            return res.render('login/loginSA');
         }
         if (superadminResult.rows.length > 0) {
             await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
             console.log('Password updated successfully.');
-            res.render('login/loginSA');
+            return res.render('login/loginSA');
         }
 
     } catch (error) {
         console.error(error.message);
+        // Handle other errors if needed
+        const errorMessageChangePass = 'An error occurred';
+        res.render('login/changepass', { errorMessageChangePass });
     }
 });
+
 
 module.exports = router
