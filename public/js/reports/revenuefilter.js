@@ -56,10 +56,10 @@ document.getElementById('downloadAnchor').addEventListener('click', (event) => {
         const arr = urlString.split('?')
         const queryString = arr[1]
 
-        this.href = 'dlRevenue?' + queryString
+        this.href = '/reports/dlRevenue?' + queryString
         window.location.href = this.href
     } else{
-        this.href = 'dlRevenue?'
+        this.href = '/reports/dlRevenue?'
         window.location.href = this.href
     }
     
