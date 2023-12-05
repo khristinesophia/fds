@@ -40,9 +40,9 @@ html(lang="en")
             .card.me-3.info_shift.shadow(style='width: 200px;')
               .card-body
                 .col 
-                  p #{shift.shiftname}
-                  p #{shift.starthour}
-                  p #{shift.endhour}
+                  h5 #{shift.shiftname}
+                  p #{shift.starthour} - #{shift.endhour}
+                  
               .card-footer.d-flex.justify-content-end
                 a.sa-icon.sa-edit.ms-2(onClick='openModalEditShift(this)'
                   data-shiftid=shift.shiftid
