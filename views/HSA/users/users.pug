@@ -66,83 +66,167 @@ html(lang="en")
       
       // Header Title for page
       .row.mx-5.mt-5
-        .col-8.d-flex.align-items-center
-          h2.text Admin
+        .col-8
+          h2.text Managers
+        if managerRole === 'Admin'
+          .col-4.d-flex.align-items-center.justify-content-end
+            a.btn.mod_btn(
+              onclick="openModal_addManager()" 
+              role='button'
+            ) Add Manager
+            include ../../mixins/modals/users.pug
+            +addManager
 
 
         .container.shadow.mt-3.pt-3.pb-3.bg-white
-          table.table.table-striped.table-hover(style='width:100%; font-size:0.9rem;')
+          table.table.table-hover(style='font-size:0.9rem;')
             thead
               tr
                 th Username
                 th Email
+                th Role
                 th Date Created
                 th Shift 
                 th Day of the Week
                 th Actions
 
             tbody
+              //- LOGGED IN HA
               each ha in allHSAdminsArray
-                tr
-                  td #{ha.username}
-                  td #{ha.email}
-                  td #{ha.datecreated}
-                  td #{ha.shiftname}
-                  td
-                    input.form-check-input.me-2#onshift_mon(type='checkbox' name='onshift_mon' checked=ha.onshift_mon disabled)
-                    label.form-label.d-inline(for='onshift_mon') Monday 
-                    br
+                //- check if the current ha is LOGGED IN
+                if ha.userid == userID 
+                  tr.real-bg
+                    td #{ha.username}
+                    td #{ha.email}
+                    td #{ha.role}
+                    td #{ha.datecreated}
+                    td #{ha.shiftname}
+                    td
+                      input.form-check-input.me-2#onshift_mon(type='checkbox' name='onshift_mon' checked=ha.onshift_mon disabled)
+                      label.form-label.d-inline(for='onshift_mon') Monday 
+                      br
 
-                    input.form-check-input.me-2#onshift_tues(type='checkbox' name='onshift_tues' checked=ha.onshift_tues disabled)
-                    label.form-label.d-inline(for='onshift_tues') Tuesday 
-                    br
+                      input.form-check-input.me-2#onshift_tues(type='checkbox' name='onshift_tues' checked=ha.onshift_tues disabled)
+                      label.form-label.d-inline(for='onshift_tues') Tuesday 
+                      br
 
-                    input.form-check-input.me-2#onshift_wed(type='checkbox' name='onshift_wed' checked=ha.onshift_wed disabled)
-                    label.form-label.d-inline(for='onshift_wed') Wednesday 
-                    br
+                      input.form-check-input.me-2#onshift_wed(type='checkbox' name='onshift_wed' checked=ha.onshift_wed disabled)
+                      label.form-label.d-inline(for='onshift_wed') Wednesday 
+                      br
 
-                    input.form-check-input.me-2#onshift_thurs(type='checkbox' name='onshift_thurs' checked=ha.onshift_thurs disabled)
-                    label.form-label.d-inline(for='onshift_thurs') Thursday 
-                    br
+                      input.form-check-input.me-2#onshift_thurs(type='checkbox' name='onshift_thurs' checked=ha.onshift_thurs disabled)
+                      label.form-label.d-inline(for='onshift_thurs') Thursday 
+                      br
 
-                    input.form-check-input.me-2#onshift_fri(type='checkbox' name='onshift_fri' checked=ha.onshift_fri disabled)
-                    label.form-label.d-inline(for='onshift_fri') Friday
-                    br
+                      input.form-check-input.me-2#onshift_fri(type='checkbox' name='onshift_fri' checked=ha.onshift_fri disabled)
+                      label.form-label.d-inline(for='onshift_fri') Friday
+                      br
 
-                    input.form-check-input.me-2#onshift_sat(type='checkbox' name='onshift_sat' checked=ha.onshift_sat disabled)
-                    label.form-label.d-inline(for='onshift_sat') Saturday
-                    br
+                      input.form-check-input.me-2#onshift_sat(type='checkbox' name='onshift_sat' checked=ha.onshift_sat disabled)
+                      label.form-label.d-inline(for='onshift_sat') Saturday
+                      br
 
-                    input.form-check-input.me-2#onshift_sun(type='checkbox' name='onshift_sun' checked=ha.onshift_sun disabled)
-                    label.form-label.d-inline(for='onshift_sun') Sunday
-                  td
-                    .d-flex.justify-content-start
-                      //- Edit
-                      a.sa-icon.sa-edit.ms-2(
-                        data-userid=ha.userid 
-                        data-username=ha.username 
-                        data-email=ha.email
-                        data-shiftid=ha.shiftid
-                        data-onshift_mon=ha.onshift_mon.toString()
-                        data-onshift_tues=ha.onshift_tues.toString()
-                        data-onshift_wed=ha.onshift_wed.toString()
-                        data-onshift_thurs=ha.onshift_thurs.toString()
-                        data-onshift_fri=ha.onshift_fri.toString()
-                        data-onshift_sat=ha.onshift_sat.toString()
-                        data-onshift_sun=ha.onshift_sun.toString()
-                        onclick="openModal_EditHSA(this)" 
-                        role='button')
-                        i.fa-solid.fa-pen-to-square.fa-lg  
-                      include ../../mixins/modals.pug
-                      
-                      +editAdminHSA(ha.userid)
-                      //- Change Password   
-                      a.sa-icon.sa-pass.ms-2(data-userid=ha.userid data-password=ha.hashpassword onclick="ChangePass_Admin_User(this)" role='button')
-                        i.fa-solid.fa-key.fa-lg
-                      include ../../mixins/modals.pug
-                      +changeAdminHSA(ha.userid)
+                      input.form-check-input.me-2#onshift_sun(type='checkbox' name='onshift_sun' checked=ha.onshift_sun disabled)
+                      label.form-label.d-inline(for='onshift_sun') Sunday
+                    td
+                      .d-flex.justify-content-start
+                        //- Edit
+                        a.sa-icon.sa-edit.ms-2(
+                          data-userid=ha.userid 
+                          data-username=ha.username 
+                          data-email=ha.email
+                          data-shiftid=ha.shiftid
+                          data-onshift_mon=ha.onshift_mon.toString()
+                          data-onshift_tues=ha.onshift_tues.toString()
+                          data-onshift_wed=ha.onshift_wed.toString()
+                          data-onshift_thurs=ha.onshift_thurs.toString()
+                          data-onshift_fri=ha.onshift_fri.toString()
+                          data-onshift_sat=ha.onshift_sat.toString()
+                          data-onshift_sun=ha.onshift_sun.toString()
+                          onclick="openModal_EditHSA(this)" 
+                          role='button')
+                          i.fa-solid.fa-pen-to-square.fa-lg  
+                        include ../../mixins/modals.pug
+                        +editAdminHSA(ha.userid)
 
+                        //- Change Password   
+                        a.sa-icon.sa-pass.ms-2(
+                          data-userid=ha.userid 
+                          data-password=ha.hashpassword 
+                          onclick="ChangePass_Admin_User(this)" 
+                          role='button')
+                          i.fa-solid.fa-key.fa-lg
+                        include ../../mixins/modals.pug
+                        +changeAdminHSA(ha.userid)
 
+              //- NOT LOGGED IN HA
+              each ha in allHSAdminsArray
+                //- check if the current ha is NOT LOGGED IN
+                if ha.userid != userID 
+                  tr
+                    td #{ha.username}
+                    td #{ha.email}
+                    td #{ha.role}
+                    td #{ha.datecreated}
+                    td #{ha.shiftname}
+                    td
+                      input.form-check-input.me-2#onshift_mon(type='checkbox' name='onshift_mon' checked=ha.onshift_mon disabled)
+                      label.form-label.d-inline(for='onshift_mon') Monday 
+                      br
+
+                      input.form-check-input.me-2#onshift_tues(type='checkbox' name='onshift_tues' checked=ha.onshift_tues disabled)
+                      label.form-label.d-inline(for='onshift_tues') Tuesday 
+                      br
+
+                      input.form-check-input.me-2#onshift_wed(type='checkbox' name='onshift_wed' checked=ha.onshift_wed disabled)
+                      label.form-label.d-inline(for='onshift_wed') Wednesday 
+                      br
+
+                      input.form-check-input.me-2#onshift_thurs(type='checkbox' name='onshift_thurs' checked=ha.onshift_thurs disabled)
+                      label.form-label.d-inline(for='onshift_thurs') Thursday 
+                      br
+
+                      input.form-check-input.me-2#onshift_fri(type='checkbox' name='onshift_fri' checked=ha.onshift_fri disabled)
+                      label.form-label.d-inline(for='onshift_fri') Friday
+                      br
+
+                      input.form-check-input.me-2#onshift_sat(type='checkbox' name='onshift_sat' checked=ha.onshift_sat disabled)
+                      label.form-label.d-inline(for='onshift_sat') Saturday
+                      br
+
+                      input.form-check-input.me-2#onshift_sun(type='checkbox' name='onshift_sun' checked=ha.onshift_sun disabled)
+                      label.form-label.d-inline(for='onshift_sun') Sunday
+                    td
+                      if managerRole === 'Admin'
+                        .d-flex.justify-content-start
+                          //- Edit
+                          a.sa-icon.sa-edit.ms-2(
+                            data-userid=ha.userid 
+                            data-username=ha.username 
+                            data-email=ha.email
+                            data-shiftid=ha.shiftid
+                            data-onshift_mon=ha.onshift_mon.toString()
+                            data-onshift_tues=ha.onshift_tues.toString()
+                            data-onshift_wed=ha.onshift_wed.toString()
+                            data-onshift_thurs=ha.onshift_thurs.toString()
+                            data-onshift_fri=ha.onshift_fri.toString()
+                            data-onshift_sat=ha.onshift_sat.toString()
+                            data-onshift_sun=ha.onshift_sun.toString()
+                            onclick="openModal_EditHSA(this)" 
+                            role='button')
+                            i.fa-solid.fa-pen-to-square.fa-lg  
+                          include ../../mixins/modals.pug
+                          +editAdminHSA(ha.userid)
+
+                          //- Change Password   
+                          a.sa-icon.sa-pass.ms-2(
+                            data-userid=ha.userid 
+                            data-password=ha.hashpassword 
+                            onclick="ChangePass_Admin_User(this)" 
+                            role='button')
+                            i.fa-solid.fa-key.fa-lg
+                          include ../../mixins/modals.pug
+                          +changeAdminHSA(ha.userid)
         //- ---------- receptionist section ----------
 
         //Table  
