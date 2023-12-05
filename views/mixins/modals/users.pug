@@ -1,0 +1,28 @@
+//- HSA(Admin) Add Manager Modal
+mixin addManager
+    #addManager.modal
+        .modal-content
+            .modal-header
+                h5.modal-title(id='') Add Manager
+                button.btn-close.closer(type='button' onclick='closeModal_addManager()' aria-label='Close')
+            .modal-body.mb-3
+                form(id="addhoteladminform", action="/users/addmanager", method="POST")
+
+                    label.col-form-label(for="username") Username:
+                    input.form-control(type="text", id="username", name="username", required)
+
+                    label.col-form-label(for="email") Email:
+                    input.form-control(type="text", id="email", name="email", required)
+
+                    label.col-form-label.mt-3(for='password') Password:
+                    .input-group.showpass
+                        input#password.form-control(type='password' name='password' pattern='.{8,}' title='Password must be at least 8 characters' required)
+                        .input-group-append
+                            span#showPasswordToggle.input-group-text.showpassicon
+                                i#showPasswordIcon.fas.fa-eye-slash
+                    #password-error-message.text-danger.mt-3            
+                    
+                    //- ganto talaga indentation ng .modal-footer
+                    .modal-footer.mt-3
+                        button.btn.btn-secondary.closeModalBtn(type="button", onclick="closeModal()") Cancel
+                        input.btn(type="submit", value="Submit")
