@@ -7,8 +7,8 @@ const pool = new Pool({
     port: 5432, 
     database: 'fds'
 })
-*/
 
+*/
 const pool = new Pool({
     user: 'postgres',
     password: 'acis',
