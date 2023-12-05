@@ -35,7 +35,7 @@ html(lang="en")
                     //- Right column for span and h1
                     .d-flex.flex-column.align-items-start.body-info.ms-3
                       h2= guestAccountCount
-                      span.card-titles.text-muted Checked In
+                      span.card-titles.text-muted Checked In (Today)
 
               //-2 New Book
               .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
@@ -47,7 +47,7 @@ html(lang="en")
                     //- Right column for span and h1
                     .d-flex.flex-column.align-items-start.body-info.ms-3
                       h2= newBookCount
-                      span.card-titles.text-muted New Book
+                      span.card-titles.text-muted New Book (Today)
 
               //-3 Overall Stayed
               .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
@@ -59,7 +59,7 @@ html(lang="en")
                     //- Right column for span and h1
                     .d-flex.flex-column.align-items-start.body-info.ms-3
                       h2= overallStayedGuestsCount
-                      span.card-titles.text-muted Archived Guest
+                      span.card-titles.text-muted Archived Guest (Overall)
 
               //-4 Checked Out
               .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
@@ -71,7 +71,7 @@ html(lang="en")
                     //- Right column for span and h1
                     .d-flex.flex-column.align-items-start.body-info.ms-3
                       h2= archivedGuestAccountCount
-                      span.card-titles.text-muted Checked out
+                      span.card-titles.text-muted Checked out (Overall)
 
 
 
@@ -88,7 +88,7 @@ html(lang="en")
                   .card-body
                     .row
                       .col-6 
-                        h4.card-title.mb-2 Reservation
+                        h4.card-title.mb-2 Reservation (Overall)
                       .col-6
                         .d-flex.justify-content-end   
                           h4#reservationCount(style="display: none;") #{reservationAllCount}
@@ -162,32 +162,7 @@ html(lang="en")
               //-                   h4#childrenCount #{childNoCount}
               //-                   h6 Children            
 
-              
-            //-Third Row
-            .row.mx-5
-              .col-12.col-md-12.mt-4            
-                .card.shadow-sm(style="height: 300px;")
-                  .card-body
-                    h4.card-title.mb-3 Rooms
-                        .d-flex.flex-column.align-items-start
-                          .table-scroll
-                            table.table.table-striped.table-hover
-                              thead 
-                                th Room Type
-                                th Vacant
-                                th Occupied
-                                th On-Change 
-                                th Out-of-Order
-                                th Total
-                              tbody(style="height: 100%;")
-                                each x in rooms
-                                  tr
-                                    td #{x.roomtype}
-                                    td #{x.vacantcount}
-                                    td #{x.occupiedcount}
-                                    td #{x.onchangecount}
-                                    td #{x.outofordercount}
-                                    td #{x.totalcount}
+
             //-fourth row                        
             .row.mx-5
               .col-12.col-md-12.mt-4            
@@ -242,6 +217,33 @@ html(lang="en")
                                 th.fw-bold #{summary.totalRevenue}
                                 th.fw-bold #{summary.totalPercentageOfRevenue}
 
+              
+            //-Third Row
+            .row.mx-5
+              .col-12.col-md-12.mt-4            
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
+                    h4.card-title.mb-3 Rooms
+                        .d-flex.flex-column.align-items-start
+                          .table-scroll
+                            table.table.table-striped.table-hover
+                              thead 
+                                th Room Type
+                                th Vacant
+                                th Occupied
+                                th On-Change 
+                                th Out-of-Order
+                                th Total
+                              tbody(style="height: 100%;")
+                                each x in rooms
+                                  tr
+                                    td #{x.roomtype}
+                                    td #{x.vacantcount}
+                                    td #{x.occupiedcount}
+                                    td #{x.onchangecount}
+                                    td #{x.outofordercount}
+                                    td #{x.totalcount}
+            
             //-Fourth Row
             //- .row.mx-5
             //-   .col-6.col-md-6.mt-4  
