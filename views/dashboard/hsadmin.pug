@@ -178,6 +178,7 @@ html(lang="en")
                                     td #{x.onchangecount}
                                     td #{x.outofordercount}
                                     td #{x.totalcount}
+            //-fourth row                        
             .row.mx-5
               .col-12.col-md-12.mt-4            
                 .card.shadow-sm(style="height: 300px;")
@@ -201,37 +202,35 @@ html(lang="en")
                       .col.text-end
                         a(href="#" id="downloadAnchor") 
                           h2.fa-solid.fa-download
-
-                    .row.mt-4.p-3.bg-white.shadow
-                      .d-flex.flex-column.align-items-start
-                          .table-scroll
-                            table.table.table-striped.table-hover
-                              //- thead
-                              thead 
-                                //- trow
+                    .d-flex.flex-column.align-items-start
+                        .table-scroll
+                          table.table.table-striped.table-hover
+                            //- thead
+                            thead 
+                              //- trow
+                              tr 
+                                th Room Type
+                                th Number of Rooms
+                                th Number of Check-Ins
+                                th Occupancy Rate
+                                th Revenue
+                                th Percentage of Revenue
+                            tbody
+                              each data in dataArray
                                 tr 
-                                  th Room Type
-                                  th Number of Rooms
-                                  th Number of Check-Ins
-                                  th Occupancy Rate
-                                  th Revenue
-                                  th Percentage of Revenue
-                              tbody
-                                each data in dataArray
-                                  tr 
-                                    td #{data.roomtype}
-                                    td #{data.room_count}
-                                    td #{data.guestaccount_count}
-                                    td #{data.occupancy_rate}
-                                    td #{data.revenue}
-                                    td #{data.percentage_of_revenue}
-                                tr 
-                                  th.fw-bold Total
-                                  th 
-                                  th 
-                                  th 
-                                  th.fw-bold #{summary.totalRevenue}
-                                  th.fw-bold #{summary.totalPercentageOfRevenue}
+                                  td #{data.roomtype}
+                                  td #{data.room_count}
+                                  td #{data.guestaccount_count}
+                                  td #{data.occupancy_rate}
+                                  td #{data.revenue}
+                                  td #{data.percentage_of_revenue}
+                              tr 
+                                th.fw-bold Total
+                                th 
+                                th 
+                                th 
+                                th.fw-bold #{summary.totalRevenue}
+                                th.fw-bold #{summary.totalPercentageOfRevenue}
 
             //-Fourth Row
             //- .row.mx-5
