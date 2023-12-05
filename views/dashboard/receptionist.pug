@@ -17,7 +17,7 @@ html(lang="en")
     title Dashboard
     include ../partials/color.pug
   body
-    include ../partials/navR.pug
+    include ../partials/navHSA.pug
     .content
       // Header Title for page
       .row.mx-5  
@@ -25,7 +25,7 @@ html(lang="en")
           h2.text Dashboard
             //- First Row (Checked In, Overall Stayed, Checked Out)
             .row.mx-5
-              //- Checked In
+              //-1 Checked In
               .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
                 .card.act_card.card1.custom-hover-shadow
                   .card-body.act_card_body.d-flex.flex-row.align-items-center
@@ -37,7 +37,7 @@ html(lang="en")
                       h2= guestAccountCount
                       span.card-titles.text-muted Checked In
 
-              //- New Book
+              //-2 New Book
               .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
                 .card.act_card.card1.custom-hover-shadow
                   .card-body.act_card_body.d-flex.flex-row.align-items-center
@@ -49,7 +49,7 @@ html(lang="en")
                       h2= newBookCount
                       span.card-titles.text-muted New Book
 
-              //- Overall Stayed
+              //-3 Overall Stayed
               .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
                 .card.act_card.card1.custom-hover-shadow
                   .card-body.act_card_body.d-flex.flex-row.align-items-center
@@ -61,7 +61,7 @@ html(lang="en")
                       h2= overallStayedGuestsCount
                       span.card-titles.text-muted Archived Guest
 
-              //-Checked Out
+              //-4 Checked Out
               .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
                 .card.act_card.card1.custom-hover-shadow
                   .card-body.act_card_body.d-flex.flex-row.align-items-center
@@ -97,17 +97,34 @@ html(lang="en")
                         .col-12 
                           .canvas-container
                             canvas#reservationDonutChart(style="height: 230px;")
-
-
-              script.
-                var adultNoCount = #{adultNoCount};
-                var childNoCount = #{childNoCount};
-                
+              
               .col-6.col-md-6.mt-4
                 .card.shadow-sm(style="height: 300px;")
                   .card-body
-                    .row  
+                    h4.card-title.mb-3 Shift Rotation (Today)
+                        .d-flex.flex-column.align-items-start
+                          .table-scroll
+                            table.table.table-striped.table-hover
+                              thead 
+                                th Receptionist
+                                th Shift
+                                th Start Hour
+                                th End Hour 
+                                th Manager
+                              tbody(style="height: 100%;")
+                                each x in shiftArray
+                                  tr
+                                    td #{x.empname}
+                                    td #{x.shift}
+                                    td #{x.starthour}
+                                    td #{x.endhour}
+                                    td #{x.assignman}
 
+
+              //- script.
+              //-   var adultNoCount = #{adultNoCount};
+              //-   var childNoCount = #{childNoCount};
+                
               //- .col-6.col-md-6.mt-4
               //-   .card.shadow-sm(style="height: 300px;")
               //-     .card-body
@@ -140,7 +157,7 @@ html(lang="en")
               //-                 //- Right column for span and h1
               //-                 .d-flex.flex-column.align-items-start.body-info.ms-3
               //-                   h4#childrenCount #{childNoCount}
-              //-                   h6 Children   
+              //-                   h6 Children            
 
               
             //-Third Row

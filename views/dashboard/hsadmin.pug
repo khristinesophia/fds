@@ -23,18 +23,6 @@ html(lang="en")
       .row.mx-5  
         .col-12
           h2.text Dashboard
-            .row
-              //- check-in date
-              .col-12.col-md-6.col-lg-3.mt-4.d-flex.justify-content-start
-              .mb-9.col-md-3
-                  <br>
-                  label.form-label(for='startdate') Start Date
-                  input#checkindate.form-control(type='date' name='startdate' required)
-              //- check-out date
-              .mb-9.col-md-3
-                  <br>
-                  label.form-label(for='enddate') End Date
-                  input#checkoutdate.form-control(type='date' name='enddate' required)
             //- First Row (Checked In, Overall Stayed, Checked Out)
             .row.mx-5
               //-1 Checked In
@@ -109,6 +97,28 @@ html(lang="en")
                         .col-12 
                           .canvas-container
                             canvas#reservationDonutChart(style="height: 230px;")
+              
+              .col-6.col-md-6.mt-4
+                .card.shadow-sm(style="height: 300px;")
+                  .card-body
+                    h4.card-title.mb-3 Shift Rotation (Today)
+                        .d-flex.flex-column.align-items-start
+                          .table-scroll
+                            table.table.table-striped.table-hover
+                              thead 
+                                th Receptionist
+                                th Shift
+                                th Start Hour
+                                th End Hour 
+                                th Manager
+                              tbody(style="height: 100%;")
+                                each x in shiftArray
+                                  tr
+                                    td #{x.empname}
+                                    td #{x.shift}
+                                    td #{x.starthour}
+                                    td #{x.endhour}
+                                    td #{x.assignman}
 
               .col-6.col-md-6.mt-4
                 .card.shadow-sm(style="height: 300px;")
