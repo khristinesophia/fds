@@ -179,3 +179,8 @@
     font-size: 16px;
   }
   
+  .centered-link {
+    text-align: center;
+    margin-top: 10px; /* Adjust the margin as needed */
+  }
+  

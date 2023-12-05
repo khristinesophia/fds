@@ -14,6 +14,7 @@ html(lang="en")
         link(rel='stylesheet', href='/css/font.css')
         link(rel='stylesheet', href='/css/modal.css')
         link(rel='stylesheet', href='/css/table.css')
+        link(rel='stylesheet', href='/css/action_button.css')
 
         //- title
         title Info
@@ -31,18 +32,43 @@ html(lang="en")
                 .col-12.col-md-12.col-lg-4
                     .container.shadow.mt-3.p-0.bg-white.rounded
                         .px-5.py-3.mb-3.bg.rounded-top
-                            p.text-center.fs-1
+                            .d-flex.justify-content-center
+                                .room_box
+                                    h6.rounded.bg-white(
+                                        style=`padding: 1rem 2rem; 
+                                        margin-right: 2rem;
+                                        font-size:14px;`
+                                    ) Room Status
+
+                                .room_box 
+                                    - let statusStyles = ''
+                                    if ga.roomstatus === "Occupied"
+                                        - statusStyles = `background-color: #FFDDE1; color: #CC0000; font-size:14px;`
+                                    if ga.roomstatus === "To check-out"
+                                        - statusStyles = `background-color: #FFFDB8; color: #FFA852; font-size:14px;`
+                                    if ga.roomstatus === "Inspected"
+                                        - statusStyles = `background-color: #FFE4B9; color: #FF6600; font-size:14px;`
+                                    if ga.roomstatus === "Recently checked-out"
+                                        - statusStyles = `background-color: #CCEDFF; color: #336699; font-size:14px;`
+                                    if ga.roomstatus === "Vacant"
+                                        - statusStyles = `background-color: #CAFFDF; color: #339933; font-size:14px;`
+                                    h6.rounded(
+                                        style=`${statusStyles}; 
+                                        padding: 1rem 1rem;`
+                                    ) #{ga.roomstatus}
+                                    
+                            p.text-center.fs-1.mb-0.pb-0
                                 if ga.fullname
                                     span #{ga.fullname}
-                            h6.text-center
+                            h6.text-center.mt-0.pt-0
                                 p (Guest)  
                             .row
                                 h5.text-center
                                     if ga.roomtype
                                         span #{ga.roomtype} -
                                     if ga.roomnum
-
-                                        span Room #{ga.roomnum}                                       
+                                        span Room #{ga.roomnum} 
+                                                                                
                         .px-5.py-3
                             h4.m-0.mb-3 Guest Details
                             .row.mb-3 
@@ -103,53 +129,9 @@ html(lang="en")
                                     if ga.modeofpayment
                                         span #{ga.modeofpayment}
 
-                
-                .col-12.col-md-12.col-lg-8
-                    //- Check-Out
-                    .container.shadow.mt-3.p-0.bg-white.rounded
-                        .px-5.py-2.mb-3.bg.rounded-top
-                            h5.m-0 Check-Out
-                        .px-5.py-3
-                            .d-flex.justify-content-center.my-4
-                                .room_box
-                                    h6.rounded.bg(
-                                        style=`padding: 1rem 2rem; 
-                                        margin-right: 2rem;`
-                                    ) Room #{ga.roomnum}
-
-                                .room_box 
-                                    - let statusStyles = ''
-                                    if ga.roomstatus === "Occupied"
-                                        - statusStyles = `background-color: #FFDDE1; color: #CC0000`
-                                    if ga.roomstatus === "To check-out"
-                                        - statusStyles = `background-color: #FFFDB8; color: #FFA852`
-                                    if ga.roomstatus === "Inspected"
-                                        - statusStyles = `background-color: #FFE4B9; color: #FF6600`
-                                    if ga.roomstatus === "Recently checked-out"
-                                        - statusStyles = `background-color: #CCEDFF; color: #336699`
-                                    if ga.roomstatus === "Vacant"
-                                        - statusStyles = `background-color: #CAFFDF; color: #339933`
-
-                                    h6.rounded(
-                                        style=`${statusStyles}; 
-                                        padding: 1rem 2rem;`
-                                    ) #{ga.roomstatus}
-                            if ga.roomstatus === "Occupied"
-                                p.text-center This room is currently occupied by the guest.<br>Alert housekeeping. Change room status when guest checks out.
-                            if ga.roomstatus === "To check-out"
-                                p.text-center This room is currently ready for inspection.<br>Housekeeping will handle this. Wait for room status to change to “Inspected”.
-                            if ga.roomstatus === "Inspected" && ga.settled === false
-                                p.text-center This room is already inspected.<br>Process the payment.
-                            if ga.roomstatus === "Inspected" && ga.settled === true
-                                p.text-center This account is already settled.<br>Change the room status to "Recently checked-out"
-                            if ga.roomstatus === "Recently checked-out"
-                                p.text-center This account is already checked-out.<br>Print or download the invoice
-                            if ga.roomstatus === "Vacant"
-                                p.text-center This account is already cleaned by the housekeeping.<br>Archive this account.
-
                             if ga.roomstatus === "Occupied"
                                 form(action=`/ga/tco/${ga.accountid}` method="POST").text-center
-                                    input.btn.mod_btn.mt-4(type="submit" value="Change") 
+                                    input.btn.chc_out.mt-4(type="submit" value="Check-Out") 
 
                             if ga.roomstatus === "Inspected" && ga.settled === true
                                 form(action=`/ga/rco/${ga.accountid}` method="POST").text-center
@@ -157,51 +139,76 @@ html(lang="en")
                                     
                             if ga.roomstatus === "Vacant"
                                 form(action=`/ga/archive/${ga.accountid}` method='POST').text-center 
-                                    input.btn.mod_btn.mt-4(type="submit" value="Archive")
-                    
-                    //- Payment
-                    if ga.roomstatus === "Inspected" && ga.settled === false
+                                    input.btn.arc.mt-4(type="submit" value="Archive")    
+
+                
+                .col-12.col-md-12.col-lg-8
+                    //- Check-Out
                         .container.shadow.mt-3.p-0.bg-white.rounded
                             .px-5.py-2.mb-3.bg.rounded-top
-                                h5.m-0 Payment
+                                h5.m-0 Room Status
                             .px-5.py-3
-                                .d-flex.justify-content-center.text-align-center 
-                                    .row.me-3
-                                        a.sa-credit(
-                                            onclick="openModal_CardPayment()" 
-                                            role='button'
-                                        ) 
-                                            i.fa-solid.fa-credit-card
-                                            h6 Credit Card     
-                                    .row.me-3
-                                        a.sa-debit(
-                                            onclick="openModal_CardPayment()" 
-                                            role='button'
-                                        ) 
-                                            i.fa-solid.fa-credit-card
-                                            h6 Debit Card
-                                    include ../../mixins/modals/ga.pug
-                                    +cardpayment                                       
-                                    .row.me-3 
-                                        a.sa-cash(
-                                            onclick="openModal_CashPayment()" 
-                                            role='button'
-                                        ) 
-                                            i.fa-solid.fa-money-bills
-                                            h6 Cash
-                                    include ../../mixins/modals/ga.pug
-                                    +cashpayment
+                                .d-flex.justify-content-center.my-4
+                                    .room_box
+                                        h6.rounded.bg(
+                                            style=`padding: 1rem 2rem; 
+                                            margin-right: 2rem;`
+                                        ) Room #{ga.roomnum}
+
+                                    .room_box 
+                                        - let statusStyles = ''
+                                        if ga.roomstatus === "Occupied"
+                                            - statusStyles = `background-color: #FFDDE1; color: #CC0000`
+                                        if ga.roomstatus === "To check-out"
+                                            - statusStyles = `background-color: #FFFDB8; color: #FFA852`
+                                        if ga.roomstatus === "Inspected"
+                                            - statusStyles = `background-color: #FFE4B9; color: #FF6600`
+                                        if ga.roomstatus === "Recently checked-out"
+                                            - statusStyles = `background-color: #CCEDFF; color: #336699`
+                                        if ga.roomstatus === "Vacant"
+                                            - statusStyles = `background-color: #CAFFDF; color: #339933`
+
+                                        h6.rounded(
+                                            style=`${statusStyles}; 
+                                            padding: 1rem 2rem;`
+                                        ) #{ga.roomstatus}
+                                        
+                                if ga.roomstatus === "Occupied"
+                                    p.text-center This room is currently occupied by the guest.<br>Alert housekeeping. Change room status when guest checks out.
+                                if ga.roomstatus === "To check-out"
+                                    p.text-center This room is currently ready for inspection.<br>Housekeeping will handle this. Wait for room status to change to “Inspected”.
+                                if ga.roomstatus === "Inspected" && ga.settled === false
+                                    p.text-center This room is already inspected.<br>Process the payment.
+                                if ga.roomstatus === "Inspected" && ga.settled === true
+                                    p.text-center This account is already settled.<br>Change the room status to "Recently checked-out"
+                                if ga.roomstatus === "Recently checked-out"
+                                    p.text-center This account is already checked-out.<br>Print or download the invoice
+                                if ga.roomstatus === "Vacant"
+                                    p.text-center This account is already cleaned by the housekeeping.<br>Archive this account.
+
+                                if ga.roomstatus === "Occupied"
+                                    form(action=`/ga/tco/${ga.accountid}` method="POST").text-center
+                                        input.btn.chc_out.mt-4(type="submit" value="Check-Out") 
+
+                                if ga.roomstatus === "Inspected" && ga.settled === true
+                                    form(action=`/ga/rco/${ga.accountid}` method="POST").text-center
+                                        input.btn.mod_btn.mt-4(type="submit" value="Change")
+                                        
+                                if ga.roomstatus === "Vacant"
+                                    form(action=`/ga/archive/${ga.accountid}` method='POST').text-center 
+                                        input.btn.arc.mt-4(type="submit" value="Archive")
+                    
                     
                     //- Invoice
-                    if ga.settled === true
-                        .container.shadow.mt-3.p-0.bg-white.rounded
-                            .px-5.py-2.mb-3.bg.rounded-top
-                                h5.m-0 Invoice
-                            .px-5.py-3
-                                .d-flex.justify-content-center 
-                                    .row
-                                        form(action=`/ga/invoice/${ga.accountid}` method="GET") 
-                                            input.btn.mod_btn(type="submit" value="Download")
+                        if ga.settled === true
+                            .container.shadow.mt-3.p-0.bg-white.rounded
+                                .px-5.py-2.mb-3.bg.rounded-top
+                                    h5.m-0 Invoice
+                                .px-5.py-3
+                                    .d-flex.justify-content-center 
+                                        .row
+                                            form(action=`/ga/invoice/${ga.accountid}` method="GET") 
+                                                input.btn.mod_btn(type="submit" value="Download")
                     
                     //- Folio
                     .container.shadow.mt-3.p-0.bg-white.rounded
@@ -350,7 +357,45 @@ html(lang="en")
                                         td.fw-bold Balance
                                         td#balance 
                             p.mt-5.text-center Discounts and taxes are already applied on the room accommodation.
-                        
+                            .d-flex.justify-content-center 
+                                .row
+                                if ga.settled === true
+                                    form(action=`/ga/invoice/${ga.accountid}` method="GET") 
+                                        input.btn.mod_btn(type="submit" value="Download")
+                    
+                    //- Payment
+                    if ga.roomstatus === "Inspected" && ga.settled === false
+                        .container.shadow.mt-3.p-0.bg-white.rounded
+                            .px-5.py-2.mb-3.bg.rounded-top
+                                h5.m-0 Payment
+                            .px-5.py-3
+                                .d-flex.justify-content-center.text-align-center 
+                                    .row.me-3
+                                        a.sa-credit(
+                                            onclick="openModal_CardPayment()" 
+                                            role='button'
+                                        ) 
+                                            i.fa-solid.fa-credit-card
+                                            h6 Credit Card     
+                                    .row.me-3
+                                        a.sa-debit(
+                                            onclick="openModal_CardPayment()" 
+                                            role='button'
+                                        ) 
+                                            i.fa-solid.fa-credit-card
+                                            h6 Debit Card
+                                    include ../../mixins/modals/ga.pug
+                                    +cardpayment                                       
+                                    .row.me-3 
+                                        a.sa-cash(
+                                            onclick="openModal_CashPayment()" 
+                                            role='button'
+                                        ) 
+                                            i.fa-solid.fa-money-bills
+                                            h6 Cash
+                                    include ../../mixins/modals/ga.pug
+                                    +cashpayment
+                       
                         script.
                             const t1 = !{JSON.stringify(t1)}
                             const t2 = !{JSON.stringify(t2)}

@@ -26,8 +26,8 @@ router.post('/', isAuthenticated, async (req, res) => {
         const datecreated = getCurrentDate();
 
         const newHotelAdmin = await pool.query(
-            `INSERT INTO hoteladmin_login(username, email, hashpassword, hotelid, datecreated) VALUES($1, $2, $3, $4, $5) RETURNING *`,
-            [username, email, hashedPassword, hotelid, datecreated]
+            `INSERT INTO hoteladmin_login(username, email, hashpassword, hotelid, datecreated, role) VALUES($1, $2, $3, $4, $5, $6) RETURNING *`,
+            [username, email, hashedPassword, hotelid, datecreated, 'Admin']
         );
 
         res.redirect('/hsadmins');

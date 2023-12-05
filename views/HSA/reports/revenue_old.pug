@@ -33,7 +33,7 @@ html(lang="en")
                     //- card
                     .card.bg-success.shadow.text-white.text-center 
                         .card-body
-                            h3 #{totalRevenue.toFixed(2)}
+                            h3 #{summary.totalRevenue}
                             p.lead Total Revenue
 
                 //- column
@@ -41,16 +41,16 @@ html(lang="en")
                     //- card
                     .card.bg-warning.shadow.text-center 
                         .card-body
-                            h3 #{roomTypeCount}
-                            p.lead Room Type Count
+                            h3 #{summary.highestOccupancyRateRoomType}
+                            p.lead Highest Occupancy Rate
 
-                //- //- column
-                //- .col 
-                //-     //- card
-                //-     .card.bg-danger.shadow.text-white.text-center 
-                //-         .card-body
-                //-             h3 0
-                //-             p.lead Lorem
+                //- column
+                .col 
+                    //- card
+                    .card.bg-danger.shadow.text-white.text-center 
+                        .card-body
+                            h3 #{summary.highestPercentageOfRevenueRoomType}
+                            p.lead Highest Percentage of Revenue
             
             .d-flex.justify-content-between.align-items-center.mt-5
                 .col 
@@ -72,40 +72,33 @@ html(lang="en")
                     a(href="#" id="downloadAnchor") 
                         h2.fa-solid.fa-download
             .row.mt-4.p-3.bg-white.shadow
-                table.table.table-borderless.text-dark(style="font-size:0.9rem!important")
-                    tbody
-                        each rt in roomtypeArray
-                            - var revenuePerRT = 0
-                            tr.bg
-                                td.fw-bold(colspan=5) #{rt.roomtype}
-                            tr 
-                                td(style="width: 200px;")
-                                td.fw-bold Account ID
-                                td.fw-bold Guest Name
-                                td.fw-bold Check-Out Date
-                                td.fw-bold Revenue
-
-                            each data in dataArray
-                                if(rt.roomtype == data.roomtype) 
-                                    - revenuePerRT += parseFloat(data.paid)
-                                    tr 
-                                        td 
-                                        td #{data.accountid}
-                                        td #{data.fullname}
-                                        td #{data.checkoutdate}
-                                        td #{data.paid}
-                            tr.real-bg
-                                td.fw-bold(colspan=4) Total 
-                                td.fw-bold #{revenuePerRT.toFixed(2)}
+                table.table
+                    //- thead
+                    thead 
+                        //- trow
                         tr 
-                            td.fw-bold(colspan=5) Summary
-                        tr
-                            td 
-                            td 
-                            td
-                            td.fw-bold Total Revenue 
-                            td.fw-bold #{totalRevenue.toFixed(2)}
-                        
+                            th Room Type
+                            th Number of Rooms
+                            th Number of Check-Ins
+                            th Occupancy Rate
+                            th Revenue
+                            th Percentage of Revenue
+                    tbody
+                        each data in dataArray
+                            tr 
+                                td #{data.roomtype}
+                                td #{data.room_count}
+                                td #{data.guestaccount_count}
+                                td #{data.occupancy_rate}
+                                td #{data.revenue}
+                                td #{data.percentage_of_revenue}
+                        tr 
+                            th.fw-bold Total
+                            th 
+                            th 
+                            th 
+                            th.fw-bold #{summary.totalRevenue}
+                            th.fw-bold #{summary.totalPercentageOfRevenue}
             
 
     script(src='https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js' integrity='sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM' crossorigin='anonymous')

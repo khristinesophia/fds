@@ -79,6 +79,10 @@ router.post('/shift/delete/:id', isAuthenticated, async(req,res)=>{
 router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
     try {
         const hotelid = req.session.hotelID
+    
+        const { userID } = req.session
+        const managerRole = req.session.managerRole
+
         const allHSAdmins = await pool.query(`
             SELECT * 
             FROM hoteladmin_login t1
@@ -110,7 +114,9 @@ router.get('/', isAuthenticated, getHotelColor, getHotelLogo, async(req, res)=>{
             allReceptionistsArray: allReceptionists.rows,
             allShiftsArray: allShifts.rows,
             hotelColor: req.hotelColor,
-            hotelLogo: req.hotelImage
+            hotelLogo: req.hotelImage,
+            managerRole: managerRole,
+            userID: userID
         })
 
     } catch (error) {
@@ -280,6 +286,31 @@ router.post('/changePW/receptionist/:id', isAuthenticated, async(req, res)=>{
 
 
 
+//- add other manager
+router.post('/addmanager', isAuthenticated, async (req, res) => {
+    try {
+        const { hotelID } = req.session
+        const { username, email, password } = req.body;
+
+        // Check password length
+        if (password.length < 8) {
+            return res.status(400).send('Password must be at least 8 characters');
+        }
+
+        const hashedPassword = bcrypt.hashSync(password, 10);
+        const datecreated = getCurrentDate();
+
+        const newHotelAdmin = await pool.query(
+            `INSERT INTO hoteladmin_login(username, email, hashpassword, firstlogin, hotelid, datecreated, role) VALUES($1, $2, $3, $4, $5, $6, $7) RETURNING *`,
+            [username, email, hashedPassword, true, hotelID, datecreated, 'Viewer']
+        );
+
+        res.redirect('/users')
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).send('Internal Server Error')
+    }
+})
 
 //- update hsa
 router.post("/edit/manager/:id", isAuthenticated, async(req, res)=>{
