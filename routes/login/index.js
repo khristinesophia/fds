@@ -47,7 +47,7 @@ const loginRateLimit = rateLimit({
 //app.use('/', loginRateLimit) 
 
 
-const otp = generateOTP();
+let otp = generateOTP();
 
 let emailid;
 
@@ -272,6 +272,8 @@ router.post('/otp', async (req, res) => {
         if (otpinput === otp) {
             // OTP is valid, render the changepass page
             res.redirect('/login/changepass');
+            let newotp = generateOTP()
+            otp = newotp
         } else {
             // Invalid OTP
             console.log('Invalid OTP');
@@ -298,31 +300,37 @@ router.post('/changepass', async (req, res) => {
             return res.render('login/changepass', { errorMessageChangePass });
         }
 
-        // hash new password
-        const hashedNewPassword = bcrypt.hashSync(pass1, 10);
-
         const adminQuery = 'SELECT * FROM hoteladmin_login WHERE email = $1';
         const userQuery = 'SELECT * FROM user_login WHERE email = $1';
         const superadminQuery = 'SELECT * FROM superadmin_login WHERE email = $1';
+
+        console.log(emailid);
 
         const adminResult = await pool.query(adminQuery, [emailid]);
         const userResult = await pool.query(userQuery, [emailid]);
         const superadminResult = await pool.query(superadminQuery, [emailid]);
 
+        // hash new password
+        const hashedNewPassword = bcrypt.hashSync(pass2, 10);
+        console.log(hashedNewPassword);
+
+        console.log('userResult.rows:', userResult.rows);
+        console.log('userResult.length:', userResult.rows.length);
+
         if (adminResult.rows.length > 0) {
             await pool.query('UPDATE hoteladmin_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
             console.log('Password updated successfully.');
-            return res.render('login/loginSA');
+            return res.redirect('/');
         }
         if (userResult.rows.length > 0) {
-            await pool.query('UPDATE user_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
+            await pool.query('UPDATE user_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid]);
             console.log('Password updated successfully.');
-            return res.render('login/loginSA');
+            return res.redirect('/');
         }
         if (superadminResult.rows.length > 0) {
             await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
             console.log('Password updated successfully.');
-            return res.render('login/loginSA');
+            return res.redirect('/');
         }
 
     } catch (error) {
