@@ -313,9 +313,9 @@ router.post('/', isAuthenticated, async(req, res)=>{
         const existingRoom = await pool.query('SELECT roomnum FROM rooms WHERE hotelid = $1 AND roomnum = $2', [hotelid, roomnum]);
 
         if (existingRoom.rows.length > 0) {
-            console.log('RM Exist')
+            console.log('Room already exist')
             // Send an error response with the message
-            return res.status(400).json({ error: 'RM Exixst Try again' });
+            return res.status(400).json({ error: 'Room already exist, Try again' });
                }
         else {
             //get the typeid of the roomtype
