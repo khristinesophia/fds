@@ -120,6 +120,7 @@ cron.schedule('1 14 * * *', async () => {
 
                 // Delete reservation based on reservationid
                 await pool.query('DELETE FROM reservations WHERE reservationid = $1', [reservationid]);
+                console.log("automatic cancellation performed")
             }
         }
     } catch (error) {
