@@ -35,7 +35,7 @@ const oAuth2Client = new google.auth.OAuth2(
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 
-//login limiter
+//login limiter.
 const loginRateLimit = rateLimit({
 	windowMs: 60 * 60 * 1000, // 1 hour
 	max: 10, // Limit each IP to 10 requests per `window` (here, per 1 hour).
