@@ -22,7 +22,7 @@ const { OAuth2Client } = require('google-auth-library');
 //- OAuth Credentials for email confirmation
 const CLIENT_ID = "179230253575-l6kh9dr95m9rjgbqmjbi4j93brpju79t.apps.googleusercontent.com";
 const CLIENT_SECRET = "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";
-const REFRESH_TOKEN = "1//048lOKM5TYrUDCgYIARAAGAQSNwF-L9Irekumf8SfxiuDn7Bdfn3U2Fdt3uO5PBkx5Maa5mIubBvufHfDbdPbswDnAZFdBxrbQWk";
+const REFRESH_TOKEN = "1//04xqEbosLwRimCgYIARAAGAQSNwF-L9IrOSMTjJ1HVi_mYxxujroV4P4HwpvhXxQmcCaD6daCPXIJbYPSrRemj9nYQsEsSPxLtDo";
 const REDIRECT_URI = "https://developers.google.com/oauthplayground"; //DONT EDIT THIS
 const MY_EMAIL = "acisfds@gmail.com";
 
@@ -35,7 +35,7 @@ const oAuth2Client = new google.auth.OAuth2(
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 
-//login limiter
+//login limiter.
 const loginRateLimit = rateLimit({
 	windowMs: 60 * 60 * 1000, // 1 hour
 	max: 10, // Limit each IP to 10 requests per `window` (here, per 1 hour).
@@ -47,7 +47,7 @@ const loginRateLimit = rateLimit({
 //app.use('/', loginRateLimit) 
 
 
-const otp = generateOTP();
+let otp = generateOTP();
 
 let emailid;
 
@@ -272,6 +272,8 @@ router.post('/otp', async (req, res) => {
         if (otpinput === otp) {
             // OTP is valid, render the changepass page
             res.redirect('/login/changepass');
+            let newotp = generateOTP()
+            otp = newotp
         } else {
             // Invalid OTP
             console.log('Invalid OTP');
@@ -298,31 +300,37 @@ router.post('/changepass', async (req, res) => {
             return res.render('login/changepass', { errorMessageChangePass });
         }
 
-        // hash new password
-        const hashedNewPassword = bcrypt.hashSync(pass1, 10);
-
         const adminQuery = 'SELECT * FROM hoteladmin_login WHERE email = $1';
         const userQuery = 'SELECT * FROM user_login WHERE email = $1';
         const superadminQuery = 'SELECT * FROM superadmin_login WHERE email = $1';
+
+        console.log(emailid);
 
         const adminResult = await pool.query(adminQuery, [emailid]);
         const userResult = await pool.query(userQuery, [emailid]);
         const superadminResult = await pool.query(superadminQuery, [emailid]);
 
+        // hash new password
+        const hashedNewPassword = bcrypt.hashSync(pass2, 10);
+        console.log(hashedNewPassword);
+
+        console.log('userResult.rows:', userResult.rows);
+        console.log('userResult.length:', userResult.rows.length);
+
         if (adminResult.rows.length > 0) {
             await pool.query('UPDATE hoteladmin_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
             console.log('Password updated successfully.');
-            return res.render('login/loginSA');
+            return res.redirect('/');
         }
         if (userResult.rows.length > 0) {
-            await pool.query('UPDATE user_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
+            await pool.query('UPDATE user_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid]);
             console.log('Password updated successfully.');
-            return res.render('login/loginSA');
+            return res.redirect('/');
         }
         if (superadminResult.rows.length > 0) {
             await pool.query('UPDATE superadmin_login SET hashpassword = $1 WHERE email = $2', [hashedNewPassword, emailid])
             console.log('Password updated successfully.');
-            return res.render('login/loginSA');
+            return res.redirect('/');
         }
 
     } catch (error) {

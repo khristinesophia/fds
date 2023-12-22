@@ -195,24 +195,18 @@ html(lang="en")
                               //- trow
                               tr 
                                 th Room Type
-                                th Number of Rooms
                                 th Number of Check-Ins
-                                th Occupancy Rate
                                 th Revenue
                                 th Percentage of Revenue
                             tbody
                               each data in dataArray
                                 tr 
                                   td #{data.roomtype}
-                                  td #{data.room_count}
                                   td #{data.guestaccount_count}
-                                  td #{data.occupancy_rate}
                                   td #{data.revenue}
                                   td #{data.percentage_of_revenue}
                               tr 
                                 th.fw-bold Total
-                                th 
-                                th 
                                 th 
                                 th.fw-bold #{summary.totalRevenue}
                                 th.fw-bold #{summary.totalPercentageOfRevenue}
