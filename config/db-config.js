@@ -1,7 +1,7 @@
 const Pool = require('pg').Pool
 
 const pool = new Pool({
-    user: 'acis',
+    user: 'fds_l8en_user',
     password: 'Ofdvpi7BxtIJ9KwisfYOc6nGb5HWAbLN',
     host: 'dpg-clha9hmbbf9s73b0brp0-a',
     port: 5432, 
