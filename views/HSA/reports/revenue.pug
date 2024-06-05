@@ -68,15 +68,15 @@ html(lang="en")
                                     option(value="Monthly") Monthly
                                     option(value="Yearly") Yearly
 
-                .col.text-end
-                    a(href="#" id="downloadAnchor") 
-                        h2.fa-solid.fa-download
+                //- .col.text-end
+                //-     a(href="#" id="downloadAnchor") 
+                //-         h2.fa-solid.fa-download
             .row.mt-4.p-3.bg-white.shadow
                 table.table.table-borderless.text-dark(style="font-size:0.9rem!important")
                     tbody
                         each rt in roomtypeArray
                             - var revenuePerRT = 0
-                            tr.bg
+                            tr.real-bg
                                 td.fw-bold(colspan=5) #{rt.roomtype}
                             tr 
                                 td(style="width: 200px;")
